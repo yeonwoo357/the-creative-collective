@@ -24,7 +24,7 @@ function SearchPage() {
   const input = useRef<HTMLInputElement>(null);
   const [ob] = useLocal<Onboarding | null>(ONBOARDING_KEY, null);
   const city = ob?.location || "London";
-  const origin = CITY_COORDS[city.toLowerCase()] ?? CITY_COORDS.london;
+  const origin: [number, number] = CITY_COORDS[city.toLowerCase()] ?? [51.5074, -0.1278];
 
   useEffect(() => input.current?.focus(), []);
 

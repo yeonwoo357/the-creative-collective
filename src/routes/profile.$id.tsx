@@ -91,7 +91,7 @@ function ProfilePage() {
         <div className="mt-4 px-4">
           <div className="grid grid-cols-2 gap-px bg-muted">
             {c.work.map((src, i) => (
-              <Link key={src} to="/project/$id" params={{ id: c.projects[i % c.projects.length].id }} className="aspect-square bg-muted">
+              <Link key={src} to="/project/$id" params={{ id: c.projects[i % c.projects.length]?.id ?? "" }} className="aspect-square bg-muted">
                 <img src={src} alt={`${c.name} work ${i + 1}`} loading="lazy" className="size-full object-cover transition-opacity hover:opacity-85" />
               </Link>
             ))}

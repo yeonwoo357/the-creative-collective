@@ -7,7 +7,7 @@ import { ONBOARDING_KEY, useLocal, useReducedMotion, type Onboarding } from "@/l
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): { ids?: string } =>
-    typeof s.ids === "string" && s.ids ? { ids: s.ids } : {},
+    typeof s["ids"] === "string" && s["ids"] ? { ids: s["ids"] } : {},
   head: () => ({
     meta: [
       { title: "Discover — NAMED Collective" },
