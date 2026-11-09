@@ -31,5 +31,5 @@ use the editor.
 
 ## Project rules
 - No backend: mock creatives live in `src/lib/data.ts`; onboarding + saved IDs persist via `useLocal` in `src/lib/store.ts` (reads after mount to keep SSR/hydration in sync).
-- Globe is a custom d3-geo orthographic SVG (`src/components/Globe.tsx`) so pins/cards can be projected and styled monochrome; home route is `ssr: false` because geometry is measured client-side.
+- Globe is a 3D WebGL globe (`globe.gl`, loaded with a dynamic import in `src/components/Globe.tsx`): dotted land + coastline, slow auto-spin, pop-up cards that appear as it turns. `/` and `/intro` are `ssr: false`; both sit in the `.night` token scope (inverted monochrome, defined in `src/styles.css`). Pin/card styles are the `.globe-*` classes in `src/styles.css`.
 - Styling: monochrome tokens and `btn`/`chip`/`tag`/`field` utilities live in `src/styles.css`; use them instead of ad-hoc colour classes.

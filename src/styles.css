@@ -179,3 +179,138 @@
 @utility animate-orbit {
   animation: intro-spin 2.4s linear infinite;
 }
+
+/* ---------- Night scope: the 3D globe screens (home + intro) invert the monochrome tokens ---------- */
+.night {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0 0 0);
+  --card-foreground: oklch(1 0 0);
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.2178 0 0); /* #1F1F1F */
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.2178 0 0); /* #1F1F1F */
+  --muted-foreground: oklch(0.6927 0 0); /* #9A9A9A — AA on black */
+  --accent: oklch(0.2178 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --line: oklch(0.3904 0 0); /* #444 */
+  --border: oklch(0.2603 0 0);
+  --input: oklch(0.3904 0 0);
+  --ring: oklch(1 0 0);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Space backdrop behind the WebGL globe */
+.globe-space {
+  background:
+    radial-gradient(1px 1px at 20% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 8%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 10% 40%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 55% 22%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 35% 33%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 64% 44%, #fff 50%, transparent 51%),
+    radial-gradient(120% 70% at 50% 100%, oklch(0.22 0 0) 0%, oklch(0.12 0 0) 60%, oklch(0 0 0) 100%);
+}
+
+/* Globe pins + pop-up cards (DOM nodes created by Globe.tsx) */
+.globe-pin {
+  position: relative;
+  width: 0;
+  height: 0;
+  transition: opacity 0.25s ease;
+}
+.globe-pin[data-dim="true"] {
+  opacity: 0.3;
+}
+.globe-dot {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.globe-dot::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--foreground);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--foreground) 18%, transparent);
+}
+.globe-pop {
+  position: absolute;
+  left: 0;
+  bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 6px) scale(0.94);
+  transform-origin: 50% 100%;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.globe-pin[data-show="true"] .globe-pop {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+.globe-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--foreground);
+  background: var(--foreground);
+  color: var(--background);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+}
+.globe-card img {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  object-fit: cover;
+  flex: none;
+}
+.globe-card b {
+  display: block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.globe-card small {
+  display: block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  opacity: 0.65;
+}
+.globe-stem {
+  width: 1px;
+  height: 12px;
+  background: var(--foreground);
+}
+@media (prefers-reduced-motion: reduce) {
+  .globe-pop,
+  .globe-pin {
+    transition: none;
+  }
+}

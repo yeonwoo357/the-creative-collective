@@ -16,7 +16,7 @@ export function TabBar() {
   return (
     <nav
       aria-label="Main"
-      className="sticky bottom-0 z-30 grid grid-cols-4 border-t border-foreground bg-background"
+      className={`sticky bottom-0 z-30 grid grid-cols-4 border-t border-foreground bg-background ${path === "/" ? "night" : ""}`}
     >
       {tabs.map(({ to, label, Icon }) => {
         const active = to === "/" ? path === "/" : path.startsWith(to);
