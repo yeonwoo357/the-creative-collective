@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "@/components/PixelIcons";
 import type { ReactNode } from "react";
 
 export function BackButton({ className = "" }: { className?: string }) {

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { User } from "lucide-react";
+import { User } from "@/components/PixelIcons";
 import { MediaItem } from "./Portfolio";
 import type { MyProfile } from "@/lib/store";
 

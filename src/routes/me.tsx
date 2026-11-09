@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bookmark, Globe, Instagram, Music2, Pencil, Settings, User } from "lucide-react";
+import { Bookmark, Globe, Instagram, Music2, Pencil, Settings, User } from "@/components/PixelIcons";
 import { PageHeader } from "@/components/TopBar";
 import { LayoutToggle, Portfolio } from "@/components/Portfolio";
 import { ONBOARDING_KEY, PROFILE_KEY, avatarOf, useLocal, useMyProfile, useSaved, writeLocal, type Onboarding } from "@/lib/store";
@@ -7,6 +7,8 @@ import { ONBOARDING_KEY, PROFILE_KEY, avatarOf, useLocal, useMyProfile, useSaved
 export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Your collective — NAMED" },
       { name: "description", content: "Your NAMED Collective profile." },
       { property: "og:title", content: "Your collective — NAMED" },

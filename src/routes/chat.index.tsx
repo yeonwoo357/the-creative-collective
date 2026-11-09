@@ -7,6 +7,8 @@ import { timeAgo, useChats } from "@/lib/store";
 export const Route = createFileRoute("/chat/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Chat — NAMED Collective" },
       { name: "description", content: "Your conversations with the collective." },
       { property: "og:title", content: "Chat — NAMED Collective" },

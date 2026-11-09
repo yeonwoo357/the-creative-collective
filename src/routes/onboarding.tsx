@@ -1,13 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { LocateFixed, MapPin } from "lucide-react";
+import { LocateFixed, MapPin } from "@/components/PixelIcons";
 import { writeLocal, ONBOARDING_KEY, PROFILE_KEY, EMPTY_PROFILE, type MyProfile, type Onboarding } from "@/lib/store";
 import { ProfileForm } from "@/components/ProfileForm";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Join the collective — NAMED" },
       { name: "description", content: "Set up your NAMED Collective profile in five quick steps." },
       { property: "og:title", content: "Join the collective — NAMED" },

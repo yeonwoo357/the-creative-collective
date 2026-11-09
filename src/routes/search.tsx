@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Globe2, Search as SearchIcon } from "lucide-react";
+import { Globe2, Search as SearchIcon } from "@/components/PixelIcons";
 import { BackButton } from "@/components/TopBar";
 import { CITY_COORDS, FILTERS, distanceKm, formatKm, searchCreatives, searchWork, type Filter } from "@/lib/data";
 import { ONBOARDING_KEY, useLocal, type Onboarding } from "@/lib/store";
@@ -8,6 +8,8 @@ import { ONBOARDING_KEY, useLocal, type Onboarding } from "@/lib/store";
 export const Route = createFileRoute("/search")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Search the collective — NAMED" },
       { name: "description", content: "Filter tattoo artists, hair, piercing and nails by name, style or place." },
       { property: "og:title", content: "Search the collective — NAMED" },

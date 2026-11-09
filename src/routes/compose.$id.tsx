@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Copy, Instagram } from "lucide-react";
+import { Copy, Instagram } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { MyPortfolioCard } from "@/components/MyPortfolioCard";
@@ -15,6 +15,8 @@ export const Route = createFileRoute("/compose/$id")({
   },
   head: ({ loaderData }) => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: loaderData ? `Message ${loaderData.name} — NAMED` : "Unavailable — NAMED" },
       { name: "description", content: "Send a message with your portfolio attached." },
       { property: "og:title", content: "Say hi — NAMED Collective" },

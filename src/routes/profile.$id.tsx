@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bookmark, MapPin, MoreHorizontal } from "lucide-react";
+import { Bookmark, MapPin, MoreHorizontal } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { getCreative } from "@/lib/data";
@@ -15,7 +15,9 @@ export const Route = createFileRoute("/profile/$id")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} — ${loaderData.role}, ${loaderData.city} · NAMED` },
+          { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: `${loaderData.name} — ${loaderData.role}, ${loaderData.city} · NAMED` },
           { name: "description", content: loaderData.bio },
           { property: "og:title", content: `${loaderData.name} · NAMED Collective` },
           { property: "og:description", content: loaderData.bio },

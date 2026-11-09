@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Bookmark, Search, Settings, User, X } from "lucide-react";
+import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { PLACES, creatives, getCreative } from "@/lib/data";
 import { ONBOARDING_KEY, avatarOf, useLocal, useMyProfile, useReducedMotion, type Onboarding } from "@/lib/store";
@@ -12,6 +12,8 @@ export const Route = createFileRoute("/")({
     typeof s["ids"] === "string" && s["ids"] ? { ids: s["ids"] } : {},
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Discover — NAMED Collective" },
       {
         name: "description",

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { getProject } from "@/lib/data";
@@ -14,7 +14,9 @@ export const Route = createFileRoute("/project/$id")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.project.title} by ${loaderData.creative.name} · NAMED` },
+          { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: `${loaderData.project.title} by ${loaderData.creative.name} · NAMED` },
           { name: "description", content: loaderData.project.description },
           { property: "og:title", content: `${loaderData.project.title} · ${loaderData.creative.name}` },
           { property: "og:description", content: loaderData.project.description },
