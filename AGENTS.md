@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- No backend: mock creatives live in `src/lib/data.ts`; onboarding + saved IDs persist via `useLocal` in `src/lib/store.ts` (reads after mount to keep SSR/hydration in sync).
+- Globe is a custom d3-geo orthographic SVG (`src/components/Globe.tsx`) so pins/cards can be projected and styled monochrome; home route is `ssr: false` because geometry is measured client-side.
+- Styling: monochrome tokens and `btn`/`chip`/`tag`/`field` utilities live in `src/styles.css`; use them instead of ad-hoc colour classes.
