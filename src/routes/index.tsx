@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { PLACES, creatives, getCreative } from "@/lib/data";
+import namedLogo from "@/assets/named-logo.png.asset.json";
 import { ONBOARDING_KEY, avatarOf, useLocal, useMyProfile, useReducedMotion, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
@@ -86,7 +87,7 @@ function Home() {
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-4 pt-4">
-        <div className="pointer-events-auto flex items-center justify-between">
+        <div className="pointer-events-auto relative flex items-center justify-between">
           <Link
             to="/me"
             aria-label="Your profile"
@@ -94,7 +95,6 @@ function Home() {
           >
             {pic ? <img src={pic} alt="" className="size-full object-cover" /> : <User className="size-5" />}
           </Link>
-          <span className="pl-12 text-sm font-bold tracking-[0.35em]">NAMED</span>
           <div className="flex gap-2">
             <Link
               to="/saved"
