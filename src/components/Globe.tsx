@@ -42,9 +42,10 @@ export function Globe({ pins, highlight, initial, target, onPin, reducedMotion }
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
-    const ro = new ResizeObserver(([e]) =>
-      setSize({ w: e.contentRect.width, h: e.contentRect.height }),
-    );
+    const ro = new ResizeObserver((entries) => {
+      const e = entries[0];
+      if (e) setSize({ w: e.contentRect.width, h: e.contentRect.height });
+    });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -89,14 +90,17 @@ export function Globe({ pins, highlight, initial, target, onPin, reducedMotion }
   // Drag + pinch.
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ d: number; k: number } | null>(null);
+  const pinchDist = () => {
+    const [a, b] = [...pointers.current.values()];
+    return a && b ? Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) : 1;
+  };
   const onPointerDown = (e: React.PointerEvent) => {
     if ((e.target as HTMLElement).closest("button")) return;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     if (anim.current) cancelAnimationFrame(anim.current);
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 2) {
-      const [a, b] = [...pointers.current.values()];
-      pinch.current = { d: Math.hypot(a.x - b.x, a.y - b.y), k: viewRef.current.k };
+      pinch.current = { d: pinchDist(), k: viewRef.current.k };
     }
   };
   const onPointerMove = (e: React.PointerEvent) => {
@@ -104,8 +108,7 @@ export function Globe({ pins, highlight, initial, target, onPin, reducedMotion }
     if (!prev) return;
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 2 && pinch.current) {
-      const [a, b] = [...pointers.current.values()];
-      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      const d = pinchDist();
       const k = clamp((pinch.current.k * d) / pinch.current.d, MIN_K, MAX_K);
       setView((v) => ({ ...v, k }));
       return;

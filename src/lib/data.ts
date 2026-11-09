@@ -60,7 +60,7 @@ const descs = [
 
 export const creatives: Creative[] = seeds.map((s, i) => {
   const [id, name, category, role, city, neighbourhood, lat, lng, tags, bio, instagram, sp] = s;
-  const [style, placement] = sp.split("|");
+  const [style = "", placement = ""] = sp.split("|");
   const work = Array.from({ length: 4 + (i % 3) }, (_, k) => img(`${id}-w${k}`));
   const projects: Project[] = Array.from({ length: 1 + (i % 2) }, (_, k) => ({
     id: `${id}-p${k + 1}`,
@@ -68,7 +68,7 @@ export const creatives: Creative[] = seeds.map((s, i) => {
     year: 2026 - k,
     style,
     placement,
-    description: descs[k],
+    description: descs[k] ?? "",
     images: Array.from({ length: 4 }, (_, n) => img(`${id}-p${k}-${n}`, 800, 800)),
   }));
   return {
