@@ -86,7 +86,7 @@ function Home() {
         />
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-4 pt-4">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-4 pt-6">
         <div className="pointer-events-auto relative flex items-center justify-between">
           <Link
             to="/me"
