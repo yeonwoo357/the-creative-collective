@@ -103,7 +103,7 @@ export function useMyProfile() {
 }
 
 // ---------- chats (demo only, nothing leaves the browser) ----------
-export type Message = { id: string; from: "me" | "them"; text: string; at: number; portfolio?: boolean };
+export type Message = { id: string; from: "me" | "them"; text: string; at: number; portfolio?: boolean | undefined };
 export type Conversation = { id: string; creativeId: string; blocked?: boolean; messages: Message[] };
 export const CHATS_KEY = "named.chats";
 
