@@ -10,7 +10,7 @@
   --font-sans: "Inconsolata", ui-monospace, monospace;
   --font-mono: "Inconsolata", ui-monospace, monospace;
   --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-md: 4px;
   --radius-lg: 8px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -35,28 +35,32 @@
 }
 
 :root {
+  /* One black theme everywhere. Greys: #EEEEEE strong secondary, #B7B7B7 secondary text (10.8:1 on black),
+     #7D7D7D borders/dividers (5.1:1). Surfaces for hover/placeholders stay near-black so white text keeps AA. */
   --radius: 4px;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0 0 0);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.9491 0 0); /* #EEEEEE */
-  --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.9491 0 0); /* #EEEEEE */
-  --muted-foreground: oklch(0.5693 0 0); /* #757575 — AA on white */
-  --accent: oklch(0.9491 0 0);
-  --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0 0 0);
-  --destructive-foreground: oklch(1 0 0);
-  --line: oklch(0.7845 0 0); /* #B7B7B7 */
-  --border: oklch(0.9491 0 0);
-  --input: oklch(0.7845 0 0);
-  --ring: oklch(0 0 0);
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.2178 0 0); /* #1F1F1F */
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.2178 0 0); /* #1F1F1F */
+  --muted-foreground: oklch(0.7845 0 0); /* #B7B7B7 */
+  --subtle: oklch(0.9491 0 0); /* #EEEEEE */
+  --accent: oklch(0.2178 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(1 0 0);
+  --destructive-foreground: oklch(0 0 0);
+  --line: oklch(0.5964 0 0); /* #7D7D7D */
+  --border: oklch(0.5964 0 0); /* #7D7D7D */
+  --input: oklch(0.5964 0 0);
+  --ring: oklch(1 0 0);
   --ease: 0.2s ease;
+  color-scheme: dark;
 }
 
 @layer base {
@@ -92,7 +96,7 @@
   gap: 0.5rem;
   min-height: 48px;
   padding: 0 1.25rem;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 0.9rem;
   letter-spacing: 0.08em;
@@ -152,7 +156,7 @@
   min-height: 48px;
   padding: 0 14px;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 4px;
   background: var(--background);
   font-size: 1rem;
   &::placeholder {
@@ -189,22 +193,7 @@
 
 /* ---------- Night scope: the 3D globe screens (home + intro) invert the monochrome tokens ---------- */
 .night {
-  --background: oklch(0 0 0);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0 0 0);
-  --card-foreground: oklch(1 0 0);
-  --primary: oklch(1 0 0);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.2178 0 0); /* #1F1F1F */
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.2178 0 0); /* #1F1F1F */
-  --muted-foreground: oklch(0.6927 0 0); /* #9A9A9A — AA on black */
-  --accent: oklch(0.2178 0 0);
-  --accent-foreground: oklch(1 0 0);
-  --line: oklch(0.3904 0 0); /* #444 */
-  --border: oklch(0.2603 0 0);
-  --input: oklch(0.3904 0 0);
-  --ring: oklch(1 0 0);
+  /* Kept as a hook for the globe screens; the whole app now shares the black theme. */
   background-color: var(--background);
   color: var(--foreground);
 }
@@ -277,7 +266,7 @@
   gap: 8px;
   min-height: 44px;
   padding: 6px 12px 6px 6px;
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid var(--foreground);
   background: var(--foreground);
   color: var(--background);

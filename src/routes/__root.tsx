@@ -139,7 +139,7 @@ function RootComponent() {
       </div>
       <Toaster
         position="top-center"
-        toastOptions={{ style: { fontFamily: "Inconsolata, monospace", border: "1px solid #000", borderRadius: 6 } }}
+        toastOptions={{ style: { fontFamily: "Inconsolata, monospace", border: "1px solid #7D7D7D", borderRadius: 4, background: "#000", color: "#fff" } }}
       />
     </QueryClientProvider>
   );
