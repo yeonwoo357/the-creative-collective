@@ -492,7 +492,7 @@ export function Globe({
             aria-label="Recentre on London"
             title="Recentre (or double-tap the map)"
             onClick={recentre}
-            className="flex size-11 items-center justify-center border-b border-foreground hover:bg-muted"
+            className="flex size-11 items-center justify-center border-t border-foreground hover:bg-muted"
           >
             <LocateFixed className="size-4" />
           </button>
