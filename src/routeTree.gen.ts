@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IntroRouteImport } from './routes/intro'
+import { Route as MeRouteImport } from './routes/me'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as SavedRouteImport } from './routes/saved'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ProfileIdRouteImport } from './routes/profile.$id'
+import { Route as ProjectIdRouteImport } from './routes/project.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntroRoute = IntroRouteImport.update({
+  id: '/intro',
+  path: '/intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileIdRoute = ProfileIdRouteImport.update({
+  id: '/profile/$id',
+  path: '/profile/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectIdRoute = ProjectIdRouteImport.update({
+  id: '/project/$id',
+  path: '/project/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/intro': typeof IntroRoute
+  '/me': typeof MeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/profile/$id': typeof ProfileIdRoute
+  '/project/$id': typeof ProjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/intro': typeof IntroRoute
+  '/me': typeof MeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/profile/$id': typeof ProfileIdRoute
+  '/project/$id': typeof ProjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/intro': typeof IntroRoute
+  '/me': typeof MeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/profile/$id': typeof ProfileIdRoute
+  '/project/$id': typeof ProjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/intro'
+    | '/me'
+    | '/onboarding'
+    | '/saved'
+    | '/search'
+    | '/settings'
+    | '/profile/$id'
+    | '/project/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/intro'
+    | '/me'
+    | '/onboarding'
+    | '/saved'
+    | '/search'
+    | '/settings'
+    | '/profile/$id'
+    | '/project/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/intro'
+    | '/me'
+    | '/onboarding'
+    | '/saved'
+    | '/search'
+    | '/settings'
+    | '/profile/$id'
+    | '/project/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IntroRoute: typeof IntroRoute
+  MeRoute: typeof MeRoute
+  OnboardingRoute: typeof OnboardingRoute
+  SavedRoute: typeof SavedRoute
+  SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
+  ProfileIdRoute: typeof ProfileIdRoute
+  ProjectIdRoute: typeof ProjectIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/intro': {
+      id: '/intro'
+      path: '/intro'
+      fullPath: '/intro'
+      preLoaderRoute: typeof IntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/$id': {
+      id: '/profile/$id'
+      path: '/profile/$id'
+      fullPath: '/profile/$id'
+      preLoaderRoute: typeof ProfileIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/project/$id': {
+      id: '/project/$id'
+      path: '/project/$id'
+      fullPath: '/project/$id'
+      preLoaderRoute: typeof ProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IntroRoute: IntroRoute,
+  MeRoute: MeRoute,
+  OnboardingRoute: OnboardingRoute,
+  SavedRoute: SavedRoute,
+  SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
+  ProfileIdRoute: ProfileIdRoute,
+  ProjectIdRoute: ProjectIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
