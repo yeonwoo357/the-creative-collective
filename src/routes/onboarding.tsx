@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { LocateFixed, MapPin } from "@/components/PixelIcons";
 import { writeLocal, ONBOARDING_KEY, PROFILE_KEY, EMPTY_PROFILE, type MyProfile, type Onboarding } from "@/lib/store";
 import { ProfileForm } from "@/components/ProfileForm";
+import namedLogo from "@/assets/named-logo.png.asset.json";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -53,9 +54,11 @@ function OnboardingPage() {
           <span key={i} className={`h-0.5 ${i <= step ? "bg-foreground" : "bg-muted"}`} />
         ))}
       </div>
-      <div className="mx-auto mt-8 flex h-12 items-center justify-center rounded-md border border-foreground px-3 text-sm font-bold tracking-[0.3em]">
-        NAMED
-      </div>
+      <img
+        src={namedLogo.url}
+        alt="NAMED Collective"
+        className="mx-auto mt-8 h-16 w-auto object-contain"
+      />
 
       {step === 0 && (
         <form className="flex flex-1 flex-col" onSubmit={(e) => { e.preventDefault(); if (name.trim()) next(); }}>
