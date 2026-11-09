@@ -10,7 +10,17 @@ export function MediaItem({ m, alt, className = "" }: { m: Media; alt: string; c
 }
 
 /** A portfolio shown the way its owner chose: swipeable carousel or square grid. */
-export function Portfolio({ media, layout, name }: { media: Media[]; layout: "carousel" | "grid"; name: string }) {
+export function Portfolio({
+  media,
+  layout,
+  name,
+  largeTargets = false,
+}: {
+  media: Media[];
+  layout: "carousel" | "grid";
+  name: string;
+  largeTargets?: boolean;
+}) {
   const track = useRef<HTMLDivElement>(null);
   const [idx, setIdx] = useState(0);
   if (!media.length) return null;
@@ -43,7 +53,7 @@ export function Portfolio({ media, layout, name }: { media: Media[]; layout: "ca
             aria-label={`Item ${i + 1}`}
             aria-current={idx === i}
             onClick={() => track.current?.scrollTo({ left: i * track.current.clientWidth, behavior: "smooth" })}
-            className="flex size-6 items-center justify-center"
+            className={`flex items-center justify-center ${largeTargets ? "size-11" : "size-6"}`}
           >
             <span className={`size-1.5 rounded-full ${idx === i ? "bg-foreground" : "bg-line"}`} />
           </button>

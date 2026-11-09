@@ -118,3 +118,6 @@ export const ImagePlus = icon("add-media", outline(
 ));
 export const Check = icon("check", outline([[2,8],[6,12],[13,4]]));
 export const Circle = icon("circle", outline([[5,2],[10,2],[13,5],[13,10],[10,13],[5,13],[2,10],[2,5],[5,2]]));
+export const Heart = icon("heart", outline(
+  [[3,2],[5,2],[7,4],[9,2],[12,2],[14,4],[14,7],[7,14],[1,7],[1,4],[3,2]],
+));

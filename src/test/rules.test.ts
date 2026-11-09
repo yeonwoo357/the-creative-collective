@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY_PROFILE, sendMessage, seedChats, avatarOf } from "@/lib/store";
+import {
+  EMPTY_PROFILE,
+  sendMessage,
+  seedChats,
+  avatarOf,
+  setConversationMuted,
+  toggleMessageLike,
+} from "@/lib/store";
 import { searchWork } from "@/lib/data";
 
 describe("chat (demo)", () => {
@@ -11,6 +18,20 @@ describe("chat (demo)", () => {
   });
   it("seeds 3 example conversations", () => {
     expect(seedChats(0)).toHaveLength(3);
+  });
+  it("likes only the chosen message and toggles it back off", () => {
+    const chats = seedChats(0);
+    const liked = toggleMessageLike(chats, "vesper-lux", "s1");
+    expect(liked[0]?.messages[0]?.liked).toBe(true);
+    expect(liked[0]?.messages[1]?.liked).toBeUndefined();
+    expect(liked[1]).toBe(chats[1]);
+    expect(toggleMessageLike(liked, "vesper-lux", "s1")[0]?.messages[0]?.liked).toBe(false);
+  });
+  it("mutes only the chosen conversation", () => {
+    const chats = seedChats(0);
+    const muted = setConversationMuted(chats, "onyx-reed", true);
+    expect(muted.find((chat) => chat.id === "onyx-reed")?.muted).toBe(true);
+    expect(muted.find((chat) => chat.id === "vesper-lux")?.muted).toBeUndefined();
   });
 });
 

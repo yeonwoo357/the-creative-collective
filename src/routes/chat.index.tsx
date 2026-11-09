@@ -21,7 +21,9 @@ export const Route = createFileRoute("/chat/")({
 function ChatList() {
   const [chats, , ready] = useChats();
   const [now, setNow] = useState(0);
-  useEffect(() => setNow(Date.now()), []);
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
   return (
     <div className="flex-1">
       <PageHeader title="Chat" />
