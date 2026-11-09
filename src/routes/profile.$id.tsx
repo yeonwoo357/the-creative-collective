@@ -54,7 +54,7 @@ function ProfilePage() {
         </button>
       </div>
       <div className="px-4">
-        <img src={c.avatar} alt={c.name} className="-mt-11 size-[88px] rounded-full border-2 border-background bg-muted object-cover" />
+        <img src={c.avatar} alt={c.name} className="relative -mt-11 size-[88px] rounded-full border-2 border-background bg-muted object-cover" />
         <h1 className="mt-3 text-2xl font-semibold">{c.name}</h1>
         <p className="text-sm text-muted-foreground">{c.role} · {c.city}</p>
         <ul className="mt-3 flex flex-wrap gap-2">
