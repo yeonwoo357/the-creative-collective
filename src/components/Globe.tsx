@@ -4,7 +4,8 @@ import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
 import { Minus, Plus } from "lucide-react";
 
-export const land = feature(land110, land110.objects.land) as any;
+const topo = land110 as any;
+export const land = feature(topo, topo.objects.land) as any;
 const graticule = geoGraticule10();
 
 export type Pin = {
