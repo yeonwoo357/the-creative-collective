@@ -85,9 +85,11 @@ export const creatives: Creative[] = seeds.map((s, i) => {
     tags,
     bio,
     instagram,
+    tiktok: instagram,
     avatar: img(`${id}-avatar`, 200, 200),
     cover: img(`${id}-cover`, 800, 400),
     work,
+    layout: i % 3 === 0 ? "carousel" : "grid",
     projects,
     reviews: [
       { by: "A. from the collective", text: "Calm, kind, and the work healed perfectly." },

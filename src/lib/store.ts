@@ -160,6 +160,23 @@ export function sendMessage(
   return [convo, ...chats.filter((c) => c.creativeId !== creativeId)];
 }
 
+/** Mute is a local demo preference only; there are no push notifications. */
+export function setConversationMuted(chats: Conversation[], conversationId: string, muted: boolean): Conversation[] {
+  return chats.map((chat) => (chat.id === conversationId ? { ...chat, muted } : chat));
+}
+
+/** Toggle one message's like without changing the rest of the conversation. */
+export function toggleMessageLike(chats: Conversation[], conversationId: string, messageId: string): Conversation[] {
+  return chats.map((chat) => chat.id === conversationId
+    ? {
+        ...chat,
+        messages: chat.messages.map((message) => message.id === messageId
+          ? { ...message, liked: !message.liked }
+          : message),
+      }
+    : chat);
+}
+
 export function useChats() {
   const [chats, set, ready] = useLocal<Conversation[] | null>(CHATS_KEY, null);
   useEffect(() => {
