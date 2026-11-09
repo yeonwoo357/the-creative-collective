@@ -367,12 +367,13 @@ export function Globe({
       // Mouse: hover previews, click opens. Touch/keyboard: first tap or focus previews, second tap opens.
       let viaMouse = false;
       const hideT = { t: undefined as ReturnType<typeof setTimeout> | undefined };
-      el.addEventListener("pointerenter", (e) => {
-        if (e.pointerType !== "mouse") return;
+      const card = el.querySelector<HTMLElement>(".globe-card")!;
+      card.addEventListener("pointerenter", (e) => {
+        if (e.pointerType !== "mouse" || el.dataset["show"] !== "true") return;
         clearTimeout(hideT.t);
         onPreviewRef.current?.(pin.id);
       });
-      el.addEventListener("pointerleave", (e) => {
+      card.addEventListener("pointerleave", (e) => {
         if (e.pointerType !== "mouse") return;
         hideT.t = setTimeout(() => {
           if (previewRef.current === pin.id) onPreviewRef.current?.(null);
