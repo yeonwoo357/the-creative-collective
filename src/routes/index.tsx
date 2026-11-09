@@ -6,6 +6,8 @@ import { creatives } from "@/lib/data";
 import { ONBOARDING_KEY, useLocal, useReducedMotion, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
+  // Globe geometry is measured in the browser; skip server render to avoid float mismatches.
+  ssr: false,
   validateSearch: (s: Record<string, unknown>): { ids?: string } =>
     typeof s["ids"] === "string" && s["ids"] ? { ids: s["ids"] } : {},
   head: () => ({
