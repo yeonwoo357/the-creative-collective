@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, User, X } from "lucide-react";
 import { toast } from "sonner";
-import { filesToMedia } from "@/lib/media";
+import { fileToAvatar, filesToMedia } from "@/lib/media";
 import { DISCIPLINES, NEIGHBOURHOODS } from "@/lib/data";
 import type { MyProfile } from "@/lib/store";
 import { MediaItem } from "./Portfolio";
@@ -22,7 +22,14 @@ export function ProfileForm({
 }) {
   const [p, setP] = useState(initial);
   const [busy, setBusy] = useState(false);
+  const [picBusy, setPicBusy] = useState(false);
   const up = (patch: Partial<MyProfile>) => setP((v) => ({ ...v, ...patch }));
+
+  const pickAvatar = async (f: File) => {
+    setPicBusy(true);
+    up({ avatar: await fileToAvatar(f) });
+    setPicBusy(false);
+  };
 
   const add = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -41,6 +48,45 @@ export function ProfileForm({
         onSave(p);
       }}
     >
+      <fieldset>
+        <legend className="label">Profile photo</legend>
+        <div className="mt-2 flex items-center gap-4">
+          <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-dashed border-foreground bg-background">
+            {p.avatar ? (
+              <img src={p.avatar} alt="Your profile photo" className="size-full object-cover" />
+            ) : (
+              <User className="size-7 text-muted-foreground" aria-hidden="true" />
+            )}
+          </span>
+          <div className="flex flex-col items-start gap-1">
+            <label className="btn btn-secondary cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-foreground">
+              {picBusy ? "Adding…" : p.avatar ? "Change" : "Add"}
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                disabled={picBusy}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) void pickAvatar(f);
+                }}
+              />
+            </label>
+            {p.avatar && (
+              <button
+                type="button"
+                className="link-u min-h-11 text-xs text-muted-foreground"
+                onClick={() => up({ avatar: "" })}
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">The face you show on the map and in chats.</p>
+      </fieldset>
+
       <fieldset>
         <legend className="label">Images &amp; videos</legend>
         <div className="mt-2 grid grid-cols-3 gap-px bg-muted">

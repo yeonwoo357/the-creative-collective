@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sendMessage, seedChats } from "@/lib/store";
+import { EMPTY_PROFILE, sendMessage, seedChats, avatarOf } from "@/lib/store";
 import { searchWork } from "@/lib/data";
 
 describe("chat (demo)", () => {
@@ -11,6 +11,21 @@ describe("chat (demo)", () => {
   });
   it("seeds 3 example conversations", () => {
     expect(seedChats(0)).toHaveLength(3);
+  });
+});
+
+describe("profile photo", () => {
+  it("starts empty so a new member shows the placeholder", () => {
+    expect(EMPTY_PROFILE.avatar).toBe("");
+    expect(avatarOf(EMPTY_PROFILE)).toBe("");
+  });
+  it("uses the chosen photo over portfolio images", () => {
+    const p = { ...EMPTY_PROFILE, avatar: "pic.png", media: [{ src: "work.png", type: "image" as const }] };
+    expect(avatarOf(p)).toBe("pic.png");
+  });
+  it("falls back to the first piece of work when no photo is set", () => {
+    const p = { ...EMPTY_PROFILE, media: [{ src: "v.mp4", type: "video" as const }, { src: "w.png", type: "image" as const }] };
+    expect(avatarOf(p)).toBe("w.png");
   });
 });
 

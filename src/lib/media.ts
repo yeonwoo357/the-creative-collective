@@ -1,6 +1,7 @@
 import type { Media } from "./store";
 
 const MAX_VIDEO_BYTES = 3 * 1024 * 1024;
+const AVATAR_PX = 400;
 
 /** Turn picked files into storable media: images are shrunk to 1080px JPEG, small videos kept as-is. */
 export async function filesToMedia(files: FileList | File[]): Promise<{ media: Media[]; skipped: number }> {
@@ -35,5 +36,24 @@ async function shrink(f: File) {
   const ctx = c.getContext("2d");
   if (!ctx || !img.width) return url;
   ctx.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.8);
+}
+
+/** Center-crop a picked image into a small square avatar, light enough for localStorage. */
+export async function fileToAvatar(f: File): Promise<string> {
+  const url = await asDataUrl(f);
+  const img = new Image();
+  img.src = url;
+  await img.decode().catch(() => {});
+  const w = img.width || 1;
+  const h = img.height || 1;
+  const side = Math.min(w, h);
+  const out = Math.min(AVATAR_PX, side);
+  const c = document.createElement("canvas");
+  c.width = out;
+  c.height = out;
+  const ctx = c.getContext("2d");
+  if (!ctx || !img.width) return url;
+  ctx.drawImage(img, (w - side) / 2, (h - side) / 2, side, side, 0, 0, out, out);
   return c.toDataURL("image/jpeg", 0.8);
 }
