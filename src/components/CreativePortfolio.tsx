@@ -48,7 +48,7 @@ export function CreativePortfolio({ creative: c }: { creative: Creative }) {
           <span className="text-xs uppercase tracking-widest text-muted-foreground">{c.layout} view</span>
         </div>
         <div className="mt-3">
-          <Portfolio media={media} layout={c.layout} name={c.name} />
+          <Portfolio media={media} layout={c.layout} name={c.name} largeTargets />
         </div>
         <h3 className="label mt-6">Projects</h3>
         <ul className="mt-2">

@@ -10,7 +10,17 @@ export function MediaItem({ m, alt, className = "" }: { m: Media; alt: string; c
 }
 
 /** A portfolio shown the way its owner chose: swipeable carousel or square grid. */
-export function Portfolio({ media, layout, name }: { media: Media[]; layout: "carousel" | "grid"; name: string }) {
+export function Portfolio({
+  media,
+  layout,
+  name,
+  largeTargets = false,
+}: {
+  media: Media[];
+  layout: "carousel" | "grid";
+  name: string;
+  largeTargets?: boolean;
+}) {
   const track = useRef<HTMLDivElement>(null);
   const [idx, setIdx] = useState(0);
   if (!media.length) return null;
