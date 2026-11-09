@@ -98,7 +98,7 @@ function Home() {
           <img
             src={namedLogo.url}
             alt="NAMED Collective"
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[52px] w-auto -translate-x-1/2 -translate-y-1/2 object-contain"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-16 w-auto -translate-x-1/2 -translate-y-1/2 object-contain"
           />
           <div className="flex gap-2">
             <Link
