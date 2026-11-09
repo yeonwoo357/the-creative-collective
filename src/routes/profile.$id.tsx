@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bookmark, MapPin, MoreHorizontal } from "lucide-react";
+import { Bookmark, MapPin, MoreHorizontal } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { getCreative } from "@/lib/data";

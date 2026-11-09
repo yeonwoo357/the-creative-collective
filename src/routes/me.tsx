@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bookmark, Globe, Instagram, Music2, Pencil, Settings, User } from "lucide-react";
+import { Bookmark, Globe, Instagram, Music2, Pencil, Settings, User } from "@/components/PixelIcons";
 import { PageHeader } from "@/components/TopBar";
 import { LayoutToggle, Portfolio } from "@/components/Portfolio";
 import { ONBOARDING_KEY, PROFILE_KEY, avatarOf, useLocal, useMyProfile, useSaved, writeLocal, type Onboarding } from "@/lib/store";

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { geoDistance } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
-import { LocateFixed, Minus, Plus } from "lucide-react";
+import { LocateFixed, Minus, Plus } from "@/components/PixelIcons";
 import type { GlobeInstance } from "globe.gl";
 
 const topo = land110 as any;

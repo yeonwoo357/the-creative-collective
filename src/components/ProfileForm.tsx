@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ImagePlus, User, X } from "lucide-react";
+import { ImagePlus, User, X } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { fileToAvatar, filesToMedia } from "@/lib/media";
 import { DISCIPLINES, NEIGHBOURHOODS } from "@/lib/data";

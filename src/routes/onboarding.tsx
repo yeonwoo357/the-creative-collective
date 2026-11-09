@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { LocateFixed, MapPin } from "lucide-react";
+import { LocateFixed, MapPin } from "@/components/PixelIcons";
 import { writeLocal, ONBOARDING_KEY, PROFILE_KEY, EMPTY_PROFILE, type MyProfile, type Onboarding } from "@/lib/store";
 import { ProfileForm } from "@/components/ProfileForm";
 

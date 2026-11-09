@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Globe2, Search as SearchIcon } from "lucide-react";
+import { Globe2, Search as SearchIcon } from "@/components/PixelIcons";
 import { BackButton } from "@/components/TopBar";
 import { CITY_COORDS, FILTERS, distanceKm, formatKm, searchCreatives, searchWork, type Filter } from "@/lib/data";
 import { ONBOARDING_KEY, useLocal, type Onboarding } from "@/lib/store";

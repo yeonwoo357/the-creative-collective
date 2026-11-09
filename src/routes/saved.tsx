@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bookmark } from "lucide-react";
+import { Bookmark } from "@/components/PixelIcons";
 import { BackButton } from "@/components/TopBar";
 import { creatives } from "@/lib/data";
 import { useSaved } from "@/lib/store";

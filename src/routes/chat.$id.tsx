@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { MoreHorizontal, Send } from "lucide-react";
+import { MoreHorizontal, Send } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { MyPortfolioCard } from "@/components/MyPortfolioCard";
