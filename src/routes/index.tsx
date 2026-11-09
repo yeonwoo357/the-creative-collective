@@ -95,6 +95,11 @@ function Home() {
           >
             {pic ? <img src={pic} alt="" className="size-full object-cover" /> : <User className="size-5" />}
           </Link>
+          <img
+            src={namedLogo.url}
+            alt="NAMED Collective"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[52px] w-auto -translate-x-1/2 -translate-y-1/2 object-contain"
+          />
           <div className="flex gap-2">
             <Link
               to="/saved"
