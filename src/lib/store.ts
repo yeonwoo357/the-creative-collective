@@ -77,6 +77,7 @@ export function useReducedMotion() {
 // ---------- current user's portfolio ----------
 export type Media = { src: string; type: "image" | "video" };
 export type MyProfile = {
+  avatar: string;
   media: Media[];
   instagram: string;
   tiktok: string;
@@ -88,6 +89,7 @@ export type MyProfile = {
 };
 export const PROFILE_KEY = "named.profile";
 export const EMPTY_PROFILE: MyProfile = {
+  avatar: "",
   media: [],
   instagram: "",
   tiktok: "",
@@ -100,6 +102,11 @@ export const EMPTY_PROFILE: MyProfile = {
 export function useMyProfile() {
   const [p, set, ready] = useLocal<MyProfile>(PROFILE_KEY, EMPTY_PROFILE);
   return [{ ...EMPTY_PROFILE, ...p }, set, ready] as const;
+}
+
+/** The face you show: your own photo if you set one, else your first piece of work. */
+export function avatarOf(p: MyProfile): string {
+  return p.avatar || p.media.find((m) => m.type === "image")?.src || "";
 }
 
 // ---------- chats (demo only, nothing leaves the browser) ----------
