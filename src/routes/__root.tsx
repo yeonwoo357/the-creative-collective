@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster } from "sonner";
+import { TabBar } from "@/components/TabBar";
 
 function NotFoundComponent() {
   return (
@@ -81,16 +83,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "NAMED Collective — find your people" },
+      { name: "description", content: "Discover alternative creatives near you on the NAMED Collective globe." },
+      { name: "author", content: "NAMED Collective" },
+      { property: "og:title", content: "NAMED Collective — find your people" },
+      { property: "og:description", content: "Discover alternative creatives near you on the NAMED Collective globe." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
@@ -123,8 +130,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col bg-background sm:border-x sm:border-foreground">
+        <main className="flex flex-1 flex-col">
+          {/* Required: nested routes render here. */}
+          <Outlet />
+        </main>
+        <TabBar />
+      </div>
+      <Toaster
+        position="top-center"
+        toastOptions={{ style: { fontFamily: "Inconsolata, monospace", border: "1px solid #000", borderRadius: 6 } }}
+      />
     </QueryClientProvider>
   );
 }
