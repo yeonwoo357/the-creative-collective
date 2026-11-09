@@ -20,7 +20,7 @@ export type Pin = {
 export type View = { lambda: number; phi: number; k: number };
 
 const MIN_K = 120;
-const MAX_K = 90000;
+const MAX_K = 300000;
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 type Props = {
@@ -222,10 +222,10 @@ export function Globe({ pins, highlight, initial, target, onPin, reducedMotion }
       ))}
 
       <div className="absolute bottom-4 right-4 flex flex-col overflow-hidden rounded-md border border-foreground bg-background">
-        <button aria-label="Zoom in" onClick={() => zoomBy(2.5)} className="flex size-11 items-center justify-center hover:bg-muted">
+        <button aria-label="Zoom in" onClick={() => zoomBy(3)} className="flex size-11 items-center justify-center hover:bg-muted">
           <Plus className="size-4" />
         </button>
-        <button aria-label="Zoom out" onClick={() => zoomBy(0.4)} className="flex size-11 items-center justify-center border-t border-foreground hover:bg-muted">
+        <button aria-label="Zoom out" onClick={() => zoomBy(1 / 3)} className="flex size-11 items-center justify-center border-t border-foreground hover:bg-muted">
           <Minus className="size-4" />
         </button>
       </div>
@@ -242,5 +242,5 @@ export function fitView(coords: [number, number][]): View {
     0.0006,
     ...coords.map((c) => geoDistance([c[1], c[0]], [lng, lat])),
   );
-  return { lambda: -lng, phi: -lat, k: clamp(130 / spread, 300, 60000) };
+  return { lambda: -lng, phi: -lat, k: clamp(130 / spread, 300, 200000) };
 }
