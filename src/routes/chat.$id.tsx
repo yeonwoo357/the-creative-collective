@@ -62,7 +62,9 @@ function Thread() {
   const convo = chats.find((chat) => chat.id === id);
   const c = getCreative(convo?.creativeId ?? id);
 
-  useEffect(() => setNow(Date.now()), [convo?.messages.length]);
+  useEffect(() => {
+    setNow(Date.now());
+  }, [convo?.messages.length]);
   useEffect(() => {
     if (tab === "chat") end.current?.scrollIntoView({ block: "end" });
   }, [tab, convo?.messages.length]);

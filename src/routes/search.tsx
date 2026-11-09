@@ -28,7 +28,9 @@ function SearchPage() {
   const city = ob?.location || "London";
   const origin: [number, number] = CITY_COORDS[city.toLowerCase()] ?? [51.5074, -0.1278];
 
-  useEffect(() => input.current?.focus(), []);
+  useEffect(() => {
+    input.current?.focus();
+  }, []);
 
   const results = useMemo(
     () =>
