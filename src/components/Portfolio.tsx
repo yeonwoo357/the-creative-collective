@@ -57,7 +57,7 @@ export function LayoutToggle({ value, onChange }: { value: "carousel" | "grid"; 
   return (
     <div role="group" aria-label="Portfolio layout" className="flex gap-2">
       {(["carousel", "grid"] as const).map((v) => (
-        <button key={v} className="chip" aria-pressed={value === v} onClick={() => onChange(v)}>
+        <button key={v} type="button" className="chip" aria-pressed={value === v} onClick={() => onChange(v)}>
           {v === "carousel" ? "Carousel" : "Grid"}
         </button>
       ))}

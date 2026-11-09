@@ -426,7 +426,12 @@ export function Globe({
       const w = worldRef.current;
       worldRef.current = null;
       pinEls.clear();
-      w?._destructor();
+      // Never let a library teardown hiccup blank the app: the rest of the cleanup already ran.
+      try {
+        w?._destructor();
+      } catch (err) {
+        console.warn("globe teardown", err);
+      }
       hostEl.innerHTML = "";
     };
     // The globe is built once; pins/highlight/target updates are handled below.
