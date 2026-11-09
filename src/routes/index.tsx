@@ -54,7 +54,7 @@ function Home() {
         <Globe
           pins={pins}
           highlight={highlight}
-          initial={{ lambda: -5, phi: -52, k: 1100 }}
+          initial={{ lambda: 0.1, phi: -51.6, k: 1100 }}
           target={target}
           reducedMotion={reduced}
           onPin={(id) => navigate({ to: "/profile/$id", params: { id } })}
