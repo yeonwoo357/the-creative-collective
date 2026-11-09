@@ -22,6 +22,8 @@ import { ONBOARDING_KEY, sendMessage, timeAgo, useChats, useLocal, useMyProfile,
 export const Route = createFileRoute("/chat/$id")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Conversation — NAMED Collective" },
       { name: "description", content: "A conversation in the collective." },
       { property: "og:title", content: "Conversation — NAMED Collective" },

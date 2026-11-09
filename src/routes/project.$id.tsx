@@ -14,7 +14,9 @@ export const Route = createFileRoute("/project/$id")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.project.title} by ${loaderData.creative.name} · NAMED` },
+          { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: `${loaderData.project.title} by ${loaderData.creative.name} · NAMED` },
           { name: "description", content: loaderData.project.description },
           { property: "og:title", content: `${loaderData.project.title} · ${loaderData.creative.name}` },
           { property: "og:description", content: loaderData.project.description },

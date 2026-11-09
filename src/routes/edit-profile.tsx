@@ -9,6 +9,8 @@ import { useState } from "react";
 export const Route = createFileRoute("/edit-profile")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Edit profile — NAMED Collective" },
       { name: "description", content: "Update your work, socials, about and neighbourhood." },
       { property: "og:title", content: "Edit profile — NAMED Collective" },

@@ -7,6 +7,8 @@ export const Route = createFileRoute("/intro")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Finding your people — NAMED" },
       { name: "description", content: "Spinning up the NAMED Collective globe." },
       { property: "og:title", content: "Finding your people — NAMED" },

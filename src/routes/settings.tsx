@@ -6,6 +6,8 @@ import { CHATS_KEY, ONBOARDING_KEY, PROFILE_KEY, SAVED_KEY } from "@/lib/store";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Settings — NAMED Collective" },
       { name: "description", content: "Privacy and account settings for NAMED Collective." },
       { property: "og:title", content: "Settings — NAMED Collective" },

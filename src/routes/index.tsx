@@ -12,6 +12,8 @@ export const Route = createFileRoute("/")({
     typeof s["ids"] === "string" && s["ids"] ? { ids: s["ids"] } : {},
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Discover — NAMED Collective" },
       {
         name: "description",

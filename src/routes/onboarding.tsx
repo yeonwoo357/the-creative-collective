@@ -8,6 +8,8 @@ import { ProfileForm } from "@/components/ProfileForm";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Join the collective — NAMED" },
       { name: "description", content: "Set up your NAMED Collective profile in five quick steps." },
       { property: "og:title", content: "Join the collective — NAMED" },

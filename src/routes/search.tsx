@@ -8,6 +8,8 @@ import { ONBOARDING_KEY, useLocal, type Onboarding } from "@/lib/store";
 export const Route = createFileRoute("/search")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Search the collective — NAMED" },
       { name: "description", content: "Filter tattoo artists, hair, piercing and nails by name, style or place." },
       { property: "og:title", content: "Search the collective — NAMED" },

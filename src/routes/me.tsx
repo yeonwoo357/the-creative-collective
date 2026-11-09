@@ -7,6 +7,8 @@ import { ONBOARDING_KEY, PROFILE_KEY, avatarOf, useLocal, useMyProfile, useSaved
 export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Your collective — NAMED" },
       { name: "description", content: "Your NAMED Collective profile." },
       { property: "og:title", content: "Your collective — NAMED" },

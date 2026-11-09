@@ -7,6 +7,8 @@ import { useSaved } from "@/lib/store";
 export const Route = createFileRoute("/saved")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Saved — NAMED Collective" },
       { name: "description", content: "The creatives you've saved to your collective." },
       { property: "og:title", content: "Saved — NAMED Collective" },
