@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Globe2, MessageCircle, Search, User } from "lucide-react";
+import { Globe2, MessageCircle, Search, User } from "@/components/PixelIcons";
 
 const tabs = [
   { to: "/", label: "Home", Icon: Globe2 },
@@ -25,9 +25,10 @@ export function TabBar() {
             key={to}
             to={to}
             aria-current={active ? "page" : undefined}
-            className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] uppercase tracking-widest ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+            aria-label={label}
+            className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] uppercase tracking-widest text-foreground ${active ? "font-semibold" : ""}`}
           >
-            <Icon className="size-5" strokeWidth={active ? 2.25 : 1.5} />
+            <Icon className="size-5" active={active} />
             {label}
           </Link>
         );
