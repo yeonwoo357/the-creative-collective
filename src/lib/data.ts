@@ -30,7 +30,7 @@ export type Creative = {
 };
 
 const img = (seed: string, w = 600, h = 600) =>
-  `https://picsum.photos/seed/named-${seed}/${w}/${h}?grayscale`;
+  `https://picsum.photos/seed/named-${seed}/${w}/${h}`;
 
 type Seed = [string, string, Category, string, string, string, number, number, string[], string, string, string];
 // id, name, category, role, city, neighbourhood, lat, lng (neighbourhood centroid, jittered), tags, bio, ig, project style/placement
