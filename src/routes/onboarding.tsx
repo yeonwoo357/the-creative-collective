@@ -2,15 +2,16 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { LocateFixed, MapPin } from "lucide-react";
-import { writeLocal, ONBOARDING_KEY, type Onboarding } from "@/lib/store";
+import { writeLocal, ONBOARDING_KEY, PROFILE_KEY, EMPTY_PROFILE, type MyProfile, type Onboarding } from "@/lib/store";
+import { ProfileForm } from "@/components/ProfileForm";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
       { title: "Join the collective — NAMED" },
-      { name: "description", content: "Set up your NAMED Collective profile in four quick steps." },
+      { name: "description", content: "Set up your NAMED Collective profile in five quick steps." },
       { property: "og:title", content: "Join the collective — NAMED" },
-      { property: "og:description", content: "Set up your NAMED Collective profile in four quick steps." },
+      { property: "og:description", content: "Set up your NAMED Collective profile in five quick steps." },
     ],
   }),
   component: OnboardingPage,
@@ -28,7 +29,11 @@ function OnboardingPage() {
   const [intent, setIntent] = useState<Onboarding["intent"]>("");
 
   const next = () => setStep((s) => s + 1);
-  const finish = () => {
+  const finish = (profile?: MyProfile) => {
+    if (profile && !writeLocal(PROFILE_KEY, profile)) {
+      toast("That's a lot of work! Remove a video or two and try again.");
+      return;
+    }
     writeLocal<Onboarding>(ONBOARDING_KEY, {
       name: name.trim(),
       email,
@@ -41,8 +46,8 @@ function OnboardingPage() {
 
   return (
     <div className="flex flex-1 flex-col px-4 pb-8 pt-6">
-      <div className="grid grid-cols-4 gap-2" role="progressbar" aria-valuemin={1} aria-valuemax={4} aria-valuenow={step + 1} aria-label={`Step ${step + 1} of 4`}>
-        {[0, 1, 2, 3].map((i) => (
+      <div className="grid grid-cols-5 gap-2" role="progressbar" aria-valuemin={1} aria-valuemax={5} aria-valuenow={step + 1} aria-label={`Step ${step + 1} of 5`}>
+        {[0, 1, 2, 3, 4].map((i) => (
           <span key={i} className={`h-0.5 ${i <= step ? "bg-foreground" : "bg-muted"}`} />
         ))}
       </div>
@@ -114,7 +119,22 @@ function OnboardingPage() {
           <p className="my-3 text-center text-sm text-muted-foreground">or</p>
           <Choice active={intent === "discovered"} onClick={() => setIntent("discovered")}>Be discovered</Choice>
           <p className="mt-4 text-center text-xs text-muted-foreground">This will not affect your ability to do either.</p>
-          <button className="btn btn-primary mt-auto w-full" disabled={!intent} onClick={finish}>Let's go</button>
+          <button className="btn btn-primary mt-auto w-full" disabled={!intent} onClick={next}>Next</button>
+        </div>
+      )}
+
+      {step === 4 && (
+        <div className="flex flex-col">
+          <Heading title="Build your collective" sub="Show us what you make. You can change all of this later." />
+          <ProfileForm
+            initial={{ ...EMPTY_PROFILE, neighbourhood: location.trim() && location.trim().toLowerCase() !== "london" ? location.trim() : "" }}
+            submitLabel="Let's go"
+            onSave={(p) => finish(p)}
+          >
+            <button type="button" className="btn btn-secondary w-full" onClick={() => finish()}>
+              Skip for now
+            </button>
+          </ProfileForm>
         </div>
       )}
     </div>

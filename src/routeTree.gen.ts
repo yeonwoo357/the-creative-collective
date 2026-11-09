@@ -10,18 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EditProfileRouteImport } from './routes/edit-profile'
 import { Route as IntroRouteImport } from './routes/intro'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ChatIndexRouteImport } from './routes/chat.index'
+import { Route as ChatIdRouteImport } from './routes/chat.$id'
+import { Route as ComposeIdRouteImport } from './routes/compose.$id'
 import { Route as ProfileIdRouteImport } from './routes/profile.$id'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditProfileRoute = EditProfileRouteImport.update({
+  id: '/edit-profile',
+  path: '/edit-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntroRoute = IntroRouteImport.update({
@@ -54,6 +63,21 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatIndexRoute = ChatIndexRouteImport.update({
+  id: '/chat/',
+  path: '/chat/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatIdRoute = ChatIdRouteImport.update({
+  id: '/chat/$id',
+  path: '/chat/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComposeIdRoute = ComposeIdRouteImport.update({
+  id: '/compose/$id',
+  path: '/compose/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileIdRoute = ProfileIdRouteImport.update({
   id: '/profile/$id',
   path: '/profile/$id',
@@ -67,84 +91,112 @@ const ProjectIdRoute = ProjectIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/edit-profile': typeof EditProfileRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/chat/$id': typeof ChatIdRoute
+  '/compose/$id': typeof ComposeIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/edit-profile': typeof EditProfileRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/chat/$id': typeof ChatIdRoute
+  '/compose/$id': typeof ComposeIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
+  '/chat': typeof ChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/edit-profile': typeof EditProfileRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/chat/$id': typeof ChatIdRoute
+  '/compose/$id': typeof ComposeIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/edit-profile'
     | '/intro'
     | '/me'
     | '/onboarding'
     | '/saved'
     | '/search'
     | '/settings'
+    | '/chat/$id'
+    | '/compose/$id'
     | '/profile/$id'
     | '/project/$id'
+    | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/edit-profile'
     | '/intro'
     | '/me'
     | '/onboarding'
     | '/saved'
     | '/search'
     | '/settings'
+    | '/chat/$id'
+    | '/compose/$id'
     | '/profile/$id'
     | '/project/$id'
+    | '/chat'
   id:
     | '__root__'
     | '/'
+    | '/edit-profile'
     | '/intro'
     | '/me'
     | '/onboarding'
     | '/saved'
     | '/search'
     | '/settings'
+    | '/chat/$id'
+    | '/compose/$id'
     | '/profile/$id'
     | '/project/$id'
+    | '/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EditProfileRoute: typeof EditProfileRoute
   IntroRoute: typeof IntroRoute
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
+  ChatIdRoute: typeof ChatIdRoute
+  ComposeIdRoute: typeof ComposeIdRoute
   ProfileIdRoute: typeof ProfileIdRoute
   ProjectIdRoute: typeof ProjectIdRoute
+  ChatIndexRoute: typeof ChatIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -154,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edit-profile': {
+      id: '/edit-profile'
+      path: '/edit-profile'
+      fullPath: '/edit-profile'
+      preLoaderRoute: typeof EditProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/intro': {
@@ -198,6 +257,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/': {
+      id: '/chat/'
+      path: '/chat'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof ChatIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat/$id': {
+      id: '/chat/$id'
+      path: '/chat/$id'
+      fullPath: '/chat/$id'
+      preLoaderRoute: typeof ChatIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compose/$id': {
+      id: '/compose/$id'
+      path: '/compose/$id'
+      fullPath: '/compose/$id'
+      preLoaderRoute: typeof ComposeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile/$id': {
       id: '/profile/$id'
       path: '/profile/$id'
@@ -217,14 +297,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EditProfileRoute: EditProfileRoute,
   IntroRoute: IntroRoute,
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  ChatIdRoute: ChatIdRoute,
+  ComposeIdRoute: ComposeIdRoute,
   ProfileIdRoute: ProfileIdRoute,
   ProjectIdRoute: ProjectIdRoute,
+  ChatIndexRoute: ChatIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,14 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Globe2, Heart, Search, User } from "lucide-react";
+import { Globe2, MessageCircle, Search, User } from "lucide-react";
 
 const tabs = [
   { to: "/", label: "Home", Icon: Globe2 },
   { to: "/search", label: "Search", Icon: Search },
-  { to: "/saved", label: "Saved", Icon: Heart },
+  { to: "/chat", label: "Chat", Icon: MessageCircle },
   { to: "/me", label: "Profile", Icon: User },
 ] as const;
 
-export const HIDE_TABS = ["/onboarding", "/intro"];
+export const HIDE_TABS = ["/onboarding", "/intro", "/compose", "/chat/"];
 
 export function TabBar() {
   const path = useRouterState({ select: (s) => s.location.pathname });

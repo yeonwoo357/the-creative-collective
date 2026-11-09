@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
-import { Search, Settings, User, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Bookmark, Search, Settings, User, X } from "lucide-react";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
-import { creatives } from "@/lib/data";
+import { PLACES, creatives, getCreative } from "@/lib/data";
 import { ONBOARDING_KEY, useLocal, useReducedMotion, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
@@ -32,7 +32,8 @@ const pins: Pin[] = creatives.map((c) => ({
   lat: c.lat,
   lng: c.lng,
   title: c.name,
-  subtitle: `${c.role} · ${c.city}`,
+  subtitle: c.role,
+  place: `${c.neighbourhood}, ${c.city}`,
   avatar: c.avatar,
 }));
 
@@ -45,6 +46,11 @@ function Home() {
   useEffect(() => {
     if (ready && !ob?.done) navigate({ to: "/onboarding", replace: true });
   }, [ready, ob, navigate]);
+
+  const [preview, setPreview] = useState<string | null>(null);
+  const hideT = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pc = preview ? getCreative(preview) : undefined;
+  const openProfile = (id: string) => navigate({ to: "/profile/$id", params: { id } });
 
   const highlight = useMemo(() => (ids ? ids.split(",") : []), [ids]);
   const target = useMemo(() => {
@@ -65,7 +71,13 @@ function Home() {
           initial={HOME_VIEW}
           target={target}
           reducedMotion={reduced}
-          onPin={(id) => navigate({ to: "/profile/$id", params: { id } })}
+          onPin={openProfile}
+          places={PLACES}
+          previewId={preview}
+          onPreview={(id) => {
+            clearTimeout(hideT.current);
+            setPreview(id);
+          }}
         />
       </div>
 
@@ -78,14 +90,23 @@ function Home() {
           >
             <User className="size-5" />
           </Link>
-          <span className="text-sm font-bold tracking-[0.35em]">NAMED</span>
-          <Link
-            to="/settings"
-            aria-label="Settings"
-            className="flex size-11 items-center justify-center rounded-full border border-foreground bg-background"
-          >
-            <Settings className="size-5" />
-          </Link>
+          <span className="pl-12 text-sm font-bold tracking-[0.35em]">NAMED</span>
+          <div className="flex gap-2">
+            <Link
+              to="/saved"
+              aria-label="Saved profiles"
+              className="flex size-11 items-center justify-center rounded-full border border-foreground bg-background"
+            >
+              <Bookmark className="size-5" />
+            </Link>
+            <Link
+              to="/settings"
+              aria-label="Settings"
+              className="flex size-11 items-center justify-center rounded-full border border-foreground bg-background"
+            >
+              <Settings className="size-5" />
+            </Link>
+          </div>
         </div>
         <Link
           to="/search"
@@ -94,7 +115,7 @@ function Home() {
           <Search className="size-4 text-foreground" /> Search creatives, places…
         </Link>
         <p className="mt-2 text-center text-xs text-muted-foreground">
-          Drag to spin · tap a pop-up to view
+          Drag to spin · tap a pin to preview · double-tap to recentre
         </p>
         {highlight.length > 0 && (
           <div className="pointer-events-auto mt-3 flex justify-center">
@@ -104,6 +125,48 @@ function Home() {
           </div>
         )}
       </div>
+
+      {pc && (
+        <div
+          className="absolute bottom-4 left-3 right-16 z-20"
+          onMouseEnter={() => clearTimeout(hideT.current)}
+          onMouseLeave={() => (hideT.current = setTimeout(() => setPreview(null), 400))}
+        >
+          <div className="relative rounded-md border border-dashed border-foreground bg-background p-2" aria-live="polite">
+            <button
+              type="button"
+              onClick={() => openProfile(pc.id)}
+              className="block w-full text-left"
+              aria-label={`Open ${pc.name}'s profile`}
+            >
+              <div className="grid grid-cols-3 gap-px bg-muted">
+                {pc.work.slice(0, 3).map((src, i) => (
+                  <img key={src} src={src} alt={`${pc.name} work ${i + 1}`} className="aspect-square w-full object-cover" />
+                ))}
+              </div>
+              <div className="flex items-end justify-between gap-2 px-1 pb-1 pt-2">
+                <span>
+                  <span className="block font-semibold">{pc.name}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {pc.role} · {pc.neighbourhood}
+                  </span>
+                </span>
+                <span className="text-[11px] uppercase tracking-widest underline underline-offset-4">View</span>
+              </div>
+            </button>
+            <button
+              type="button"
+              aria-label="Close preview"
+              onClick={() => setPreview(null)}
+              className="absolute -right-2 -top-5 flex size-11 items-center justify-center"
+            >
+              <span className="flex size-7 items-center justify-center rounded-full border border-foreground bg-background">
+                <X className="size-3.5" />
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

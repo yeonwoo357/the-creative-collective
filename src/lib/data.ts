@@ -136,3 +136,32 @@ export function searchCreatives(query: string, filter: Filter) {
       .includes(q);
   });
 }
+
+/** Neighbourhood labels drawn on the globe (centroids only, never addresses). */
+export const PLACES: { name: string; lat: number; lng: number }[] = [
+  ...Array.from(
+    new Map(creatives.map((c) => [c.neighbourhood, { name: c.neighbourhood, lat: c.lat, lng: c.lng }])).values(),
+  ),
+  { name: "Islington", lat: 51.5362, lng: -0.1033 },
+  { name: "Bermondsey", lat: 51.4979, lng: -0.0637 },
+  { name: "Stoke Newington", lat: 51.5624, lng: -0.0739 },
+  { name: "Bethnal Green", lat: 51.527, lng: -0.0549 },
+  { name: "Clapton", lat: 51.5612, lng: -0.0557 },
+  { name: "New Cross", lat: 51.4752, lng: -0.0405 },
+];
+
+export const NEIGHBOURHOODS = Array.from(new Set(PLACES.filter((p) => p.lat > 51.3 && p.lat < 51.7).map((p) => p.name))).sort();
+export const DISCIPLINES = ["Tattoo", "Hair", "Piercing", "Nails", "Photographer", "Stylist", "DJ", "Designer", "Model", "Other"];
+
+/** Search work: every project from creatives that match, plus projects whose own title/style matches. */
+export function searchWork(query: string, filter: Filter) {
+  const people = new Set(searchCreatives(query, filter).map((c) => c.id));
+  const q = query.trim().toLowerCase();
+  const out: { creative: Creative; project: Project }[] = [];
+  for (const c of creatives)
+    for (const p of c.projects) {
+      const own = q && (filter === "All" || c.category === filter) && [p.title, p.style, p.placement].join(" ").toLowerCase().includes(q);
+      if (people.has(c.id) || own) out.push({ creative: c, project: p });
+    }
+  return out;
+}

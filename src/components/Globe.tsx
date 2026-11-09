@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { geoDistance } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
-import { Minus, Plus } from "lucide-react";
+import { LocateFixed, Minus, Plus } from "lucide-react";
 import type { GlobeInstance } from "globe.gl";
 
 const topo = land110 as any;
@@ -33,6 +33,8 @@ export type Pin = {
   title: string;
   subtitle: string;
   avatar: string;
+  /** Neighbourhood tag shown on the pin (never an address). */
+  place?: string;
 };
 
 /**
@@ -65,6 +67,11 @@ type Props = {
   /** "intro": small fast spin, then zoom down to HOME_VIEW and call onIntroDone. */
   mode?: "home" | "intro";
   onIntroDone?: () => void;
+  /** Neighbourhood labels drawn on the map. */
+  places?: { name: string; lat: number; lng: number }[];
+  /** Hover (mouse), focus or first tap on a pin: show its preview. null = hide. */
+  onPreview?: (id: string | null) => void;
+  previewId?: string | null;
 };
 
 type PinEl = HTMLDivElement & { __pin?: Pin; __vis?: boolean; __shownAt?: number };
@@ -78,7 +85,14 @@ export function Globe({
   reducedMotion,
   mode = "home",
   onIntroDone,
+  places = [],
+  onPreview,
+  previewId = null,
 }: Props) {
+  const onPreviewRef = useRef(onPreview);
+  onPreviewRef.current = onPreview;
+  const previewRef = useRef(previewId);
+  previewRef.current = previewId;
   const wrap = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const worldRef = useRef<GlobeInstance | null>(null);
@@ -227,6 +241,35 @@ export function Globe({
 
       // ----- home -----
       world.pointOfView(toPov(initial), 0);
+
+      // Neighbourhood names: tiny labels that only become legible when zoomed in on a city.
+      world
+        .labelsData(places)
+        .labelLat((d: object) => (d as { lat: number }).lat)
+        .labelLng((d: object) => (d as { lng: number }).lng)
+        .labelText((d: object) => (d as { name: string }).name.toUpperCase())
+        .labelSize(0.012)
+        .labelDotRadius(0)
+        .labelAltitude(0.0012)
+        .labelResolution(2)
+        .labelColor(() => "rgba(200,200,200,0.85)");
+
+      // Double-tap / double-click on empty map: back to the default view. Taps on pins don't count.
+      let last = { t: 0, x: 0, y: 0 };
+      let down = { x: 0, y: 0 };
+      hostEl.addEventListener("pointerdown", (e) => (down = { x: e.clientX, y: e.clientY }));
+      hostEl.addEventListener("pointerup", (e) => {
+        if ((e.target as HTMLElement).closest(".globe-pin")) return;
+        if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 10) return; // a drag, not a tap
+        const now = performance.now();
+        if (now - last.t < 350 && Math.hypot(e.clientX - last.x, e.clientY - last.y) < 40) {
+          last = { t: 0, x: 0, y: 0 };
+          recentre();
+        } else {
+          last = { t: now, x: e.clientX, y: e.clientY };
+          onPreviewRef.current?.(null);
+        }
+      });
       ctl.autoRotateSpeed = 0.25;
       spin(true);
 
@@ -307,25 +350,48 @@ export function Globe({
         <div class="globe-pop">
           <button type="button" class="globe-card">
             <img src="${pin.avatar}" alt="" />
-            <span><b></b><small></small></span>
+            <span><b></b><small></small><i class="globe-hood"></i></span>
           </button>
           <span class="globe-stem"></span>
         </div>
         <button type="button" class="globe-dot"></button>`;
       el.querySelector("b")!.textContent = pin.title;
       el.querySelector("small")!.textContent = pin.subtitle;
+      const hood = el.querySelector<HTMLElement>(".globe-hood")!;
+      hood.style.fontStyle = "normal";
+      hood.textContent = pin.place ?? "";
       el.querySelector<HTMLButtonElement>(".globe-dot")!.setAttribute(
         "aria-label",
         `${pin.title}, ${pin.subtitle}`,
       );
+      // Mouse: hover previews, click opens. Touch/keyboard: first tap or focus previews, second tap opens.
+      let viaMouse = false;
+      const hideT = { t: undefined as ReturnType<typeof setTimeout> | undefined };
+      el.addEventListener("pointerenter", (e) => {
+        if (e.pointerType !== "mouse") return;
+        clearTimeout(hideT.t);
+        onPreviewRef.current?.(pin.id);
+      });
+      el.addEventListener("pointerleave", (e) => {
+        if (e.pointerType !== "mouse") return;
+        hideT.t = setTimeout(() => {
+          if (previewRef.current === pin.id) onPreviewRef.current?.(null);
+        }, 600);
+      });
+      el.addEventListener("pointerdown", (e) => (viaMouse = e.pointerType === "mouse"));
+      el.addEventListener("focusin", () => onPreviewRef.current?.(pin.id));
+      const open = () => onPinRef.current?.(pin.id);
       el.querySelector(".globe-card")!.addEventListener("click", (e) => {
         e.stopPropagation();
-        onPinRef.current?.(pin.id);
+        if (viaMouse || previewRef.current === pin.id) return open();
+        onPreviewRef.current?.(pin.id);
       });
       el.querySelector(".globe-dot")!.addEventListener("click", (e) => {
         e.stopPropagation();
-        if (el.dataset["show"] === "true") return onPinRef.current?.(pin.id);
-        // Tap a dot: fly closer so clustered pins separate, then show its card.
+        if (viaMouse || previewRef.current === pin.id) return open();
+        onPreviewRef.current?.(pin.id);
+        if (el.dataset["show"] === "true") return;
+        // First tap on a bare dot: fly closer so clustered pins separate, then show its card.
         const w = worldRef.current;
         if (!w) return;
         clearTimeout(resumeT.current);
@@ -387,6 +453,15 @@ export function Globe({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
+  function recentre() {
+    const w = worldRef.current;
+    if (!w) return;
+    onPreviewRef.current?.(null);
+    w.pointOfView(toPov(HOME_VIEW), reducedMotion ? 0 : 1000);
+    clearTimeout(resumeT.current);
+    resumeT.current = setTimeout(() => spin(true), RESUME_MS);
+  }
+
   const zoomBy = (f: number) => {
     const w = worldRef.current;
     if (!w) return;
@@ -412,6 +487,14 @@ export function Globe({
             className="flex size-11 items-center justify-center hover:bg-muted"
           >
             <Plus className="size-4" />
+          </button>
+          <button
+            aria-label="Recentre on London"
+            title="Recentre (or double-tap the map)"
+            onClick={recentre}
+            className="flex size-11 items-center justify-center border-t border-foreground hover:bg-muted"
+          >
+            <LocateFixed className="size-4" />
           </button>
           <button
             aria-label="Zoom out"
