@@ -128,7 +128,7 @@ function Home() {
 
       {pc && (
         <div
-          className="absolute inset-x-3 bottom-4 right-16 z-20"
+          className="absolute bottom-4 left-3 right-16 z-20"
           onMouseEnter={() => clearTimeout(hideT.current)}
           onMouseLeave={() => (hideT.current = setTimeout(() => setPreview(null), 400))}
         >

@@ -1,9 +1,8 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
-import { ContactSheet } from "@/components/ContactSheet";
 import { getProject } from "@/lib/data";
 
 export const Route = createFileRoute("/project/$id")({
@@ -36,7 +35,7 @@ export const Route = createFileRoute("/project/$id")({
 function ProjectPage() {
   const { creative, project } = Route.useLoaderData();
   const [idx, setIdx] = useState(0);
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const track = useRef<HTMLDivElement>(null);
 
   const goTo = (i: number) => {
@@ -72,13 +71,16 @@ function ProjectPage() {
         <h1 className="text-xl font-semibold">{project.title}</h1>
         <p className="text-sm text-muted-foreground">{project.year} · {project.style} · {project.placement}</p>
         <p className="mt-4 text-sm leading-relaxed">{project.description}</p>
-        <Link to="/profile/$id" params={{ id: creative.id }} className="mt-4 flex min-h-11 items-center gap-2 text-sm">
-          <img src={creative.avatar} alt="" className="size-8 rounded-full object-cover" />
-          <span className="link-u">{creative.name}</span>
+        <Link to="/profile/$id" params={{ id: creative.id }} className="mt-4 flex min-h-14 items-center gap-3 rounded-md border border-dashed border-line px-3 py-2 text-sm hover:bg-muted">
+          <img src={creative.avatar} alt="" className="size-9 rounded-full object-cover" />
+          <span className="flex-1">
+            <span className="block font-semibold">{creative.name}</span>
+            <span className="block text-xs text-muted-foreground">{creative.role} · {creative.neighbourhood}</span>
+          </span>
+          <span className="text-[11px] uppercase tracking-widest underline underline-offset-4">View profile</span>
         </Link>
-        <button className="btn btn-primary mt-8 w-full" onClick={() => setOpen(true)}>Contact</button>
+        <button className="btn btn-primary mt-8 w-full" onClick={() => navigate({ to: "/compose/$id", params: { id: creative.id } })}>Contact</button>
       </div>
-      <ContactSheet creative={creative} open={open} onOpenChange={setOpen} />
     </div>
   );
 }

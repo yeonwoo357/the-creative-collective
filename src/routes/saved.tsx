@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart } from "lucide-react";
-import { PageHeader } from "@/components/TopBar";
+import { Bookmark } from "lucide-react";
+import { BackButton } from "@/components/TopBar";
 import { creatives } from "@/lib/data";
 import { useSaved } from "@/lib/store";
 
@@ -21,7 +21,7 @@ function SavedPage() {
   const list = creatives.filter((c) => saved.includes(c.id));
   return (
     <div className="flex-1">
-      <PageHeader title="Saved" />
+      <div className="flex items-center gap-2 px-4 pt-4"><BackButton className="border-0" /><h1 className="text-2xl font-semibold uppercase tracking-wide">Saved</h1></div>
       {ready && list.length === 0 ? (
         <div className="px-4 py-16 text-center">
           <p className="font-semibold">Nothing saved yet.</p>
@@ -36,11 +36,11 @@ function SavedPage() {
                 <img src={c.avatar} alt="" className="size-11 rounded-full object-cover" />
                 <span>
                   <span className="block font-semibold">{c.name}</span>
-                  <span className="block text-xs text-muted-foreground">{c.role} · {c.city}</span>
+                  <span className="block text-xs text-muted-foreground">{c.role} · {c.neighbourhood}, {c.city}</span>
                 </span>
               </Link>
               <button aria-label={`Unsave ${c.name}`} onClick={() => toggle(c.id)} className="flex size-11 items-center justify-center">
-                <Heart className="size-5" fill="currentColor" />
+                <Bookmark className="size-5" fill="currentColor" />
               </button>
             </li>
           ))}

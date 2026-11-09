@@ -1,9 +1,8 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Heart, MapPin, MoreHorizontal } from "lucide-react";
+import { Bookmark, MapPin, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
-import { ContactSheet } from "@/components/ContactSheet";
 import { getCreative } from "@/lib/data";
 import { useSaved } from "@/lib/store";
 
@@ -41,7 +40,7 @@ function ProfilePage() {
   const { isSaved, toggle } = useSaved();
   const saved = isSaved(c.id);
   const [tab, setTab] = useState<Tab>("Work");
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const firstProject = c.projects[0];
 
   return (
@@ -56,19 +55,19 @@ function ProfilePage() {
       <div className="px-4">
         <img src={c.avatar} alt={c.name} className="relative -mt-11 size-[88px] rounded-full border-2 border-background bg-muted object-cover" />
         <h1 className="mt-3 text-2xl font-semibold">{c.name}</h1>
-        <p className="text-sm text-muted-foreground">{c.role} · {c.city}</p>
+        <p className="text-sm text-muted-foreground">{c.role} · {c.neighbourhood}, {c.city}</p>
         <ul className="mt-3 flex flex-wrap gap-2">
           {c.tags.map((t) => <li key={t} className="tag">{t}</li>)}
         </ul>
         <p className="mt-4 text-sm leading-relaxed">{c.bio}</p>
         <div className="mt-5 grid grid-cols-2 gap-2">
-          <button className="btn btn-primary" onClick={() => setOpen(true)}>Contact</button>
+          <button className="btn btn-primary" onClick={() => navigate({ to: "/compose/$id", params: { id: c.id } })}>Contact</button>
           <button
             className="btn btn-secondary"
             aria-pressed={saved}
             onClick={() => { toggle(c.id); toast(saved ? "Removed from saved" : "Saved to your collective"); }}
           >
-            <Heart className="size-4" fill={saved ? "currentColor" : "none"} /> {saved ? "Saved" : "Save"}
+            <Bookmark className="size-4" fill={saved ? "currentColor" : "none"} /> {saved ? "Saved" : "Save"}
           </button>
         </div>
       </div>
@@ -146,7 +145,6 @@ function ProfilePage() {
         <p className="mt-2 text-xs text-muted-foreground">Neighbourhood only — never an exact address.</p>
       </div>
 
-      <ContactSheet creative={c} open={open} onOpenChange={setOpen} />
     </div>
   );
 }

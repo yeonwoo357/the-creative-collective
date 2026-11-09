@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
-import { ONBOARDING_KEY, SAVED_KEY } from "@/lib/store";
+import { CHATS_KEY, ONBOARDING_KEY, PROFILE_KEY, SAVED_KEY } from "@/lib/store";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const navigate = useNavigate();
-  const rows = ["Edit profile", "Notifications", "Terms & Conditions", "Help"];
+  const rows = ["Notifications", "Terms & Conditions", "Help"];
   return (
     <div className="flex-1">
       <div className="flex items-center gap-2 px-4 pt-4">
@@ -29,6 +29,9 @@ function SettingsPage() {
         <p className="mt-1 text-muted-foreground">Your pin shows your neighbourhood only. We never track live location.</p>
       </div>
       <ul>
+        <li>
+          <Link to="/edit-profile" className="flex min-h-14 w-full items-center border-b border-muted px-4 hover:bg-muted">Edit profile</Link>
+        </li>
         {rows.map((r) => (
           <li key={r}>
             <button onClick={() => toast("Demo only")} className="flex min-h-14 w-full items-center border-b border-muted px-4 text-left hover:bg-muted">
@@ -43,6 +46,8 @@ function SettingsPage() {
           onClick={() => {
             localStorage.removeItem(ONBOARDING_KEY);
             localStorage.removeItem(SAVED_KEY);
+            localStorage.removeItem(PROFILE_KEY);
+            localStorage.removeItem(CHATS_KEY);
             navigate({ to: "/onboarding" });
           }}
         >
