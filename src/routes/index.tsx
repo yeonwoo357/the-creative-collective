@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Search, Settings, User, X } from "lucide-react";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { PLACES, creatives, getCreative } from "@/lib/data";
-import { ONBOARDING_KEY, useLocal, useReducedMotion, type Onboarding } from "@/lib/store";
+import { ONBOARDING_KEY, avatarOf, useLocal, useMyProfile, useReducedMotion, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
   // Globe geometry is measured in the browser; skip server render to avoid float mismatches.
@@ -42,6 +42,8 @@ function Home() {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
   const [ob, , ready] = useLocal<Onboarding | null>(ONBOARDING_KEY, null);
+  const [mine] = useMyProfile();
+  const pic = avatarOf(mine);
 
   useEffect(() => {
     if (ready && !ob?.done) navigate({ to: "/onboarding", replace: true });
@@ -86,9 +88,9 @@ function Home() {
           <Link
             to="/me"
             aria-label="Your profile"
-            className="flex size-11 items-center justify-center rounded-full border border-foreground bg-background"
+            className="flex size-11 items-center justify-center overflow-hidden rounded-full border border-foreground bg-background"
           >
-            <User className="size-5" />
+            {pic ? <img src={pic} alt="" className="size-full object-cover" /> : <User className="size-5" />}
           </Link>
           <span className="pl-12 text-sm font-bold tracking-[0.35em]">NAMED</span>
           <div className="flex gap-2">

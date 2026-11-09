@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bookmark, Globe, Instagram, Music2, Pencil, Settings, User } from "lucide-react";
 import { PageHeader } from "@/components/TopBar";
 import { LayoutToggle, Portfolio } from "@/components/Portfolio";
-import { ONBOARDING_KEY, PROFILE_KEY, useLocal, useMyProfile, useSaved, writeLocal, type Onboarding } from "@/lib/store";
+import { ONBOARDING_KEY, PROFILE_KEY, avatarOf, useLocal, useMyProfile, useSaved, writeLocal, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/me")({
   head: () => ({
@@ -21,7 +21,7 @@ function MePage() {
   const [p] = useMyProfile();
   const { saved } = useSaved();
   const name = ob?.name || "Bestie";
-  const avatar = p.media.find((m) => m.type === "image")?.src;
+  const avatar = avatarOf(p);
   return (
     <div className="flex-1 pb-8">
       <PageHeader
