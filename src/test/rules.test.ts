@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY_PROFILE, sendMessage, seedChats, avatarOf } from "@/lib/store";
+import {
+  EMPTY_PROFILE,
+  sendMessage,
+  seedChats,
+  avatarOf,
+  setConversationMuted,
+  toggleMessageLike,
+} from "@/lib/store";
 import { searchWork } from "@/lib/data";
 
 describe("chat (demo)", () => {

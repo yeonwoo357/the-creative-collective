@@ -22,9 +22,11 @@ export type Creative = {
   tags: string[];
   bio: string;
   instagram: string;
+  tiktok: string;
   avatar: string;
   cover: string;
   work: string[];
+  layout: "carousel" | "grid";
   projects: Project[];
   reviews: { by: string; text: string }[];
 };

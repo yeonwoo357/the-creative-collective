@@ -110,8 +110,21 @@ export function avatarOf(p: MyProfile): string {
 }
 
 // ---------- chats (demo only, nothing leaves the browser) ----------
-export type Message = { id: string; from: "me" | "them"; text: string; at: number; portfolio?: boolean | undefined };
-export type Conversation = { id: string; creativeId: string; blocked?: boolean; messages: Message[] };
+export type Message = {
+  id: string;
+  from: "me" | "them";
+  text: string;
+  at: number;
+  portfolio?: boolean | undefined;
+  liked?: boolean;
+};
+export type Conversation = {
+  id: string;
+  creativeId: string;
+  blocked?: boolean;
+  muted?: boolean;
+  messages: Message[];
+};
 export const CHATS_KEY = "named.chats";
 
 const H = 3600_000;
