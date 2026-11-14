@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bookmark, MapPin, MoreHorizontal } from "@/components/PixelIcons";
+import { Bookmark, MapPin, MoreHorizontal, Send } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { getCreative } from "@/lib/data";
@@ -16,8 +16,8 @@ export const Route = createFileRoute("/profile/$id")({
     meta: loaderData
       ? [
           { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { title: `${loaderData.name} — ${loaderData.role}, ${loaderData.city} · NAMED` },
+          { name: "twitter:card", content: "summary_large_image" },
+          { title: `${loaderData.name} — ${loaderData.role}, ${loaderData.city} · NAMED` },
           { name: "description", content: loaderData.bio },
           { property: "og:title", content: `${loaderData.name} · NAMED Collective` },
           { property: "og:description", content: loaderData.bio },
@@ -29,13 +29,19 @@ export const Route = createFileRoute("/profile/$id")({
   notFoundComponent: () => (
     <div className="p-8 text-center">
       <p className="font-semibold">This creative has wandered off.</p>
-      <Link to="/search" className="link-u mt-2 inline-block">Back to search</Link>
+      <Link to="/search" className="link-u mt-2 inline-block">
+        Back to search
+      </Link>
     </div>
   ),
   component: ProfilePage,
 });
 
 type Tab = "Work" | "About" | "Reviews";
+
+/* Silver frosted card (bento tiles) */
+const SILVER =
+  "rounded-[28px] border border-white/60 bg-[linear-gradient(160deg,#f4f4f6_0%,#d9d9de_55%,#b9b9c0_100%)] text-[#141214] shadow-[inset_0_1px_0_#fff,0_12px_30px_rgb(0_0_0/0.35)]";
 
 function ProfilePage() {
   const c = Route.useLoaderData();
@@ -44,44 +50,130 @@ function ProfilePage() {
   const [tab, setTab] = useState<Tab>("Work");
   const navigate = useNavigate();
   const firstProject = c.projects[0];
+  const contact = () => navigate({ to: "/compose/$id", params: { id: c.id } });
 
   return (
-    <div className="pb-8">
-      <div className="relative aspect-[2/1] w-full bg-muted">
-        <img src={c.cover} alt={`${c.name} cover`} className="size-full object-cover" />
-        <BackButton className="absolute left-4 top-4" />
-        <button aria-label="More" onClick={() => toast("Report & share coming soon")} className="absolute right-4 top-4 flex size-11 items-center justify-center rounded-full border border-foreground bg-background">
-          <MoreHorizontal className="size-5" />
-        </button>
-      </div>
-      <div className="px-4">
-        <img src={c.avatar} alt={c.name} className="relative -mt-11 size-[88px] rounded-full border-2 border-background bg-muted object-cover" />
-        <h1 className="mt-3 text-2xl font-semibold">{c.name}</h1>
-        <p className="text-sm text-muted-foreground">{c.role} · {c.neighbourhood}, {c.city}</p>
-        <ul className="mt-3 flex flex-wrap gap-2">
-          {c.tags.map((t) => <li key={t} className="tag">{t}</li>)}
+    <div className="space-y-2 bg-[radial-gradient(120%_60%_at_50%_0%,#2a2a2e_0%,#0b0b0c_55%,#000_100%)] px-2 pb-8 pt-2">
+      {/* Header card */}
+      <section className="relative overflow-hidden rounded-[36px] border border-white/12 bg-[linear-gradient(180deg,#2b2b2f_0%,#121214_70%,#0a0a0b_100%)] px-5 pb-5 pt-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.12)]">
+        <div className="flex items-center justify-between">
+          <BackButton />
+          <button
+            aria-label="More"
+            onClick={() => toast("Report & share coming soon")}
+            className="icon-btn"
+          >
+            <MoreHorizontal className="size-[18px]" />
+          </button>
+        </div>
+        <div className="-mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+          <p className="text-center">
+            <span className="block text-2xl">{c.work.length}</span>
+            <span className="text-xs text-white/60">works</span>
+          </p>
+          <div className="rounded-full p-[3px] shadow-[0_0_0_1px_rgb(255_255_255/0.5),0_0_30px_rgb(255_255_255/0.08)]">
+            <img
+              src={c.avatar}
+              alt={c.name}
+              className="size-28 rounded-full border-2 border-white/80 bg-muted object-cover"
+            />
+          </div>
+          <p className="text-center">
+            <span className="block text-2xl">{c.reviews.length}</span>
+            <span className="text-xs text-white/60">reviews</span>
+          </p>
+        </div>
+        <h1 className="mt-4 text-center text-2xl font-normal">{c.name}</h1>
+        <p className="mt-1 text-center text-sm text-white/70">
+          {c.role} · {c.neighbourhood}, {c.city}
+        </p>
+        <ul
+          className="mt-2 flex flex-wrap justify-center gap-x-2 text-xs text-white/60"
+          aria-label="Styles"
+        >
+          {c.tags.map((t, i) => (
+            <li key={t} className="flex items-center gap-2">
+              {i > 0 && <span aria-hidden="true">|</span>}
+              {t}
+            </li>
+          ))}
         </ul>
-        <p className="mt-4 text-sm leading-relaxed">{c.bio}</p>
         <div className="mt-5 grid grid-cols-2 gap-2">
-          <button className="btn btn-primary" onClick={() => navigate({ to: "/compose/$id", params: { id: c.id } })}>Contact</button>
+          <button className="btn btn-secondary" onClick={contact}>
+            <Send className="size-4" /> Contact
+          </button>
           <button
             className="btn btn-secondary"
             aria-pressed={saved}
-            onClick={() => { toggle(c.id); toast(saved ? "Removed from saved" : "Saved to your collective"); }}
+            onClick={() => {
+              toggle(c.id);
+              toast(saved ? "Removed from saved" : "Saved to your collective");
+            }}
           >
-            <Bookmark className="size-4" fill={saved ? "currentColor" : "none"} /> {saved ? "Saved" : "Save"}
+            <Bookmark className="size-4" fill={saved ? "currentColor" : "none"} />{" "}
+            {saved ? "Saved" : "Save"}
           </button>
         </div>
+      </section>
+
+      {/* Bento: bio + cover/location */}
+      <div className="grid grid-cols-2 gap-2">
+        <section className={`${SILVER} flex flex-col items-center p-4 text-center`}>
+          <img
+            src={c.avatar}
+            alt=""
+            className="size-12 rounded-full border-2 border-white object-cover"
+          />
+          <p className="mt-2 text-sm">{c.name}</p>
+          <p className="mt-1 line-clamp-4 text-xs text-[#3b383d]">{c.bio}</p>
+          <button
+            onClick={contact}
+            className="mt-auto flex min-h-11 w-full items-center justify-center rounded-full bg-[#141214] pt-0 text-xs text-white"
+          >
+            Contact
+          </button>
+        </section>
+        <section className="relative min-h-[220px] overflow-hidden rounded-[28px] border border-white/40">
+          <img
+            src={c.cover}
+            alt={`${c.name} cover`}
+            className="absolute inset-0 size-full object-cover"
+          />
+          <span className="glass absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-black/40 px-3 py-1 text-xs">
+            <MapPin className="size-3.5" /> {c.neighbourhood}
+          </span>
+        </section>
       </div>
 
-      <div role="tablist" className="mt-6 flex gap-6 border-b border-muted px-4">
+      {/* Wide card: latest project */}
+      {firstProject && (
+        <Link
+          to="/project/$id"
+          params={{ id: firstProject.id }}
+          className={`${SILVER} flex items-stretch gap-3 overflow-hidden p-3`}
+        >
+          <div className="flex flex-1 flex-col justify-center pl-2">
+            <span className="text-xs text-[#4a464c]">✦ Latest project</span>
+            <span className="mt-1 text-lg">{firstProject.title}</span>
+            <span className="mt-1 text-xs text-[#4a464c]">
+              {firstProject.year} · {firstProject.style}
+            </span>
+          </div>
+          {c.work[0] && (
+            <img src={c.work[0]} alt="" className="size-28 rounded-[20px] object-cover" />
+          )}
+        </Link>
+      )}
+
+      {/* Tabs */}
+      <div role="tablist" className="glass mt-3 grid grid-cols-3 gap-1 rounded-full p-1">
         {(["Work", "About", "Reviews"] as Tab[]).map((t) => (
           <button
             key={t}
             role="tab"
             aria-selected={tab === t}
             onClick={() => setTab(t)}
-            className={`min-h-11 border-b-2 text-sm uppercase tracking-widest ${tab === t ? "border-foreground font-semibold" : "border-transparent text-muted-foreground"}`}
+            className={`min-h-10 rounded-full text-sm ${tab === t ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
           >
             {t}
           </button>
@@ -89,21 +181,38 @@ function ProfilePage() {
       </div>
 
       {tab === "Work" && (
-        <div className="mt-4 px-4">
-          <div className="grid grid-cols-2 gap-px bg-muted">
+        <div className="pt-1">
+          {/* Instagram-style feed */}
+          <div className="grid grid-cols-3 gap-0.5 overflow-hidden rounded-[22px]">
             {c.work.map((src, i) => (
-              <Link key={src} to="/project/$id" params={{ id: c.projects[i % c.projects.length]?.id ?? "" }} className="aspect-square bg-muted">
-                <img src={src} alt={`${c.name} work ${i + 1}`} loading="lazy" className="size-full object-cover transition-opacity hover:opacity-85" />
+              <Link
+                key={src}
+                to="/project/$id"
+                params={{ id: c.projects[i % c.projects.length]?.id ?? "" }}
+                className="aspect-square bg-muted"
+              >
+                <img
+                  src={src}
+                  alt={`${c.name} work ${i + 1}`}
+                  loading="lazy"
+                  className="size-full object-cover transition-opacity hover:opacity-85"
+                />
               </Link>
             ))}
           </div>
-          <h2 className="mt-6 text-sm font-semibold uppercase tracking-widest">Projects</h2>
-          <ul className="mt-2">
+          <h2 className="label mt-6 px-2 text-white/70">Projects</h2>
+          <ul className="mt-2 space-y-2">
             {c.projects.map((p) => (
               <li key={p.id}>
-                <Link to="/project/$id" params={{ id: p.id }} className="flex min-h-14 items-center justify-between border-b border-muted py-2 hover:bg-muted">
-                  <span className="font-semibold">{p.title}</span>
-                  <span className="text-xs text-muted-foreground">{p.year} · {p.style}</span>
+                <Link
+                  to="/project/$id"
+                  params={{ id: p.id }}
+                  className="glass flex min-h-14 items-center justify-between rounded-[20px] px-4 py-2 hover:bg-white/12"
+                >
+                  <span>{p.title}</span>
+                  <span className="text-xs text-white/60">
+                    {p.year} · {p.style}
+                  </span>
                 </Link>
               </li>
             ))}
@@ -111,42 +220,43 @@ function ProfilePage() {
         </div>
       )}
       {tab === "About" && (
-        <div className="mt-4 space-y-2 px-4 text-sm">
+        <div className="glass space-y-2 rounded-[24px] p-4 text-sm">
           <p>{c.bio}</p>
-          <p className="text-muted-foreground">Based in {c.neighbourhood}, {c.city}. Books via Instagram.</p>
-          {firstProject && <p className="text-muted-foreground">Signature: {firstProject.style}.</p>}
+          <p className="text-white/65">
+            Based in {c.neighbourhood}, {c.city}. Books via Instagram.
+          </p>
+          {firstProject && <p className="text-white/65">Signature: {firstProject.style}.</p>}
         </div>
       )}
       {tab === "Reviews" && (
-        <ul className="mt-4 space-y-3 px-4">
+        <ul className="space-y-2">
           {c.reviews.map((r) => (
-            <li key={r.text} className="rounded-md border border-line p-3 text-sm">
+            <li key={r.text} className="glass rounded-[24px] p-4 text-sm">
               <p>“{r.text}”</p>
-              <p className="mt-1 text-xs text-muted-foreground">— {r.by}</p>
+              <p className="mt-1 text-xs text-white/60">— {r.by}</p>
             </li>
           ))}
         </ul>
       )}
 
-      <div className="mt-8 px-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest">Location</h2>
-        <div className="relative mt-2 flex aspect-[2/1] items-center justify-center overflow-hidden rounded-md border border-line bg-muted">
+      <section className="glass mt-4 rounded-[28px] p-4">
+        <h2 className="label text-white/70">Location</h2>
+        <div className="relative mt-3 flex aspect-[2/1] items-center justify-center overflow-hidden rounded-[20px] border border-white/15 bg-black/40">
           <svg className="absolute inset-0 size-full" aria-hidden>
             <defs>
               <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-                <path d="M24 0H0V24" fill="none" className="stroke-line" strokeWidth="1" />
+                <path d="M24 0H0V24" fill="none" stroke="rgb(255 255 255 / 0.12)" strokeWidth="1" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#grid)" />
           </svg>
-          <span className="absolute size-24 rounded-full border border-dashed border-foreground" />
-          <span className="relative flex items-center gap-1 rounded-full border border-foreground bg-background px-3 py-1 text-xs font-semibold uppercase tracking-widest">
+          <span className="absolute size-24 rounded-full border border-dashed border-[var(--pink)] shadow-[0_0_30px_rgb(248_188_255/0.25)]" />
+          <span className="glass relative flex items-center gap-1 rounded-full px-3 py-1 text-xs">
             <MapPin className="size-3.5" /> {c.neighbourhood}, {c.city}
           </span>
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">Neighbourhood only — never an exact address.</p>
-      </div>
-
+        <p className="mt-2 text-xs text-white/60">Neighbourhood only — never an exact address.</p>
+      </section>
     </div>
   );
 }

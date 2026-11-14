@@ -105,7 +105,7 @@ export function ProfileForm({
               </button>
             </div>
           ))}
-          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-foreground bg-background text-[11px] uppercase tracking-widest focus-within:outline-2 focus-within:outline-foreground">
+          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-foreground bg-background text-xs uppercase tracking-widest focus-within:outline-2 focus-within:outline-foreground">
             <ImagePlus className="size-5" />
             {busy ? "Adding…" : "Add"}
             <input

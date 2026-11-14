@@ -31,7 +31,9 @@ use the editor.
 
 ## Project rules
 - No backend: mock creatives live in `src/lib/data.ts`; onboarding + saved IDs persist via `useLocal` in `src/lib/store.ts` (reads after mount to keep SSR/hydration in sync).
-- Globe is a 3D WebGL globe (`globe.gl`, loaded with a dynamic import in `src/components/Globe.tsx`): dotted land + coastline, slow auto-spin, pop-up cards that appear as it turns. `/` and `/intro` are `ssr: false`; both sit in the `.night` token scope (inverted monochrome, defined in `src/styles.css`). Pin/card styles are the `.globe-*` classes in `src/styles.css`.
-- Styling: monochrome tokens and `btn`/`chip`/`tag`/`field` utilities live in `src/styles.css`; use them instead of ad-hoc colour classes.
-- App icons come from the shared inline SVG pixel-grid icon module; square cells and crispEdges keep their outlines consistent, and active icons invert using theme tokens.
+- Globe is a 3D WebGL globe (`globe.gl`, dynamic import in `src/components/Globe.tsx`): pink-tinted NASA night-lights texture (`public/textures/earth-night.jpg`) so places sit where they really are, pink dot sprinkle + coastline, pink atmosphere, slow auto-spin, glass pop-up cards (with a View profile button) that appear as it turns. `/` and `/intro` are `ssr: false` and sit on `SpaceBackground` (React Bits `Particles`, from `@react-bits/Particles-JS-CSS`, in `src/components/Particles.jsx`). Pin/card styles are the `.globe-*` classes in `src/styles.css`.
+- Styling: black base with frosted-glass controls and pink glow accents. Use the utilities in `src/styles.css` (`btn`/`btn-primary`/`btn-secondary`, `chip`, `tag`, `field`, `glass`, `icon-btn`, `glass-bar` + `orb` for the search bar) instead of ad-hoc styles.
+- Type: Questrial only, five sizes only — 13 / 15 / 18 / 24 / 32 px (Tailwind `text-xs`/`text-sm`/`text-lg`/`text-2xl`/`text-3xl`; other text-* sizes are mapped onto these). Nothing smaller than 13 px.
+- Viewport: iPhone 16 (393 × 852). `.phone-frame` in `src/styles.css` frames the app on larger screens.
+- App icons come from `src/components/PixelIcons.tsx` (name kept for imports): smooth lucide vector icons so they stay sharp at any size; `active` = bolder stroke (filled for star/heart).
 - Own profile (`named.profile`) and demo chats (`named.chats`, seeded on first read) live in localStorage via `src/lib/store.ts`; uploads are stored as shrunk data URLs, so `writeLocal` returns false when storage is full and callers must tell the user.

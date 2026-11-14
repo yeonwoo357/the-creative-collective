@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Globe } from "@/components/Globe";
+import { SpaceBackground } from "@/components/SpaceBackground";
 
 export const Route = createFileRoute("/intro")({
   // The WebGL globe only exists in the browser.
@@ -29,6 +30,7 @@ function Intro() {
 
   return (
     <div className="night relative flex flex-1 overflow-hidden">
+      <SpaceBackground />
       {/* ⑤-1 spinning globe → ⑤-2 zoom in; lands exactly where the home globe starts */}
       <div className="absolute inset-0">
         <Globe mode="intro" onIntroDone={goHome} />

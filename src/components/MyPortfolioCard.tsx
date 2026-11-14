@@ -20,7 +20,7 @@ export function MyPortfolioCard({ profile, name, compact }: { profile: MyProfile
         </div>
       )}
       <div className="px-1 pt-2">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Portfolio attached</p>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio attached</p>
         <p className="font-semibold">{name}</p>
         <p className="text-xs text-muted-foreground">
           {[profile.discipline, profile.neighbourhood].filter(Boolean).join(" · ") || "Member of the collective"}

@@ -79,7 +79,7 @@ function ProjectPage() {
             <span className="block font-semibold">{creative.name}</span>
             <span className="block text-xs text-muted-foreground">{creative.role} · {creative.neighbourhood}</span>
           </span>
-          <span className="text-[11px] uppercase tracking-widest underline underline-offset-4">View profile</span>
+          <span className="text-xs uppercase tracking-widest underline underline-offset-4">View profile</span>
         </Link>
         <button className="btn btn-primary mt-8 w-full" onClick={() => navigate({ to: "/compose/$id", params: { id: creative.id } })}>Contact</button>
       </div>

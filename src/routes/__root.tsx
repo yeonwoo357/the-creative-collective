@@ -96,7 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Questrial&display=swap",
       },
       {
         rel: "stylesheet",
@@ -130,16 +130,19 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col bg-background sm:border-x sm:border-foreground">
-        <main className="flex flex-1 flex-col">
-          {/* Required: nested routes render here. */}
-          <Outlet />
-        </main>
-        <TabBar />
+      {/* iPhone 16 viewport (393 × 852). Full-bleed on phones; framed on larger screens. */}
+      <div className="phone-stage">
+        <div id="phone" className="phone-frame">
+          <main className="flex flex-1 flex-col">
+            {/* Required: nested routes render here. */}
+            <Outlet />
+          </main>
+          <TabBar />
+        </div>
       </div>
       <Toaster
         position="top-center"
-        toastOptions={{ style: { fontFamily: "Inconsolata, monospace", border: "1px solid #7D7D7D", borderRadius: 4, background: "#000", color: "#fff" } }}
+        toastOptions={{ style: { fontFamily: "Questrial, system-ui, sans-serif", fontSize: 15, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 999, background: "#000", color: "#fff" } }}
       />
     </QueryClientProvider>
   );

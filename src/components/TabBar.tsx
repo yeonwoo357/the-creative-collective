@@ -16,23 +16,29 @@ export function TabBar() {
   return (
     <nav
       aria-label="Main"
-      className={`sticky bottom-0 z-30 grid grid-cols-4 border-t border-foreground bg-background ${path === "/" ? "night" : ""}`}
+      className={`sticky bottom-0 z-30 px-3 pb-3 pt-2 ${path === "/" ? "night" : ""}`}
     >
-      {tabs.map(({ to, label, Icon }) => {
-        const active = to === "/" ? path === "/" : path.startsWith(to);
-        return (
-          <Link
-            key={to}
-            to={to}
-            aria-current={active ? "page" : undefined}
-            aria-label={label}
-            className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] uppercase tracking-widest text-foreground ${active ? "font-semibold" : ""}`}
-          >
-            <Icon className="size-5" active={active} />
-            {label}
-          </Link>
-        );
-      })}
+      <div className="glass grid grid-cols-4 gap-1 rounded-full bg-black/55 p-1.5">
+        {tabs.map(({ to, label, Icon }) => {
+          const active = to === "/" ? path === "/" : path.startsWith(to);
+          return (
+            <Link
+              key={to}
+              to={to}
+              aria-current={active ? "page" : undefined}
+              aria-label={label}
+              className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full text-xs tracking-wide ${
+                active
+                  ? "bg-white/15 text-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]"
+                  : "text-white/65 hover:text-foreground"
+              }`}
+            >
+              <Icon className="size-5" active={active} />
+              {label}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

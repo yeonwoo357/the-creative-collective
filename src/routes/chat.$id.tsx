@@ -188,7 +188,7 @@ function Thread() {
                       </div>
                     )}
                     <div className={`mt-1 flex items-center gap-1 ${mine ? "justify-end" : "justify-start"}`}>
-                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                      <span className="text-xs uppercase tracking-widest text-muted-foreground">
                         {now ? timeAgo(message.at, now) : ""}
                       </span>
                       <button

@@ -50,9 +50,13 @@ export const HOME_VIEW: View = { lambda: 0.1, phi: -51.6, k: 0, altitude: 1.2 };
 const FOV_HALF = Math.tan((25 * Math.PI) / 180); // three.js default fov 50°
 const DOWN = 0.4; // push the globe down the screen so only its top arc shows (wireframe ⑤-3)
 const MIN_ALT = 0.005;
+const EARTH_NIGHT = "/textures/earth-night.jpg"; // NASA night lights (public domain), via three-globe examples
 const DOTS_HIDE_BELOW = 0.12; // hex dots get blobby up close: show only the coastline there
 const MAX_ALT = 4.5;
-const MAX_CARDS = 3;
+const MAX_CARDS = 2;
+// Pop-up card footprint (px) used to keep cards from overlapping.
+const CARD_W = 220;
+const CARD_H = 170;
 const CYCLE_MS = 1800;
 const RESUME_MS = 3500;
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -174,27 +178,46 @@ export function Globe({
         .height(ch)
         .backgroundColor("rgba(0,0,0,0)")
         .showAtmosphere(true)
-        .atmosphereColor("#ffffff")
-        .atmosphereAltitude(0.14)
+        // Pink glow look: real night-lights map (so places sit where they really are),
+        // tinted pink, a soft pink rim and a sprinkle of glowing dots over land.
+        .globeImageUrl(EARTH_NIGHT)
+        .atmosphereColor("#f8bcff")
+        .atmosphereAltitude(0.2)
         .hexPolygonsData(landDots)
         .hexPolygonResolution(3)
-        .hexPolygonMargin(0.42)
+        .hexPolygonMargin(0.62)
         .hexPolygonUseDots(true)
-        .hexPolygonColor(() => "rgba(240,240,240,0.9)")
+        .hexPolygonColor(() => "rgba(248,188,255,0.55)")
         // Faint land fill + coastline so close-ups (search results) still read as a map.
         .polygonsData(landDots)
-        .polygonCapColor(() => "rgba(255,255,255,0.05)")
+        .polygonCapColor(() => "rgba(173,93,132,0.10)")
         .polygonSideColor(() => "rgba(0,0,0,0)")
-        .polygonStrokeColor(() => "rgba(255,255,255,0.28)")
-        .polygonAltitude(0.0008);
+        .polygonStrokeColor(() => "rgba(248,188,255,0.35)")
+        .polygonAltitude(0.0008)
+        .onGlobeReady(() => {
+          // Let the city lights glow on the night side too.
+          const m = world.globeMaterial() as unknown as {
+            map?: unknown;
+            emissiveMap?: unknown;
+            emissive?: { set: (c: string) => void };
+            emissiveIntensity?: number;
+            needsUpdate?: boolean;
+          };
+          if (m.map) {
+            m.emissiveMap = m.map;
+            m.emissive?.set("#ffb3ec");
+            m.emissiveIntensity = 1.15;
+            m.needsUpdate = true;
+          }
+        });
       worldRef.current = world;
 
       const mat = world.globeMaterial() as unknown as {
         color?: { set: (c: string) => void };
         shininess?: number;
       };
-      mat.color?.set?.("#141414");
-      mat.shininess = 4;
+      mat.color?.set?.("#c77aa6"); // multiplies the night-lights map → pink lights, plum-black seas
+      mat.shininess = 6;
 
       const ctl = world.controls();
       ctl.enablePan = false;
@@ -252,7 +275,7 @@ export function Globe({
         .labelDotRadius(0)
         .labelAltitude(0.0012)
         .labelResolution(2)
-        .labelColor(() => "rgba(200,200,200,0.85)");
+        .labelColor(() => "rgba(255,226,250,0.9)");
 
       // Double-tap / double-click on empty map: back to the default view. Taps on pins don't count.
       let last = { t: 0, x: 0, y: 0 };
@@ -293,7 +316,8 @@ export function Globe({
         const s = world.getScreenCoords(p.__pin.lat, p.__pin.lng, 0.004);
         const { w, h } = size();
         const top = hlRef.current ? 230 : h * 0.42; // search results may sit higher, under the chip
-        if (!s || s.x < 84 || s.x > w - 84 || s.y < top || s.y > h - 24) return null;
+        if (!s || s.x < CARD_W / 2 || s.x > w - CARD_W / 2 || s.y < top || s.y > h - 24)
+          return null;
         return s;
       };
       const cycle = () => {
@@ -308,7 +332,8 @@ export function Globe({
             p.dataset["dim"] = String(!on);
             const s = on ? inView(p) : null;
             const fits =
-              !!s && !placed.some((t) => Math.abs(t.x - s.x) < 170 && Math.abs(t.y - s.y) < 64);
+              !!s &&
+              !placed.some((t) => Math.abs(t.x - s.x) < CARD_W && Math.abs(t.y - s.y) < CARD_H);
             if (fits) placed.push(s!);
             p.dataset["show"] = String(fits);
           }
@@ -328,7 +353,9 @@ export function Globe({
             .filter(
               (c): c is { p: PinEl; s: { x: number; y: number } } =>
                 !!c.s &&
-                !taken.some((t) => Math.abs(t.x - c.s!.x) < 170 && Math.abs(t.y - c.s!.y) < 64),
+                !taken.some(
+                  (t) => Math.abs(t.x - c.s!.x) < CARD_W && Math.abs(t.y - c.s!.y) < CARD_H,
+                ),
             );
           const pick = pool[Math.floor(Math.random() * pool.length)];
           if (pick) {
@@ -348,10 +375,15 @@ export function Globe({
       el.dataset["show"] = "false";
       el.innerHTML = `
         <div class="globe-pop">
-          <button type="button" class="globe-card">
-            <img src="${pin.avatar}" alt="" />
-            <span><b></b><small></small><i class="globe-hood"></i></span>
-          </button>
+          <div class="globe-card">
+            <button type="button" class="globe-card-body">
+              <img src="${pin.avatar}" alt="" />
+              <b></b>
+              <small></small>
+              <i class="globe-hood"></i>
+            </button>
+            <button type="button" class="globe-cta">View profile <span aria-hidden="true">→</span></button>
+          </div>
           <span class="globe-stem"></span>
         </div>
         <button type="button" class="globe-dot"></button>`;
@@ -382,10 +414,16 @@ export function Globe({
       el.addEventListener("pointerdown", (e) => (viaMouse = e.pointerType === "mouse"));
       el.addEventListener("focusin", () => onPreviewRef.current?.(pin.id));
       const open = () => onPinRef.current?.(pin.id);
-      el.querySelector(".globe-card")!.addEventListener("click", (e) => {
+      el.querySelector(".globe-card-body")!.addEventListener("click", (e) => {
         e.stopPropagation();
         if (viaMouse || previewRef.current === pin.id) return open();
         onPreviewRef.current?.(pin.id);
+      });
+      const cta = el.querySelector<HTMLButtonElement>(".globe-cta")!;
+      cta.setAttribute("aria-label", `View ${pin.title}'s profile`);
+      cta.addEventListener("click", (e) => {
+        e.stopPropagation();
+        open();
       });
       el.querySelector(".globe-dot")!.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -481,16 +519,16 @@ export function Globe({
   return (
     <div
       ref={wrap}
-      className="globe-space relative h-full w-full touch-none select-none overflow-hidden"
+      className="relative h-full w-full touch-none select-none overflow-hidden"
       style={{ cursor: mode === "home" ? "grab" : "default" }}
     >
       <div ref={host} className="absolute inset-0" />
       {mode === "home" && (
-        <div className="absolute bottom-4 right-4 z-10 flex flex-col overflow-hidden rounded-md border border-foreground bg-background">
+        <div className="glass absolute bottom-4 right-4 z-10 flex flex-col overflow-hidden rounded-full">
           <button
             aria-label="Zoom in"
             onClick={() => zoomBy(3)}
-            className="flex size-11 items-center justify-center hover:bg-muted"
+            className="flex size-11 items-center justify-center hover:bg-white/10"
           >
             <Plus className="size-4" />
           </button>
@@ -498,14 +536,14 @@ export function Globe({
             aria-label="Recentre on London"
             title="Recentre (or double-tap the map)"
             onClick={recentre}
-            className="flex size-11 items-center justify-center border-t border-foreground hover:bg-muted"
+            className="flex size-11 items-center justify-center border-t border-white/15 hover:bg-white/10"
           >
             <LocateFixed className="size-4" />
           </button>
           <button
             aria-label="Zoom out"
             onClick={() => zoomBy(1 / 3)}
-            className="flex size-11 items-center justify-center border-t border-foreground hover:bg-muted"
+            className="flex size-11 items-center justify-center border-t border-white/15 hover:bg-white/10"
           >
             <Minus className="size-4" />
           </button>

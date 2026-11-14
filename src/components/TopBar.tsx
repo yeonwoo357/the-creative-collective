@@ -7,10 +7,12 @@ export function BackButton({ className = "" }: { className?: string }) {
   return (
     <button
       aria-label="Back"
-      onClick={() => (window.history.length > 1 ? router.history.back() : router.navigate({ to: "/" }))}
-      className={`flex size-11 items-center justify-center rounded-full border border-foreground bg-background ${className}`}
+      onClick={() =>
+        window.history.length > 1 ? router.history.back() : router.navigate({ to: "/" })
+      }
+      className={`icon-btn ${className}`}
     >
-      <ChevronLeft className="size-5" />
+      <ChevronLeft className="size-[18px]" />
     </button>
   );
 }
