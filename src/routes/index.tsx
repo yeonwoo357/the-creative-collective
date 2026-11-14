@@ -121,7 +121,7 @@ function Home() {
       </div>
 
       {/* Search sits a little above the middle of the screen, with the globe below it. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[37%] z-10 -translate-y-1/2 px-4">
+      <div className="pointer-events-none absolute inset-x-0 top-[30%] z-10 -translate-y-1/2 px-4">
         <Link to="/search" className="glass-bar pointer-events-auto text-sm">
           <span className="orb">
             <Search className="size-5" strokeWidth={2} />

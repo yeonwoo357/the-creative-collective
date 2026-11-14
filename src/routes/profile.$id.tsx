@@ -116,19 +116,18 @@ function ProfilePage() {
         </div>
       </section>
 
-      {/* Bento: bio + cover/location */}
+      {/* Bento: about + booking (nothing repeated from the header) | cover + area */}
       <div className="grid grid-cols-2 gap-2">
-        <section className={`${SILVER} flex flex-col items-center p-4 text-center`}>
-          <img
-            src={c.avatar}
-            alt=""
-            className="size-12 rounded-full border-2 border-white/80 object-cover"
-          />
-          <p className="mt-2 text-sm">{c.name}</p>
-          <p className="mt-1 line-clamp-4 text-xs text-white/75">{c.bio}</p>
-          <button onClick={contact} className="btn btn-primary mt-3 min-h-11 w-full text-xs">
-            Contact
-          </button>
+        <section className={`${SILVER} flex flex-col p-4`}>
+          <h2 className="label text-white/60">About</h2>
+          <p className="mt-2 text-sm">{c.bio}</p>
+          <div className="mt-auto pt-3">
+            <p className="label text-white/60">Booking</p>
+            <p className="mt-1 text-xs text-white/80">
+              Message here or on Instagram
+              <span className="block truncate text-white">@{c.instagram}</span>
+            </p>
+          </div>
         </section>
         <section className="relative min-h-[220px] overflow-hidden rounded-[28px] border border-white/40">
           <img

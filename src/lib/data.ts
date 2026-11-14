@@ -55,24 +55,202 @@ const seeds: Seed[] = [
   ["saint-moss", "Saint Moss", "Photographer", "Photographer", "Manchester", "Ancoats", 53.4838, -2.2241, ["Film", "Gigs", "Street"], "Gig photography and street portraits. Find me at the barrier.", "saintmoss.photo", "Gig series|Live"],
 ];
 
-const descs = [
-  "A slow, considered piece built over two sessions. Healed shots in the last frames.",
-  "Started as a doodle on a napkin. Ended up as one of my favourite things I've made.",
-];
+// Latest projects, written for each creative's own trade: [title, style, detail, description]
+type ProjectSeed = [string, string, string, string];
+const projectSeeds: Record<string, ProjectSeed[]> = {
+  "mira-vale": [
+    [
+      "Moth & moon forearm",
+      "Blackwork",
+      "Forearm",
+      "A fine-line moth under a blackwork moon, built over two sessions. Healed shots in the last frames.",
+    ],
+    [
+      "Walk-in flash sheet",
+      "Fine line",
+      "Flash",
+      "Thirty tiny designs drawn for one walk-in Saturday. First come, first inked.",
+    ],
+  ],
+  "jax-thorn": [
+    [
+      "Constellation ear stack",
+      "Curated ear",
+      "Helix to lobe",
+      "Seven implant-grade titanium pieces mapped to one ear, placed across three visits so everything healed clean.",
+    ],
+  ],
+  "onyx-reed": [
+    [
+      "Bleached shag transformation",
+      "Bleach & tone",
+      "Cut & colour",
+      "Waist-length brown to an icy shag in one long Peckham afternoon. Bond builder at every step.",
+    ],
+    [
+      "Mullet week",
+      "Mullets",
+      "Cut",
+      "Seven mullets in seven days, each one cut to the face in the chair, not to a picture.",
+    ],
+  ],
+  "sable-kin": [
+    [
+      "Liquid chrome charm set",
+      "Chrome 3D",
+      "Full set",
+      "Mirror chrome with hand-sculpted 3D drips and charms on Gel-X extensions. Three hours, zero regrets.",
+    ],
+  ],
+  "vesper-lux": [
+    [
+      "Collective portraits on 35mm",
+      "35mm flash",
+      "Editorial",
+      "Twelve members shot on direct flash at home, one roll each. No retouching, all grain.",
+    ],
+    [
+      "Backstage zine",
+      "Portraits",
+      "Zine",
+      "A night behind the curtain at a Hackney show, printed as a 24-page risograph zine.",
+    ],
+  ],
+  "rook-hale": [
+    [
+      "Swallow & dagger upper arm",
+      "Traditional",
+      "Upper arm",
+      "Bold lines, a limited palette and plenty of skin breaks. Tattooed in a single sitting.",
+    ],
+  ],
+  "nyx-calder": [
+    [
+      "Archive denim lookbook",
+      "Archive edit",
+      "Lookbook",
+      "Eight looks pulled from 90s archive denim and reworked with upcycled hardware. Shot in a Soho stairwell.",
+    ],
+    [
+      "Music video wardrobe",
+      "Editorial",
+      "Music video",
+      "Styling for a three-day shoot: twelve looks, one sewing machine, no sleep.",
+    ],
+  ],
+  "kit-ember": [
+    [
+      "Warehouse closing set",
+      "Live set",
+      "Warehouse",
+      "Three hours from breaks into techno to close a Hackney Wick all-nighter. Full recording inside.",
+    ],
+  ],
+  "lune-marrow": [
+    [
+      "Ornamental sternum piece",
+      "Dotwork",
+      "Sternum",
+      "A symmetrical ornamental piece in pure dotwork, built slowly over three sessions.",
+    ],
+    [
+      "Conch & chain pairing",
+      "Piercing",
+      "Ear",
+      "A conch piercing linked to a lobe with a custom titanium chain, done alongside the tattoo work.",
+    ],
+  ],
+  "ash-veil": [
+    [
+      "Loc retwist & sculpted updo",
+      "Loc retwist",
+      "Updo",
+      "A full retwist finished in a sculpted updo for a wedding weekend. Scalp care first, always.",
+    ],
+  ],
+  "dove-cassidy": [
+    [
+      "Wildflower ankle wrap",
+      "Botanical",
+      "Ankle",
+      "Six micro wildflowers from the South Downs wrapped around one ankle in single-needle fine line.",
+    ],
+    [
+      "Pressed-flower minis",
+      "Micro",
+      "Flash",
+      "A flash day of thumbnail-sized botanicals drawn from real pressed flowers.",
+    ],
+  ],
+  "pike-rowan": [
+    [
+      "Industrial with custom bar",
+      "Industrial",
+      "Ear",
+      "An industrial placed to the ear's own anatomy, with a hand-bent titanium bar instead of a straight one.",
+    ],
+  ],
+  "vex-hollow": [
+    [
+      "Neo-tribal back piece",
+      "Neo-tribal",
+      "Back",
+      "A full back in flowing blackwork, freehanded on skin and tattooed over five day sessions.",
+    ],
+    [
+      "London guest spot",
+      "Blackwork",
+      "Guest spot",
+      "A week of large-scale pieces during the spring guest spot in Dalston.",
+    ],
+  ],
+  "ivo-sterne": [
+    [
+      "Basement residency",
+      "Club night",
+      "Basement",
+      "A monthly EBM and industrial night in a Neukölln basement. Doors at midnight, done by nine.",
+    ],
+  ],
+  "wren-casket": [
+    [
+      "Cathedral window stilettos",
+      "Hand-painted",
+      "Stiletto",
+      "Long stiletto nails hand-painted as stained-glass windows, each one outlined in black gel.",
+    ],
+    [
+      "Bat wing press-ons",
+      "Goth",
+      "Press-on set",
+      "A reusable hand-painted set made to order and posted out from the Northern Quarter.",
+    ],
+  ],
+  "saint-moss": [
+    [
+      "From the barrier",
+      "Gig series",
+      "Live",
+      "A year of Manchester gigs shot on film from the front row. Sweat, flash and feedback.",
+    ],
+  ],
+};
 
 export const creatives: Creative[] = seeds.map((s, i) => {
   const [id, name, category, role, city, neighbourhood, lat, lng, tags, bio, instagram, sp] = s;
   const [style = "", placement = ""] = sp.split("|");
   const work = Array.from({ length: 4 + (i % 3) }, (_, k) => img(`${id}-w${k}`));
-  const projects: Project[] = Array.from({ length: 1 + (i % 2) }, (_, k) => ({
-    id: `${id}-p${k + 1}`,
-    title: k === 0 ? `${style} study` : `${placement} series`,
-    year: 2026 - k,
-    style,
-    placement,
-    description: descs[k] ?? "",
-    images: Array.from({ length: 4 }, (_, n) => img(`${id}-p${k}-${n}`, 800, 800)),
-  }));
+  const projects: Project[] = (projectSeeds[id] ?? [[`${style} work`, style, placement, ""]]).map(
+    ([title, pStyle, pDetail, description], k) => ({
+      id: `${id}-p${k + 1}`,
+      title,
+      year: 2026 - k,
+      style: pStyle,
+      placement: pDetail,
+      description,
+      images: Array.from({ length: 4 }, (_, n) => img(`${id}-p${k}-${n}`, 800, 800)),
+    }),
+  );
   return {
     id,
     name,

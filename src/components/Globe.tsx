@@ -50,7 +50,6 @@ export const HOME_VIEW: View = { lambda: 0.1, phi: -51.6, k: 0, altitude: 3.3 };
 const FOV_HALF = Math.tan((25 * Math.PI) / 180); // three.js default fov 50°
 const DOWN = 0.23; // sit the whole globe in the lower half, under the search bar
 const MIN_ALT = 0.005;
-const EARTH_NIGHT = "/textures/earth-night.jpg"; // NASA night lights (public domain), recoloured to the app's plum → pink
 const DOTS_HIDE_BELOW = 0.12; // hex dots get blobby up close: show only the coastline there
 const MAX_ALT = 4.5;
 const MAX_CARDS = 2;
@@ -182,37 +181,22 @@ export function Globe({
         .height(ch)
         .backgroundColor("rgba(0,0,0,0)")
         .showAtmosphere(true)
-        // Pink glow look: real night-lights map (so places sit where they really are),
-        // tinted pink, a soft pink rim and a sprinkle of glowing dots over land.
-        .globeImageUrl(EARTH_NIGHT)
+        // Simple look: a smooth plum sphere, land drawn as one even field of pink dots
+        // (real coastlines, so places sit where they really are) and a soft pink rim.
         .atmosphereColor("#f8bcff")
-        .atmosphereAltitude(0.2)
+        .atmosphereAltitude(0.16)
         .hexPolygonsData(landDots)
         .hexPolygonResolution(3)
-        .hexPolygonMargin(0.62)
+        .hexPolygonMargin(0.5)
         .hexPolygonUseDots(true)
-        .hexPolygonColor(() => "rgba(248,188,255,0.55)")
-        // Faint land fill + coastline so close-ups (search results) still read as a map.
+        .hexPolygonColor(() => "rgba(248,188,255,0.8)")
+        // Very faint land fill + coastline: barely there from afar, the map once zoomed in.
         .polygonsData(landDots)
-        .polygonCapColor(() => "rgba(173,93,132,0.10)")
+        .polygonCapColor(() => "rgba(248,188,255,0.06)")
         .polygonSideColor(() => "rgba(0,0,0,0)")
-        .polygonStrokeColor(() => "rgba(248,188,255,0.35)")
+        .polygonStrokeColor(() => "rgba(248,188,255,0.22)")
         .polygonAltitude(0.0008)
         .onGlobeReady(() => {
-          // Let the city lights glow on the night side too.
-          const m = world.globeMaterial() as unknown as {
-            map?: unknown;
-            emissiveMap?: unknown;
-            emissive?: { set: (c: string) => void };
-            emissiveIntensity?: number;
-            needsUpdate?: boolean;
-          };
-          if (m.map) {
-            m.emissiveMap = m.map;
-            m.emissive?.set("#ffffff");
-            m.emissiveIntensity = 0.85;
-            m.needsUpdate = true;
-          }
           hostEl.dataset["ready"] = "true"; // fade the globe in
         });
       worldRef.current = world;
@@ -221,8 +205,8 @@ export function Globe({
         color?: { set: (c: string) => void };
         shininess?: number;
       };
-      mat.color?.set?.("#ffffff"); // the map itself is already pink/plum
-      mat.shininess = 6;
+      mat.color?.set?.("#1c0f1a"); // deep plum
+      mat.shininess = 3;
 
       const ctl = world.controls();
       ctl.enablePan = false;
