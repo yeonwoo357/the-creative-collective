@@ -861,7 +861,10 @@ const Particles = ({
       [corners, positionBuffer, randomBuffer, colorBuffer, lineBuffer].forEach(buffer => gl.deleteBuffer(buffer));
       gl.deleteVertexArray(dotVao);
       gl.deleteVertexArray(lineVao);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      // Local change: upstream force-loses the WebGL context here. In development React
+      // (StrictMode, as in the Lovable preview) runs this cleanup once right after mounting and then
+      // re-runs the effect on the same <canvas>, which would then hold a dead context and draw nothing.
+      // The resources are deleted above; the context itself is freed with the canvas.
     };
   }, []);
 
