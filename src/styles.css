@@ -4,8 +4,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* NAMED Collective — black base, frosted-glass controls, pink glow accents.
-   Type: Questrial (Google Fonts), five sizes only: 13 / 15 / 18 / 24 / 32 px
+/* NAMED Collective — black base, liquid-glass controls, one pink → plum accent family.
+   Type: DM Sans (Google Fonts), five sizes only: 13 / 15 / 18 / 24 / 32 px
    (= 26 / 30 / 36 / 48 / 64 at @2x design scale; 13 px is the smallest text anywhere). */
 
 @theme {
@@ -30,8 +30,8 @@
 }
 
 @theme inline {
-  --font-sans: "Questrial", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Questrial", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: 4px;
   --radius-md: 4px;
   --radius-lg: 8px;
@@ -89,9 +89,22 @@
   --fs-3: 18px;
   --fs-4: 24px;
   --fs-5: 32px;
-  /* Glow palette (matches the globe + particles) */
-  --pink: #f8bcff;
-  --rose: #ad5d84;
+  /* One accent family, shared by globe, particles, buttons and cards */
+  --pink: #f8bcff; /* light accent */
+  --rose: #ad5d84; /* mid accent */
+  --plum: #4a2140; /* deep accent */
+  --ink: #140b13; /* text on light surfaces */
+  /* Liquid glass: a soft top sheen, a lit edge, a little inner glow and a real drop shadow */
+  --liquid-fill: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.2) 0%,
+    rgb(255 255 255 / 0.06) 48%,
+    rgb(255 255 255 / 0.1) 100%
+  );
+  --liquid-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.55), inset 0 -1px 1px rgb(255 255 255 / 0.12),
+    inset 0 -10px 18px rgb(248 188 255 / 0.08), 0 10px 24px rgb(0 0 0 / 0.45),
+    0 2px 6px rgb(0 0 0 / 0.35);
   /* Frosted glass */
   --glass: rgb(255 255 255 / 0.08);
   --glass-strong: rgb(255 255 255 / 0.14);
@@ -133,6 +146,7 @@
 }
 
 @utility btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -141,31 +155,52 @@
   padding: 0 1.4rem;
   border-radius: 999px;
   font-size: var(--fs-2);
-  letter-spacing: 0.02em;
-  border: 1px solid var(--glass-edge);
-  box-shadow: var(--glass-shine);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  box-shadow: var(--liquid-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
   cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    opacity 0.2s ease;
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
   &:disabled {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 }
 @utility btn-primary {
-  /* bright frosted pill — the main action */
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(248 226 255 / 0.88));
-  color: #0b0710;
-  border-color: rgb(255 255 255 / 0.7);
+  /* bright liquid pill — the main action */
+  background:
+    radial-gradient(120% 90% at 50% -20%, rgb(255 255 255 / 0.95), transparent 60%),
+    linear-gradient(180deg, #fff3fd 0%, #f6cdf4 55%, #e6aee0 100%);
+  color: var(--ink);
+  border-color: rgb(255 255 255 / 0.85);
+  box-shadow:
+    inset 0 1px 1px #fff,
+    inset 0 -6px 12px rgb(173 93 132 / 0.25),
+    0 10px 26px rgb(173 93 132 / 0.35),
+    0 2px 6px rgb(0 0 0 / 0.35);
   &:hover:not(:disabled) {
-    opacity: 0.9;
+    filter: brightness(1.04);
   }
 }
 @utility btn-secondary {
-  background: var(--glass);
+  background: var(--liquid-fill);
   color: var(--foreground);
   &:hover:not(:disabled) {
-    background: var(--glass-strong);
+    background: linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.26),
+      rgb(255 255 255 / 0.1) 50%,
+      rgb(255 255 255 / 0.14)
+    );
   }
 }
 @utility chip {
@@ -174,18 +209,19 @@
   min-height: 36px;
   padding: 0 1rem;
   border-radius: 999px;
-  border: 1px solid var(--glass-edge);
+  border: 1px solid rgb(255 255 255 / 0.26);
   font-size: var(--fs-1);
-  letter-spacing: 0.04em;
-  background: var(--glass);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  background: var(--liquid-fill);
   color: var(--foreground);
-  box-shadow: var(--glass-shine);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  box-shadow: var(--liquid-shadow);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
   &[aria-pressed="true"] {
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(248 226 255 / 0.85));
-    color: #0b0710;
-    border-color: rgb(255 255 255 / 0.7);
+    background: linear-gradient(180deg, #fff3fd 0%, #f6cdf4 60%, #e6aee0 100%);
+    color: var(--ink);
+    border-color: rgb(255 255 255 / 0.85);
   }
 }
 @utility tag {
@@ -194,26 +230,31 @@
   min-height: 30px;
   padding: 0 0.8rem;
   border-radius: 999px;
-  border: 1px solid var(--glass-edge);
-  background: var(--glass);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: var(--liquid-fill);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
   font-size: var(--fs-1);
-  letter-spacing: 0.03em;
 }
 @utility field {
   width: 100%;
   min-height: 48px;
   padding: 0 16px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 14px;
-  background: var(--glass);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.1));
   font-size: var(--fs-2);
-  box-shadow: var(--glass-shine);
+  box-shadow:
+    inset 0 2px 6px rgb(0 0 0 / 0.35),
+    inset 0 -1px 0 rgb(255 255 255 / 0.12);
   &::placeholder {
     color: var(--muted-foreground);
   }
   &:focus {
     outline: none;
     border-color: var(--pink);
+    box-shadow:
+      inset 0 2px 6px rgb(0 0 0 / 0.35),
+      0 0 0 3px rgb(248 188 255 / 0.18);
   }
 }
 @utility label {
@@ -278,11 +319,11 @@
 
 /* ---------- Glass controls ---------- */
 @utility glass {
-  background: var(--glass);
-  border: 1px solid var(--glass-edge);
-  box-shadow: var(--glass-shine);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
+  background: var(--liquid-fill);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  box-shadow: var(--liquid-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
 }
 /* Small round icon button: 36px to the eye, 44px to the finger. */
 @utility icon-btn {
@@ -296,11 +337,14 @@
   border-radius: 999px;
   overflow: visible;
   color: var(--foreground);
-  background: var(--glass);
-  border: 1px solid var(--glass-edge);
-  box-shadow: var(--glass-shine);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  background: var(--liquid-fill);
+  border: 1px solid rgb(255 255 255 / 0.28);
+  box-shadow: var(--liquid-shadow);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
   &::after {
     content: "";
     position: absolute;
@@ -308,7 +352,10 @@
     border-radius: 999px;
   }
   &:hover {
-    background: var(--glass-strong);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.28), rgb(255 255 255 / 0.1));
+  }
+  &:active {
+    transform: scale(0.94);
   }
 }
 /* Purple frosted bar (search) with a glowing orb on the left */
@@ -319,19 +366,21 @@
   min-height: 56px;
   padding: 6px 18px 6px 6px;
   border-radius: 999px;
-  color: rgb(255 255 255 / 0.78);
-  background: linear-gradient(
-    100deg,
-    rgb(120 70 170 / 0.62),
-    rgb(70 38 110 / 0.5) 60%,
-    rgb(60 30 90 / 0.42)
-  );
-  border: 1px solid rgb(255 255 255 / 0.2);
+  color: rgb(255 255 255 / 0.8);
+  background:
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.16),
+      rgb(255 255 255 / 0.03) 50%,
+      rgb(255 255 255 / 0.07)
+    ),
+    linear-gradient(100deg, rgb(173 93 132 / 0.5), rgb(74 33 64 / 0.55) 65%, rgb(40 18 36 / 0.5));
+  border: 1px solid rgb(255 255 255 / 0.26);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    0 10px 30px rgb(30 10 50 / 0.45);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  backdrop-filter: blur(18px) saturate(150%);
+    var(--liquid-shadow),
+    0 0 40px rgb(173 93 132 / 0.25);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
 }
 @utility orb {
   display: inline-flex;
@@ -343,13 +392,14 @@
   border-radius: 999px;
   color: #fff;
   background:
-    radial-gradient(60% 60% at 35% 30%, rgb(255 255 255 / 0.55), transparent 60%),
-    radial-gradient(80% 80% at 70% 75%, rgb(248 188 255 / 0.65), transparent 70%),
-    linear-gradient(140deg, #b98af0, #7a45c2 55%, #a35dc0);
-  border: 1px solid rgb(255 255 255 / 0.35);
+    radial-gradient(55% 55% at 35% 28%, rgb(255 255 255 / 0.7), transparent 62%),
+    radial-gradient(80% 80% at 70% 78%, rgb(248 188 255 / 0.75), transparent 70%),
+    linear-gradient(140deg, #f3b6ee, #ad5d84 55%, #6e2f5e);
+  border: 1px solid rgb(255 255 255 / 0.45);
   box-shadow:
-    0 0 18px rgb(190 130 255 / 0.55),
-    inset 0 1px 0 rgb(255 255 255 / 0.5);
+    0 0 18px rgb(248 188 255 / 0.55),
+    inset 0 1px 1px rgb(255 255 255 / 0.7),
+    0 4px 10px rgb(0 0 0 / 0.35);
 }
 
 /* ---------- Night scope: the 3D globe screens (home + intro) invert the monochrome tokens ---------- */
@@ -412,30 +462,42 @@
     opacity 0.35s ease,
     transform 0.35s ease;
 }
+/* Not enough room above the pin (search bar): open the card below it instead. */
+.globe-pin[data-flip="true"] .globe-pop {
+  bottom: auto;
+  top: 8px;
+  flex-direction: column-reverse;
+  transform: translate(-50%, -8px) scale(0.94);
+  transform-origin: 50% 0%;
+}
 .globe-pin[data-show="true"] .globe-pop {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
 }
-/* Frosted pink-lilac card: blends with the glow, dark text keeps it readable */
+/* Transparent liquid-glass card: you see the globe through it; a lit rim, top sheen and shadow lift it off */
 .globe-card {
-  width: 196px;
+  width: 184px;
   padding: 12px;
-  border-radius: 22px;
-  color: #160d18;
-  background: linear-gradient(
-    160deg,
-    rgb(255 255 255 / 0.94) 0%,
-    rgb(252 228 255 / 0.9) 55%,
-    rgb(232 208 255 / 0.86) 100%
-  );
-  border: 1px solid rgb(255 255 255 / 0.85);
+  border-radius: 24px;
+  color: #fff;
+  background:
+    radial-gradient(140% 70% at 20% 0%, rgb(255 255 255 / 0.22), transparent 55%),
+    linear-gradient(
+      160deg,
+      rgb(255 255 255 / 0.14) 0%,
+      rgb(248 188 255 / 0.08) 50%,
+      rgb(173 93 132 / 0.12) 100%
+    );
+  border: 1px solid rgb(255 255 255 / 0.32);
   box-shadow:
-    0 12px 34px rgb(60 10 50 / 0.45),
-    0 0 24px rgb(248 188 255 / 0.25),
-    inset 0 1px 0 #fff;
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+    inset 0 1px 1px rgb(255 255 255 / 0.6),
+    inset 0 -12px 24px rgb(248 188 255 / 0.1),
+    0 16px 36px rgb(0 0 0 / 0.5),
+    0 0 28px rgb(173 93 132 / 0.25);
+  -webkit-backdrop-filter: blur(10px) saturate(170%);
+  backdrop-filter: blur(10px) saturate(170%);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.45);
   white-space: nowrap;
 }
 .globe-card-body {
@@ -450,12 +512,14 @@
 }
 .globe-card img {
   display: block;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   object-fit: cover;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgb(173 93 132 / 0.35);
+  border: 1.5px solid rgb(255 255 255 / 0.85);
+  box-shadow:
+    0 0 0 3px rgb(248 188 255 / 0.18),
+    0 4px 10px rgb(0 0 0 / 0.35);
   margin-bottom: 8px;
 }
 .globe-card b {
@@ -463,7 +527,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: var(--fs-3);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.2;
 }
 .globe-card small {
@@ -472,7 +536,7 @@
   text-overflow: ellipsis;
   margin-top: 2px;
   font-size: var(--fs-1);
-  color: #5c4a5e;
+  color: rgb(255 255 255 / 0.78);
 }
 .globe-card .globe-hood {
   display: inline-flex;
@@ -485,9 +549,10 @@
   border-radius: 999px;
   font-size: var(--fs-1);
   font-style: normal;
-  color: #4a3a4c;
-  background: rgb(255 255 255 / 0.7);
-  border: 1px solid rgb(173 93 132 / 0.18);
+  color: #fff;
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
 }
 .globe-card .globe-hood:empty {
   display: none;
@@ -502,20 +567,32 @@
   margin-top: 10px;
   border-radius: 999px;
   font-size: var(--fs-1);
-  letter-spacing: 0.02em;
-  color: #fff;
-  background: linear-gradient(120deg, #2a1730, #120a14);
-  border: 1px solid rgb(173 93 132 / 0.5);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+  font-weight: 500;
+  color: var(--ink);
+  text-shadow: none;
+  background:
+    radial-gradient(120% 90% at 50% -20%, rgb(255 255 255 / 0.95), transparent 60%),
+    linear-gradient(180deg, #fff3fd 0%, #f6cdf4 55%, #e6aee0 100%);
+  border: 1px solid rgb(255 255 255 / 0.85);
+  box-shadow:
+    inset 0 1px 1px #fff,
+    inset 0 -6px 12px rgb(173 93 132 / 0.25),
+    0 8px 18px rgb(173 93 132 / 0.35);
   cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
 }
 .globe-cta:hover {
-  background: linear-gradient(120deg, #3a2042, #1a0e1c);
+  filter: brightness(1.05);
+}
+.globe-cta:active {
+  transform: scale(0.97);
 }
 .globe-stem {
   width: 1px;
   height: 12px;
-  background: rgb(255 255 255 / 0.85);
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.85), rgb(248 188 255 / 0.4));
 }
 @media (prefers-reduced-motion: reduce) {
   .globe-pop,
@@ -539,4 +616,51 @@
 .globe-cta:focus-visible {
   outline: 2px solid var(--pink);
   outline-offset: 2px;
+}
+
+/* ---------- Smooth screen changes (View Transitions; browsers without it just switch) ---------- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(root) {
+  animation-name: vt-out;
+}
+::view-transition-new(root) {
+  animation-name: vt-in;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+    filter: blur(4px);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+    filter: blur(4px);
+  }
+}
+/* The globe fades in once its map has loaded, so it never pops in half-drawn. */
+.globe-host {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.globe-host[data-ready="true"] {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  .globe-host {
+    transition: none;
+  }
 }

@@ -44,19 +44,21 @@ export type Pin = {
  */
 export type View = { lambda: number; phi: number; k: number; altitude?: number };
 
-/** Where the home screen rests, and where the intro animation lands. */
-export const HOME_VIEW: View = { lambda: 0.1, phi: -51.6, k: 0, altitude: 1.2 };
+/** Where the home screen rests (globe ≈ half the screen), and where the intro animation lands. */
+export const HOME_VIEW: View = { lambda: 0.1, phi: -51.6, k: 0, altitude: 3.3 };
 
 const FOV_HALF = Math.tan((25 * Math.PI) / 180); // three.js default fov 50°
-const DOWN = 0.4; // push the globe down the screen so only its top arc shows (wireframe ⑤-3)
+const DOWN = 0.23; // sit the whole globe in the lower half, under the search bar
 const MIN_ALT = 0.005;
-const EARTH_NIGHT = "/textures/earth-night.jpg"; // NASA night lights (public domain), via three-globe examples
+const EARTH_NIGHT = "/textures/earth-night.jpg"; // NASA night lights (public domain), recoloured to the app's plum → pink
 const DOTS_HIDE_BELOW = 0.12; // hex dots get blobby up close: show only the coastline there
 const MAX_ALT = 4.5;
 const MAX_CARDS = 2;
 // Pop-up card footprint (px) used to keep cards from overlapping.
-const CARD_W = 220;
-const CARD_H = 170;
+const CARD_W = 196;
+const CARD_H = 200;
+/** Cards never rise above this share of the screen (the search bar lives above it). */
+const SAFE_TOP = 0.5;
 const CYCLE_MS = 1800;
 const RESUME_MS = 3500;
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -77,6 +79,8 @@ type Props = {
   onPreview?: (id: string | null) => void;
   previewId?: string | null;
 };
+
+type CardSpot = { x: number; y: number; flip: boolean };
 
 type PinEl = HTMLDivElement & { __pin?: Pin; __vis?: boolean; __shownAt?: number };
 
@@ -125,7 +129,7 @@ export function Globe({
     );
     // The globe's centre sits low on screen (view offset), so tilt the camera south a little
     // so the focus point lands in the upper, visible part of the globe.
-    const tilt = offRef.current ? clamp(12.5 * altitude, 0, 16) : 0;
+    const tilt = offRef.current ? clamp(12.5 * altitude, 0, 12) : 0;
     return { lat: clamp(-v.phi - tilt, -80, 80), lng: -v.lambda, altitude };
   };
 
@@ -205,10 +209,11 @@ export function Globe({
           };
           if (m.map) {
             m.emissiveMap = m.map;
-            m.emissive?.set("#ffb3ec");
-            m.emissiveIntensity = 1.15;
+            m.emissive?.set("#ffffff");
+            m.emissiveIntensity = 0.85;
             m.needsUpdate = true;
           }
+          hostEl.dataset["ready"] = "true"; // fade the globe in
         });
       worldRef.current = world;
 
@@ -216,7 +221,7 @@ export function Globe({
         color?: { set: (c: string) => void };
         shininess?: number;
       };
-      mat.color?.set?.("#c77aa6"); // multiplies the night-lights map → pink lights, plum-black seas
+      mat.color?.set?.("#ffffff"); // the map itself is already pink/plum
       mat.shininess = 6;
 
       const ctl = world.controls();
@@ -247,7 +252,7 @@ export function Globe({
       if (mode === "intro") {
         ctl.autoRotate = !reducedMotion;
         ctl.autoRotateSpeed = 7;
-        world.pointOfView({ lat: 20, lng: -HOME_VIEW.lambda - 120, altitude: 4.2 }, 0);
+        world.pointOfView({ lat: 20, lng: -HOME_VIEW.lambda - 120, altitude: 7 }, 0);
         timers.push(
           setTimeout(() => {
             ctl.autoRotate = false;
@@ -311,15 +316,7 @@ export function Globe({
         });
 
       // Pop-ups appear one by one as the globe turns.
-      const inView = (p: PinEl) => {
-        if (!p.__vis || !p.__pin) return null;
-        const s = world.getScreenCoords(p.__pin.lat, p.__pin.lng, 0.004);
-        const { w, h } = size();
-        const top = hlRef.current ? 230 : h * 0.42; // search results may sit higher, under the chip
-        if (!s || s.x < CARD_W / 2 || s.x > w - CARD_W / 2 || s.y < top || s.y > h - 24)
-          return null;
-        return s;
-      };
+      const inView = (p: PinEl) => placeCard(p, hlRef.current ? size().h * 0.56 : undefined);
       const cycle = () => {
         if (disposed) return;
         const all = [...els.current.values()];
@@ -335,23 +332,28 @@ export function Globe({
               !!s &&
               !placed.some((t) => Math.abs(t.x - s.x) < CARD_W && Math.abs(t.y - s.y) < CARD_H);
             if (fits) placed.push(s!);
+            if (s) p.dataset["flip"] = String(s.flip);
             p.dataset["show"] = String(fits);
           }
         } else {
           const shown = all.filter((p) => p.dataset["show"] === "true");
-          for (const p of shown) if (!inView(p)) p.dataset["show"] = "false";
+          for (const p of shown) {
+            const s = inView(p);
+            if (!s) p.dataset["show"] = "false";
+            else p.dataset["flip"] = String(s.flip);
+          }
           let live = all.filter((p) => p.dataset["show"] === "true");
           if (live.length >= MAX_CARDS) {
             const oldest = live.sort((a, b) => (a.__shownAt ?? 0) - (b.__shownAt ?? 0))[0];
             if (oldest) oldest.dataset["show"] = "false";
             live = live.filter((p) => p !== oldest);
           }
-          const taken = live.map((p) => inView(p)).filter(Boolean) as { x: number; y: number }[];
+          const taken = live.map((p) => inView(p)).filter(Boolean) as CardSpot[];
           const pool = all
             .filter((p) => p.dataset["show"] !== "true")
             .map((p) => ({ p, s: inView(p) }))
             .filter(
-              (c): c is { p: PinEl; s: { x: number; y: number } } =>
+              (c): c is { p: PinEl; s: CardSpot } =>
                 !!c.s &&
                 !taken.some(
                   (t) => Math.abs(t.x - c.s!.x) < CARD_W && Math.abs(t.y - c.s!.y) < CARD_H,
@@ -359,6 +361,7 @@ export function Globe({
             );
           const pick = pool[Math.floor(Math.random() * pool.length)];
           if (pick) {
+            pick.p.dataset["flip"] = String(pick.s.flip);
             pick.p.dataset["show"] = "true";
             pick.p.__shownAt = Date.now();
           }
@@ -367,6 +370,25 @@ export function Globe({
       };
       cycleT = setTimeout(cycle, 400);
     })();
+
+    /**
+     * Where a pin's card would go: above the pin, or below it when the search bar is in the way.
+     * Returns the card's centre (for overlap checks) or null when the pin is off-screen / no room.
+     */
+    function placeCard(p: PinEl, safeTop?: number): CardSpot | null {
+      const w = worldRef.current;
+      if (!w || !p.__vis || !p.__pin) return null;
+      const s = w.getScreenCoords(p.__pin.lat, p.__pin.lng, 0.004);
+      const { w: cw, h } = size();
+      const top = safeTop ?? h * SAFE_TOP;
+      if (!s || s.x < CARD_W / 2 || s.x > cw - CARD_W / 2 || s.y < top - 40 || s.y > h - 16)
+        return null;
+      if (s.y - CARD_H - 20 >= top) return { x: s.x, y: s.y - CARD_H / 2, flip: false };
+      // below the pin: also keep clear of the zoom buttons on the right
+      if (s.y + CARD_H + 20 <= h - 8 && s.x + CARD_W / 2 <= cw - 64)
+        return { x: s.x, y: s.y + CARD_H / 2, flip: true };
+      return null;
+    }
 
     function makePinEl(pin: Pin) {
       const el = document.createElement("div") as PinEl;
@@ -444,6 +466,7 @@ export function Globe({
           () => {
             for (const other of els.current.values())
               if (other !== el) other.dataset["show"] = "false";
+            el.dataset["flip"] = String(placeCard(el)?.flip ?? false);
             el.dataset["show"] = "true";
             el.__shownAt = Date.now();
           },
@@ -522,7 +545,7 @@ export function Globe({
       className="relative h-full w-full touch-none select-none overflow-hidden"
       style={{ cursor: mode === "home" ? "grab" : "default" }}
     >
-      <div ref={host} className="absolute inset-0" />
+      <div ref={host} className="globe-host absolute inset-0" />
       {mode === "home" && (
         <div className="glass absolute bottom-4 right-4 z-10 flex flex-col overflow-hidden rounded-full">
           <button

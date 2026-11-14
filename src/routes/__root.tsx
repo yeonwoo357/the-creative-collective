@@ -96,7 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Questrial&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap",
       },
       {
         rel: "stylesheet",
@@ -142,7 +142,7 @@ function RootComponent() {
       </div>
       <Toaster
         position="top-center"
-        toastOptions={{ style: { fontFamily: "Questrial, system-ui, sans-serif", fontSize: 15, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 999, background: "#000", color: "#fff" } }}
+        toastOptions={{ style: { fontFamily: "DM Sans, system-ui, sans-serif", fontSize: 15, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 999, background: "#000", color: "#fff" } }}
       />
     </QueryClientProvider>
   );

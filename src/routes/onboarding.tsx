@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { LocateFixed, MapPin } from "@/components/PixelIcons";
 import { writeLocal, ONBOARDING_KEY, PROFILE_KEY, EMPTY_PROFILE, type MyProfile, type Onboarding } from "@/lib/store";
 import { ProfileForm } from "@/components/ProfileForm";
-import namedLogo from "@/assets/named-logo.png.asset.json";
+import namedLogo from "@/assets/named-logo-white.png";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -55,7 +55,7 @@ function OnboardingPage() {
         ))}
       </div>
       <img
-        src={namedLogo.url}
+        src={namedLogo}
         alt="NAMED Collective"
         className="mx-auto mt-8 h-16 w-auto object-contain"
       />

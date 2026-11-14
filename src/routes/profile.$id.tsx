@@ -39,9 +39,9 @@ export const Route = createFileRoute("/profile/$id")({
 
 type Tab = "Work" | "About" | "Reviews";
 
-/* Silver frosted card (bento tiles) */
+/* Liquid-glass bento tile, tinted with the app's pink → plum accent */
 const SILVER =
-  "rounded-[28px] border border-white/60 bg-[linear-gradient(160deg,#f4f4f6_0%,#d9d9de_55%,#b9b9c0_100%)] text-[#141214] shadow-[inset_0_1px_0_#fff,0_12px_30px_rgb(0_0_0/0.35)]";
+  "glass rounded-[28px] bg-[radial-gradient(140%_80%_at_15%_0%,rgb(248_188_255/0.18),transparent_60%),linear-gradient(160deg,rgb(255_255_255/0.12),rgb(173_93_132/0.12))]";
 
 function ProfilePage() {
   const c = Route.useLoaderData();
@@ -53,9 +53,9 @@ function ProfilePage() {
   const contact = () => navigate({ to: "/compose/$id", params: { id: c.id } });
 
   return (
-    <div className="space-y-2 bg-[radial-gradient(120%_60%_at_50%_0%,#2a2a2e_0%,#0b0b0c_55%,#000_100%)] px-2 pb-8 pt-2">
+    <div className="space-y-2 bg-[radial-gradient(120%_60%_at_50%_0%,#2a1426_0%,#0c070c_55%,#000_100%)] px-2 pb-8 pt-2">
       {/* Header card */}
-      <section className="relative overflow-hidden rounded-[36px] border border-white/12 bg-[linear-gradient(180deg,#2b2b2f_0%,#121214_70%,#0a0a0b_100%)] px-5 pb-5 pt-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.12)]">
+      <section className="relative overflow-hidden rounded-[36px] border border-white/12 bg-[linear-gradient(180deg,#2a1a28_0%,#140c14_70%,#0a060a_100%)] px-5 pb-5 pt-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.12)]">
         <div className="flex items-center justify-between">
           <BackButton />
           <button
@@ -122,14 +122,11 @@ function ProfilePage() {
           <img
             src={c.avatar}
             alt=""
-            className="size-12 rounded-full border-2 border-white object-cover"
+            className="size-12 rounded-full border-2 border-white/80 object-cover"
           />
           <p className="mt-2 text-sm">{c.name}</p>
-          <p className="mt-1 line-clamp-4 text-xs text-[#3b383d]">{c.bio}</p>
-          <button
-            onClick={contact}
-            className="mt-auto flex min-h-11 w-full items-center justify-center rounded-full bg-[#141214] pt-0 text-xs text-white"
-          >
+          <p className="mt-1 line-clamp-4 text-xs text-white/75">{c.bio}</p>
+          <button onClick={contact} className="btn btn-primary mt-3 min-h-11 w-full text-xs">
             Contact
           </button>
         </section>
@@ -153,9 +150,9 @@ function ProfilePage() {
           className={`${SILVER} flex items-stretch gap-3 overflow-hidden p-3`}
         >
           <div className="flex flex-1 flex-col justify-center pl-2">
-            <span className="text-xs text-[#4a464c]">✦ Latest project</span>
+            <span className="text-xs text-white/65">✦ Latest project</span>
             <span className="mt-1 text-lg">{firstProject.title}</span>
-            <span className="mt-1 text-xs text-[#4a464c]">
+            <span className="mt-1 text-xs text-white/65">
               {firstProject.year} · {firstProject.style}
             </span>
           </div>

@@ -4,7 +4,7 @@ import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { SpaceBackground } from "@/components/SpaceBackground";
 import { PLACES, creatives, getCreative } from "@/lib/data";
-import namedLogo from "@/assets/named-logo.png.asset.json";
+import namedLogo from "@/assets/named-logo-white.png";
 import {
   ONBOARDING_KEY,
   avatarOf,
@@ -105,9 +105,9 @@ function Home() {
             )}
           </Link>
           <img
-            src={namedLogo.url}
+            src={namedLogo}
             alt="NAMED Collective"
-            className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-auto -translate-x-1/2 -translate-y-1/2 object-contain"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[68px] w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_0_12px_rgb(248_188_255/0.35)]"
           />
           <div className="flex gap-2">
             <Link to="/saved" aria-label="Saved profiles" className="icon-btn">
@@ -118,7 +118,11 @@ function Home() {
             </Link>
           </div>
         </div>
-        <Link to="/search" className="glass-bar pointer-events-auto mt-5 text-sm">
+      </div>
+
+      {/* Search sits a little above the middle of the screen, with the globe below it. */}
+      <div className="pointer-events-none absolute inset-x-0 top-[37%] z-10 -translate-y-1/2 px-4">
+        <Link to="/search" className="glass-bar pointer-events-auto text-sm">
           <span className="orb">
             <Search className="size-5" strokeWidth={2} />
           </span>
