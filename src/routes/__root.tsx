@@ -84,10 +84,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "NAMED Collective — find your people" },
-      { name: "description", content: "Discover alternative creatives near you on the NAMED Collective globe." },
+      {
+        name: "description",
+        content: "Discover alternative creatives near you on the NAMED Collective globe.",
+      },
       { name: "author", content: "NAMED Collective" },
       { property: "og:title", content: "NAMED Collective — find your people" },
-      { property: "og:description", content: "Discover alternative creatives near you on the NAMED Collective globe." },
+      {
+        property: "og:description",
+        content: "Discover alternative creatives near you on the NAMED Collective globe.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -96,7 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap",
       },
       {
         rel: "stylesheet",
@@ -142,7 +148,16 @@ function RootComponent() {
       </div>
       <Toaster
         position="top-center"
-        toastOptions={{ style: { fontFamily: "Manrope, system-ui, sans-serif", fontSize: 15, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 999, background: "#000", color: "#fff" } }}
+        toastOptions={{
+          style: {
+            fontFamily: "Courier Prime, ui-monospace, monospace",
+            fontSize: 15,
+            border: "1px solid rgba(255,255,255,0.18)",
+            borderRadius: 999,
+            background: "#000",
+            color: "#fff",
+          },
+        }}
       />
     </QueryClientProvider>
   );

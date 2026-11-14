@@ -129,7 +129,7 @@ function Home() {
           Search creatives, places…
         </Link>
         <p className="mt-2 text-center text-xs text-white/70">
-          Drag to spin · tap a pin to preview · double-tap to recentre
+          Drag to spin · tap a pin · double-tap to recentre
         </p>
         {highlight.length > 0 && (
           <div className="pointer-events-auto mt-3 flex justify-center">
