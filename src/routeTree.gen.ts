@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditProfileRouteImport } from './routes/edit-profile'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as IntroRouteImport } from './routes/intro'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as RecentRouteImport } from './routes/recent'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -33,6 +35,11 @@ const EditProfileRoute = EditProfileRouteImport.update({
   path: '/edit-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IntroRoute = IntroRouteImport.update({
   id: '/intro',
   path: '/intro',
@@ -46,6 +53,11 @@ const MeRoute = MeRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecentRoute = RecentRouteImport.update({
+  id: '/recent',
+  path: '/recent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SavedRoute = SavedRouteImport.update({
@@ -92,9 +104,11 @@ const ProjectIdRoute = ProjectIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/edit-profile': typeof EditProfileRoute
+  '/events': typeof EventsRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
+  '/recent': typeof RecentRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
@@ -107,9 +121,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/edit-profile': typeof EditProfileRoute
+  '/events': typeof EventsRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
+  '/recent': typeof RecentRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
@@ -123,9 +139,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/edit-profile': typeof EditProfileRoute
+  '/events': typeof EventsRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
+  '/recent': typeof RecentRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
@@ -140,9 +158,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/edit-profile'
+    | '/events'
     | '/intro'
     | '/me'
     | '/onboarding'
+    | '/recent'
     | '/saved'
     | '/search'
     | '/settings'
@@ -155,9 +175,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/edit-profile'
+    | '/events'
     | '/intro'
     | '/me'
     | '/onboarding'
+    | '/recent'
     | '/saved'
     | '/search'
     | '/settings'
@@ -170,9 +192,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/edit-profile'
+    | '/events'
     | '/intro'
     | '/me'
     | '/onboarding'
+    | '/recent'
     | '/saved'
     | '/search'
     | '/settings'
@@ -186,9 +210,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditProfileRoute: typeof EditProfileRoute
+  EventsRoute: typeof EventsRoute
   IntroRoute: typeof IntroRoute
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
+  RecentRoute: typeof RecentRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
@@ -215,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/intro': {
       id: '/intro'
       path: '/intro'
@@ -234,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recent': {
+      id: '/recent'
+      path: '/recent'
+      fullPath: '/recent'
+      preLoaderRoute: typeof RecentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/saved': {
@@ -298,9 +338,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditProfileRoute: EditProfileRoute,
+  EventsRoute: EventsRoute,
   IntroRoute: IntroRoute,
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
+  RecentRoute: RecentRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,

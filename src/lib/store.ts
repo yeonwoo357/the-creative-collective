@@ -62,6 +62,27 @@ export function useSaved() {
   return { saved, toggle, ready, isSaved: (id: string) => saved.includes(id) };
 }
 
+export const RECENT_KEY = "named.recent";
+const RECENT_MAX = 20;
+
+/** Profiles opened most recently, newest first. */
+export function useRecent() {
+  const [recent, setRecent, ready] = useLocal<string[]>(RECENT_KEY, []);
+  return { recent, clear: () => setRecent([]), ready };
+}
+export function pushRecent(id: string) {
+  const list = read<string[]>(RECENT_KEY, []).filter((r) => r !== id);
+  writeLocal(RECENT_KEY, [id, ...list].slice(0, RECENT_MAX));
+}
+
+export const RSVP_KEY = "named.rsvp";
+export function useRsvp() {
+  const [going, setGoing, ready] = useLocal<string[]>(RSVP_KEY, []);
+  const toggle = (id: string) =>
+    setGoing(going.includes(id) ? going.filter((g) => g !== id) : [...going, id]);
+  return { going, toggle, ready };
+}
+
 export function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -131,17 +152,51 @@ const H = 3600_000;
 /** Example threads so the Chat tab never looks empty. `now` is passed in (no module-scope clock). */
 export function seedChats(now: number): Conversation[] {
   return [
-    { id: "vesper-lux", creativeId: "vesper-lux", messages: [
-      { id: "s1", from: "me", text: "Hey! Loved your flash portraits, any chance of a shoot next month?", at: now - 26 * H, portfolio: true },
-      { id: "s2", from: "them", text: "Yesss love your stuff too. Free the 14th?", at: now - 3 * H },
-    ] },
-    { id: "onyx-reed", creativeId: "onyx-reed", messages: [
-      { id: "s3", from: "them", text: "Saw you saved me 👀 fancy a bleach session?", at: now - 50 * H },
-    ] },
-    { id: "kit-ember", creativeId: "kit-ember", messages: [
-      { id: "s4", from: "me", text: "Would you be up for DJing our zine launch in Dalston?", at: now - 120 * H, portfolio: true },
-      { id: "s5", from: "them", text: "Count me in. Send details x", at: now - 98 * H },
-    ] },
+    {
+      id: "vesper-lux",
+      creativeId: "vesper-lux",
+      messages: [
+        {
+          id: "s1",
+          from: "me",
+          text: "Hey! Loved your flash portraits, any chance of a shoot next month?",
+          at: now - 26 * H,
+          portfolio: true,
+        },
+        {
+          id: "s2",
+          from: "them",
+          text: "Yesss love your stuff too. Free the 14th?",
+          at: now - 3 * H,
+        },
+      ],
+    },
+    {
+      id: "onyx-reed",
+      creativeId: "onyx-reed",
+      messages: [
+        {
+          id: "s3",
+          from: "them",
+          text: "Saw you saved me 👀 fancy a bleach session?",
+          at: now - 50 * H,
+        },
+      ],
+    },
+    {
+      id: "kit-ember",
+      creativeId: "kit-ember",
+      messages: [
+        {
+          id: "s4",
+          from: "me",
+          text: "Would you be up for DJing our zine launch in Dalston?",
+          at: now - 120 * H,
+          portfolio: true,
+        },
+        { id: "s5", from: "them", text: "Count me in. Send details x", at: now - 98 * H },
+      ],
+    },
   ];
 }
 
@@ -152,7 +207,13 @@ export function sendMessage(
   text: string,
   opts: { portfolio?: boolean; now: number; id: string },
 ): Conversation[] {
-  const msg: Message = { id: opts.id, from: "me", text: text.trim(), at: opts.now, portfolio: opts.portfolio };
+  const msg: Message = {
+    id: opts.id,
+    from: "me",
+    text: text.trim(),
+    at: opts.now,
+    portfolio: opts.portfolio,
+  };
   const existing = chats.find((c) => c.creativeId === creativeId);
   const convo: Conversation = existing
     ? { ...existing, messages: [...existing.messages, msg] }
@@ -161,20 +222,30 @@ export function sendMessage(
 }
 
 /** Mute is a local demo preference only; there are no push notifications. */
-export function setConversationMuted(chats: Conversation[], conversationId: string, muted: boolean): Conversation[] {
+export function setConversationMuted(
+  chats: Conversation[],
+  conversationId: string,
+  muted: boolean,
+): Conversation[] {
   return chats.map((chat) => (chat.id === conversationId ? { ...chat, muted } : chat));
 }
 
 /** Toggle one message's like without changing the rest of the conversation. */
-export function toggleMessageLike(chats: Conversation[], conversationId: string, messageId: string): Conversation[] {
-  return chats.map((chat) => chat.id === conversationId
-    ? {
-        ...chat,
-        messages: chat.messages.map((message) => message.id === messageId
-          ? { ...message, liked: !message.liked }
-          : message),
-      }
-    : chat);
+export function toggleMessageLike(
+  chats: Conversation[],
+  conversationId: string,
+  messageId: string,
+): Conversation[] {
+  return chats.map((chat) =>
+    chat.id === conversationId
+      ? {
+          ...chat,
+          messages: chat.messages.map((message) =>
+            message.id === messageId ? { ...message, liked: !message.liked } : message,
+          ),
+        }
+      : chat,
+  );
 }
 
 export function useChats() {

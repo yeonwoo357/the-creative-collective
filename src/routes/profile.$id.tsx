@@ -1,10 +1,10 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bookmark, MapPin, MoreHorizontal, Send } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { getCreative } from "@/lib/data";
-import { useSaved } from "@/lib/store";
+import { useSaved, pushRecent } from "@/lib/store";
 
 export const Route = createFileRoute("/profile/$id")({
   loader: ({ params }) => {
@@ -51,6 +51,7 @@ function ProfilePage() {
   const navigate = useNavigate();
   const firstProject = c.projects[0];
   const contact = () => navigate({ to: "/compose/$id", params: { id: c.id } });
+  useEffect(() => pushRecent(c.id), [c.id]); // feeds Profile → Recently viewed
 
   return (
     <div className="space-y-2 bg-[radial-gradient(120%_60%_at_50%_0%,#2a1426_0%,#0c070c_55%,#000_100%)] px-2 pb-8 pt-2">

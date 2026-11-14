@@ -38,4 +38,5 @@ use the editor.
 - Screen changes cross-fade via the router's `defaultViewTransition` + `::view-transition-*` rules in `src/styles.css`.
 - Viewport: iPhone 16 (393 × 852). `.phone-frame` in `src/styles.css` frames the app on larger screens.
 - App icons come from `src/components/PixelIcons.tsx`: 1-bit pixel art on a 16×16 grid (crispEdges) with a rose pixel shadow offset one cell for a funky misprint look; `active` = pink pixels (star/heart also filled), `fill` fills the inside.
+- Profile tab (`/me`) follows a card layout: profile card → Portfolio card (Add work · Edit · View preview, Works/Layout row) → Saved · Recently viewed (`/recent`, `named.recent`, filled when a profile opens) · Events (`/events`, sample events, RSVPs in `named.rsvp`) → link to namedcollective.com.
 - Own profile (`named.profile`) and demo chats (`named.chats`, seeded on first read) live in localStorage via `src/lib/store.ts`; uploads are stored as shrunk data URLs, so `writeLocal` returns false when storage is full and callers must tell the user.

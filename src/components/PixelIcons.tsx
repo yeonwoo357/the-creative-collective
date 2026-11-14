@@ -534,3 +534,69 @@ export const Heart = icon(
   ]),
   true,
 );
+export const Clock = icon(
+  "clock",
+  join(
+    ring(7, 7, 6),
+    lines([
+      [7, 3],
+      [7, 7],
+      [10, 9],
+    ]),
+  ),
+);
+export const Ticket = icon(
+  "ticket",
+  join(
+    lines([
+      [0, 3],
+      [14, 3],
+      [14, 6],
+      [13, 7],
+      [14, 8],
+      [14, 11],
+      [0, 11],
+      [0, 8],
+      [1, 7],
+      [0, 6],
+      [0, 3],
+    ]),
+    cells([5, 5], [5, 7], [5, 9]),
+  ),
+);
+export const ArrowUpRight = icon(
+  "external",
+  lines(
+    [
+      [3, 11],
+      [11, 3],
+    ],
+    [
+      [5, 3],
+      [11, 3],
+      [11, 9],
+    ],
+  ),
+);
+export const ImageIcon = icon(
+  "image",
+  join(
+    lines(
+      [
+        [1, 2],
+        [14, 2],
+        [14, 13],
+        [1, 13],
+        [1, 2],
+      ],
+      [
+        [2, 11],
+        [5, 7],
+        [8, 10],
+        [10, 8],
+        [13, 11],
+      ],
+    ),
+    cells([10, 5], [11, 5]),
+  ),
+);
