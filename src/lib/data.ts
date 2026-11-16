@@ -1,4 +1,4 @@
-export type Category = "Tattoo" | "Hair" | "Piercing" | "Nails" | "Photographer" | "Stylist" | "DJ";
+export type Category = "Tattoo" | "Hair" | "Piercing" | "Nails" | "Photographer" | "Stylist" | "DJ" | "Art & Illustration";
 
 export type Project = {
   id: string;
@@ -146,6 +146,20 @@ const PHOTO_ALTS: Record<string, [string, string, string, string, string]> = {
     "Film gig photo of a guitarist mid-jump",
     "Night street portrait under a streetlight",
     "Crowd surfer at a sweaty gig"
+  ],
+  "rue-sorrel": [
+    "Illustrator's hand inking a gothic botanical drawing in a sketchbook",
+    "Studio wall covered in pinned-up black ink illustrations",
+    "Sketchbook spread of pen-and-ink moths, skulls and thorned roses",
+    "Etching-style ink illustration of a raven on a branch under a crescent moon",
+    "Sketchbook page of thorny vines and a crescent moon with a fountain pen"
+  ],
+  "cass-quill": [
+    "Hands pulling a red and black screen print off the frame",
+    "Print studio wall lined with red, pink and black illustrated posters",
+    "Pink and black screen-printed poster of a snake coiled around a skull",
+    "Risograph zine spread with collaged hands, eyes and flames",
+    "Gothic flaming heart with daggers illustrated on a drawing tablet"
   ]
 };
 
@@ -175,6 +189,8 @@ const seeds: Seed[] = [
   ["ivo-sterne", "Ivo Sterne", "DJ", "DJ", "Berlin", "Neukölln", 52.4812, 13.4351, ["Industrial", "EBM", "Late"], "EBM and industrial for people who don't sleep. Neukölln basements.", "ivosterne", "Club night|Basement"],
   ["wren-casket", "Wren Casket", "Nails", "Nail artist", "Manchester", "Northern Quarter", 53.4843, -2.2361, ["Goth", "Long", "Hand-painted"], "Long, pointy, hand-painted gothic nails. Northern Quarter, no appointments wasted.", "wren.casket.nails", "Hand-painted|Stiletto"],
   ["saint-moss", "Saint Moss", "Photographer", "Photographer", "Manchester", "Ancoats", 53.4838, -2.2241, ["Film", "Gigs", "Street"], "Gig photography and street portraits. Find me at the barrier.", "saintmoss.photo", "Gig series|Live"],
+  ["rue-sorrel", "Rue Sorrel", "Art & Illustration", "Illustrator", "London", "Bethnal Green", 51.5268, -0.0561, ["Ink", "Gothic", "Sketchbook"], "Gothic pen-and-ink drawings, prints and the odd book cover. Sketchbook always open.", "rue.sorrel.draws", "Ink illustration|Print"],
+  ["cass-quill", "Cass Quill", "Art & Illustration", "Illustrator & printmaker", "London", "Clapton", 51.5615, -0.0552, ["Posters", "Screen print", "Zines"], "Gig posters, zines and screen prints in two colours max. Dark, loud and hand-pulled.", "cassquill.print", "Gig poster|Screen print"],
 ];
 
 // Latest projects, written for each creative's own trade: [title, style, detail, description]
@@ -348,6 +364,14 @@ const projectSeeds: Record<string, ProjectSeed[]> = {
       "A reusable hand-painted set made to order and posted out from the Northern Quarter.",
     ],
   ],
+  "rue-sorrel": [
+    ["Moth & rose sketchbook", "Ink illustration", "Sketchbook", "A month of gothic botanicals drawn in one sketchbook, every page in fine-nib black ink."],
+    ["Raven etching print", "Gothic", "Print", "A raven under a crescent moon, drawn as an etching-style print in a run of 30."],
+  ],
+  "cass-quill": [
+    ["Snake & skull gig poster", "Gig poster", "Screen print", "A two-colour poster for a Clapton show, hand-pulled in a run of 50."],
+    ["Burn zine", "Zines", "Risograph", "A 20-page collage zine of hands, eyes and flames, printed on a riso in pink and black."],
+  ],
   "saint-moss": [
     [
       "From the barrier",
@@ -399,6 +423,10 @@ export const creatives: Creative[] = seeds.map((s, i) => {
   };
 });
 
+/** Mock "Verified" badge (prototype only, no real checks). */
+export const VERIFIED = new Set(["mira-vale", "vesper-lux", "jax-thorn", "kit-ember", "wren-casket", "rue-sorrel"]);
+export const isVerified = (id: string) => VERIFIED.has(id);
+
 export const getCreative = (id: string) => creatives.find((c) => c.id === id);
 export const getProject = (id: string) => {
   for (const c of creatives) {
@@ -427,19 +455,59 @@ export function distanceKm(a: [number, number], b: [number, number]) {
 
 export const formatKm = (km: number) => (km < 10 ? `${km.toFixed(1)} km` : `${Math.round(km)} km`);
 
-export const FILTERS = ["All", "Tattoo", "Hair", "Piercing", "Nails"] as const;
+export const FILTERS = ["All", "Tattoo", "Hair", "Piercing", "Nails", "Art & Illustration"] as const;
 export type Filter = (typeof FILTERS)[number];
 
+/** Tiny synonym list so loose words still find the right people (no AI, prototype only). */
+export const SYNONYMS: Record<string, string[]> = {
+  dark: ["blackwork", "goth", "gothic", "industrial", "ebm", "dark"],
+  goth: ["goth", "gothic", "dark"],
+  poster: ["poster", "posters", "illustration", "print"],
+  art: ["art", "illustration", "illustrator", "drawing"],
+  drawing: ["drawing", "illustration", "ink", "sketchbook"],
+  ink: ["ink", "tattoo", "illustration"],
+  tattoo: ["tattoo", "ink"],
+  haircut: ["hair", "cut", "mullet", "shag"],
+  music: ["dj", "techno", "breaks", "gig"],
+  photo: ["photo", "photographer", "35mm", "film", "flash"],
+};
+
+const haystack = (c: Creative) =>
+  [c.name, c.category, c.role, c.city, c.neighbourhood, c.bio, ...c.tags].join(" ").toLowerCase();
+
+/** Every word in the query (or one of its synonyms) must appear somewhere on the profile. */
+export function matchesQuery(text: string, query: string) {
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  return words.every((w) => [w, ...(SYNONYMS[w] ?? [])].some((v) => text.includes(v)));
+}
+
 export function searchCreatives(query: string, filter: Filter) {
-  const q = query.trim().toLowerCase();
   return creatives.filter((c) => {
     if (filter !== "All" && c.category !== filter && !c.tags.includes(filter)) return false;
-    if (!q) return true;
-    return [c.name, c.category, c.role, c.city, c.neighbourhood, ...c.tags]
-      .join(" ")
-      .toLowerCase()
-      .includes(q);
+    return matchesQuery(haystack(c), query);
   });
+}
+
+/** "For you": score by discipline + shared tags with saved / recently viewed profiles. */
+export function interestOf(c: Creative, savedIds: string[], recentIds: string[]) {
+  let best: { score: number; label: string } = { score: 0, label: "" };
+  const consider = (ids: string[], verb: string, weight: number) => {
+    for (const id of ids) {
+      const o = getCreative(id);
+      if (!o || o.id === c.id) continue;
+      const score = ((o.category === c.category ? 2 : 0) + c.tags.filter((t) => o.tags.includes(t)).length) * weight;
+      if (score > best.score) best = { score, label: `Because you ${verb} ${o.name}` };
+    }
+  };
+  consider(savedIds, "saved", 2);
+  consider(recentIds, "viewed", 1);
+  return best;
+}
+
+/** Neighbourhood centroid for a place name (falls back to the city centre). Never exact. */
+export function hoodCoords(hood: string | undefined, city = "London"): [number, number] {
+  const p = PLACES.find((x) => x.name.toLowerCase() === (hood ?? "").trim().toLowerCase());
+  return p ? [p.lat, p.lng] : (CITY_COORDS[city.toLowerCase()] ?? CITY_COORDS.london!);
 }
 
 /** Neighbourhood labels drawn on the globe (centroids only, never addresses). */
@@ -456,7 +524,7 @@ export const PLACES: { name: string; lat: number; lng: number }[] = [
 ];
 
 export const NEIGHBOURHOODS = Array.from(new Set(PLACES.filter((p) => p.lat > 51.3 && p.lat < 51.7).map((p) => p.name))).sort();
-export const DISCIPLINES = ["Tattoo", "Hair", "Piercing", "Nails", "Photographer", "Stylist", "DJ", "Designer", "Model", "Other"];
+export const DISCIPLINES = ["Tattoo", "Hair", "Piercing", "Nails", "Photographer", "Stylist", "DJ", "Art & Illustration", "Designer", "Model", "Other"];
 
 /** Search work: every project from creatives that match, plus projects whose own title/style matches. */
 export function searchWork(query: string, filter: Filter) {
@@ -465,7 +533,7 @@ export function searchWork(query: string, filter: Filter) {
   const out: { creative: Creative; project: Project }[] = [];
   for (const c of creatives)
     for (const p of c.projects) {
-      const own = q && (filter === "All" || c.category === filter) && [p.title, p.style, p.placement].join(" ").toLowerCase().includes(q);
+      const own = q && (filter === "All" || c.category === filter) && matchesQuery([p.title, p.style, p.placement].join(" ").toLowerCase(), q);
       if (people.has(c.id) || own) out.push({ creative: c, project: p });
     }
   return out;
