@@ -31,8 +31,130 @@ export type Creative = {
   reviews: { by: string; text: string }[];
 };
 
-const img = (seed: string, w = 600, h = 600) =>
-  `https://picsum.photos/seed/named-${seed}/${w}/${h}`;
+const photo = (id: string, part: string) => `/images/${id}-${part}.jpg`;
+
+/** Local photos per creative: [avatar, cover, work 1, work 2, work 3] with alt text. */
+const PHOTO_ALTS: Record<string, [string, string, string, string, string]> = {
+  "mira-vale": [
+    "Tattoo artist with tattooed arms in a dim studio",
+    "Dark tattoo studio with ink bottles and a tattoo machine",
+    "Fine-line moth tattoo under a blackwork moon on a forearm",
+    "Fine-line tattoo flash sheet pinned to a studio wall",
+    "Fresh blackwork geometric tattoo on a shoulder"
+  ],
+  "jax-thorn": [
+    "Side profile showing a curated ear stack",
+    "Tray of titanium body jewellery in a piercing studio",
+    "Seven-piece titanium ear stack from helix to lobe",
+    "Septum ring piercing close-up",
+    "Titanium piercing jewellery on black velvet"
+  ],
+  "onyx-reed": [
+    "Bleached choppy mullet from behind",
+    "Dim hair salon with a barber chair and bleach bowls",
+    "Icy platinum shag haircut, back and side",
+    "Black and red dyed mullet in profile",
+    "Bleach being painted onto foiled hair"
+  ],
+  "sable-kin": [
+    "Hands with chrome drip nails",
+    "Nail desk with gel polish, charms and a UV lamp",
+    "Liquid chrome Gel-X nails with 3D drips and charms",
+    "Purple chrome almond nails with 3D flowers",
+    "Gel nails curing under a UV lamp"
+  ],
+  "vesper-lux": [
+    "Photographer behind a film camera with the flash up",
+    "Darkroom with film negatives under red safelight",
+    "Direct-flash 35mm portrait in black leather",
+    "Flash snapshot of two goth friends on a sofa",
+    "Backstage flash photo of ringed hands on a mic stand"
+  ],
+  "rook-hale": [
+    "Traditional-tattooed hands holding a tattoo machine",
+    "Wall of traditional tattoo flash in an old-school shop",
+    "Traditional swallow and dagger tattoo on an upper arm",
+    "Fresh traditional panther head tattoo on a calf",
+    "Traditional rose and skull hand tattoo"
+  ],
+  "nyx-calder": [
+    "Stylist sorting a rail of black archive clothes",
+    "Styling studio with rails of archive denim and leather",
+    "Flat-lay of reworked denim jacket with chains and boots",
+    "Archive denim look in a concrete stairwell",
+    "Corset and sheer layers with safety pins on a mannequin"
+  ],
+  "kit-ember": [
+    "DJ silhouetted at the decks under red club light",
+    "Warehouse rave crowd under strobe lights",
+    "Hands on a DJ mixer and turntable",
+    "Crowd's raised hands under green lasers",
+    "Crate of vinyl records under red light"
+  ],
+  "lune-marrow": [
+    "Gloved hands tattooing dotwork by candlelight",
+    "Tattoo studio with ornamental mandala artwork",
+    "Ornamental dotwork mandala tattoo on a hand",
+    "Conch and lobe piercings linked by a titanium chain",
+    "Ornamental dotwork band tattoo on a thigh"
+  ],
+  "ash-veil": [
+    "Long locs tied up, seen from behind",
+    "Natural hair salon station with combs and oils",
+    "Sculpted loc updo with silver cuffs",
+    "Long black and burgundy box braids",
+    "Hands retwisting locs at the root"
+  ],
+  "dove-cassidy": [
+    "Tattooed hands sketching botanical designs by a sea window",
+    "Seaside pier and pebble beach at dusk",
+    "Fine-line wildflower tattoo wrapping an ankle",
+    "Micro fine-line fern tattoo on a wrist",
+    "Pressed flowers beside a botanical flash sheet"
+  ],
+  "pike-rowan": [
+    "Gloved hands holding a sterile needle and clamp",
+    "Piercing studio with sterile tray and bench",
+    "Industrial piercing with a curved titanium bar",
+    "Stretched lobe with a black stone plug",
+    "Eyebrow and bridge piercings close-up"
+  ],
+  "vex-hollow": [
+    "Neo-tribal blackwork tattoo across neck and shoulders",
+    "Concrete Berlin tattoo studio with blackwork art",
+    "Neo-tribal blackwork back piece",
+    "Large-scale blackwork sleeve tattoo",
+    "Freehand neo-tribal design drawn on a leg"
+  ],
+  "ivo-sterne": [
+    "DJ silhouetted in a basement booth under blue light",
+    "Basement techno club under red strobe and fog",
+    "Hands patching a modular synth and drum machine",
+    "Dancers in a smoky basement under strobe",
+    "Concrete stairs down to a red-lit club door"
+  ],
+  "wren-casket": [
+    "Hand with long black stiletto nails on lace",
+    "Gothic nail desk with candles and polish",
+    "Stained-glass cathedral window stiletto nails",
+    "Hand-painted bat wing press-on nails",
+    "Blood-red spiderweb stiletto nails"
+  ],
+  "saint-moss": [
+    "Gig photographer at the barrier facing the stage",
+    "Rainy night street lined with red-brick warehouses",
+    "Film gig photo of a guitarist mid-jump",
+    "Night street portrait under a streetlight",
+    "Crowd surfer at a sweaty gig"
+  ]
+};
+
+const ALT_BY_SRC = new Map<string, string>();
+for (const [id, alts] of Object.entries(PHOTO_ALTS))
+  ["avatar", "cover", "w0", "w1", "w2"].forEach((part, i) => ALT_BY_SRC.set(photo(id, part), alts[i]!));
+
+/** Descriptive alt text for a seeded creative photo, if known. */
+export const altOf = (src: string) => ALT_BY_SRC.get(src);
 
 type Seed = [string, string, Category, string, string, string, number, number, string[], string, string, string];
 // id, name, category, role, city, neighbourhood, lat, lng (neighbourhood centroid, jittered), tags, bio, ig, project style/placement
@@ -239,7 +361,8 @@ const projectSeeds: Record<string, ProjectSeed[]> = {
 export const creatives: Creative[] = seeds.map((s, i) => {
   const [id, name, category, role, city, neighbourhood, lat, lng, tags, bio, instagram, sp] = s;
   const [style = "", placement = ""] = sp.split("|");
-  const work = Array.from({ length: 4 + (i % 3) }, (_, k) => img(`${id}-w${k}`));
+  const shots = [photo(id, "w0"), photo(id, "w1"), photo(id, "w2"), photo(id, "cover")];
+  const work = shots.slice(0, 3);
   const projects: Project[] = (projectSeeds[id] ?? [[`${style} work`, style, placement, ""]]).map(
     ([title, pStyle, pDetail, description], k) => ({
       id: `${id}-p${k + 1}`,
@@ -248,7 +371,7 @@ export const creatives: Creative[] = seeds.map((s, i) => {
       style: pStyle,
       placement: pDetail,
       description,
-      images: Array.from({ length: 4 }, (_, n) => img(`${id}-p${k}-${n}`, 800, 800)),
+      images: Array.from({ length: 4 }, (_, n) => shots[(n + k) % shots.length]!),
     }),
   );
   return {
@@ -264,8 +387,8 @@ export const creatives: Creative[] = seeds.map((s, i) => {
     bio,
     instagram,
     tiktok: instagram,
-    avatar: img(`${id}-avatar`, 200, 200),
-    cover: img(`${id}-cover`, 800, 400),
+    avatar: photo(id, "avatar"),
+    cover: photo(id, "cover"),
     work,
     layout: i % 3 === 0 ? "carousel" : "grid",
     projects,
