@@ -1,3 +1,4 @@
+import { altOf } from "@/lib/data";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Bookmark, MapPin, MoreHorizontal, Send } from "@/components/PixelIcons";
@@ -75,7 +76,7 @@ function ProfilePage() {
           <div className="rounded-full p-[3px] shadow-[0_0_0_1px_rgb(255_255_255/0.5),0_0_30px_rgb(255_255_255/0.08)]">
             <img
               src={c.avatar}
-              alt={c.name}
+              alt={altOf(c.avatar) ?? c.name}
               className="size-28 rounded-full border-2 border-white/80 bg-muted object-cover"
             />
           </div>
@@ -133,7 +134,7 @@ function ProfilePage() {
         <section className="relative min-h-[220px] overflow-hidden rounded-[28px] border border-white/40">
           <img
             src={c.cover}
-            alt={`${c.name} cover`}
+            alt={altOf(c.cover) ?? `${c.name} cover`}
             className="absolute inset-0 size-full object-cover"
           />
           <span className="glass absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-black/40 px-3 py-1 text-xs">
@@ -157,7 +158,7 @@ function ProfilePage() {
             </span>
           </div>
           {c.work[0] && (
-            <img src={c.work[0]} alt="" className="size-28 rounded-[20px] object-cover" />
+            <img src={c.work[0]} alt={altOf(c.work[0] ?? "") ?? ""} className="size-28 rounded-[20px] object-cover" />
           )}
         </Link>
       )}
@@ -190,7 +191,7 @@ function ProfilePage() {
               >
                 <img
                   src={src}
-                  alt={`${c.name} work ${i + 1}`}
+                  alt={altOf(src) ?? `${c.name} work ${i + 1}`}
                   loading="lazy"
                   className="size-full object-cover transition-opacity hover:opacity-85"
                 />

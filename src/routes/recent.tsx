@@ -1,3 +1,4 @@
+import { altOf } from "@/lib/data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BackButton } from "@/components/TopBar";
 import { getCreative } from "@/lib/data";
@@ -50,7 +51,7 @@ function RecentPage() {
                 params={{ id: c.id }}
                 className="flex min-h-16 items-center gap-3 border-b border-white/10 px-4 py-3 hover:bg-white/5"
               >
-                <img src={c.avatar} alt="" className="size-11 rounded-full object-cover" />
+                <img src={c.avatar} alt={altOf(c.avatar) ?? ""} className="size-11 rounded-full object-cover" />
                 <span>
                   <span className="block font-bold">{c.name}</span>
                   <span className="block text-xs text-muted-foreground">

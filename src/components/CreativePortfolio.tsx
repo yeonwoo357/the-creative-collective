@@ -1,3 +1,4 @@
+import { altOf } from "@/lib/data";
 import { Link } from "@tanstack/react-router";
 import { Bookmark, Instagram, MapPin, Music2 } from "@/components/PixelIcons";
 import { Portfolio } from "@/components/Portfolio";
@@ -15,13 +16,13 @@ export function CreativePortfolio({ creative: c }: { creative: Creative }) {
   return (
     <div className="pb-8">
       <div className="aspect-[2/1] w-full bg-muted">
-        <img src={c.cover} alt={`${c.name} cover`} className="size-full object-cover" />
+        <img src={c.cover} alt={altOf(c.cover) ?? `${c.name} cover`} className="size-full object-cover" />
       </div>
 
       <div className="px-4">
         <img
           src={c.avatar}
-          alt={c.name}
+          alt={altOf(c.avatar) ?? c.name}
           className="relative -mt-11 size-[88px] rounded-full border-2 border-background bg-muted object-cover"
         />
         <h2 className="mt-3 text-2xl font-semibold">{c.name}</h2>

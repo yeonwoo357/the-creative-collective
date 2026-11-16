@@ -1,11 +1,12 @@
+import { altOf } from "@/lib/data";
 import { useRef, useState } from "react";
 import type { Media } from "@/lib/store";
 
 export function MediaItem({ m, alt, className = "" }: { m: Media; alt: string; className?: string }) {
   return m.type === "video" ? (
-    <video src={m.src} aria-label={alt} controls muted playsInline className={`object-cover ${className}`} />
+    <video src={m.src} aria-label={altOf(m.src) ?? alt} controls muted playsInline className={`object-cover ${className}`} />
   ) : (
-    <img src={m.src} alt={alt} className={`object-cover ${className}`} />
+    <img src={m.src} alt={altOf(m.src) ?? alt} className={`object-cover ${className}`} />
   );
 }
 

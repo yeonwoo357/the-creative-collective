@@ -1,3 +1,4 @@
+import { altOf } from "@/lib/data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
@@ -158,7 +159,7 @@ function Home() {
                   <img
                     key={src}
                     src={src}
-                    alt={`${pc.name} work ${i + 1}`}
+                    alt={altOf(src) ?? `${pc.name} work ${i + 1}`}
                     className="aspect-square w-full object-cover"
                   />
                 ))}

@@ -1,3 +1,4 @@
+import { altOf } from "@/lib/data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Globe2, Search as SearchIcon } from "@/components/PixelIcons";
@@ -84,7 +85,7 @@ function SearchPage() {
             <div className="grid grid-cols-3 gap-px bg-muted">
               {work.map(({ creative, project }) => (
                 <Link key={project.id} to="/project/$id" params={{ id: project.id }} className="group relative aspect-square bg-muted">
-                  <img src={project.images[0]} alt={`${project.title} by ${creative.name}`} loading="lazy" className="size-full object-cover group-hover:opacity-85" />
+                  <img src={project.images[0]} alt={altOf(project.images[0] ?? "") ?? `${project.title} by ${creative.name}`} loading="lazy" className="size-full object-cover group-hover:opacity-85" />
                 </Link>
               ))}
             </div>
@@ -95,7 +96,7 @@ function SearchPage() {
           {results.map(({ c, km }) => (
             <li key={c.id} className="border-b border-muted">
               <Link to="/profile/$id" params={{ id: c.id }} className="flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-muted">
-                <img src={c.avatar} alt="" className="size-11 rounded-full object-cover" />
+                <img src={c.avatar} alt={altOf(c.avatar) ?? ""} className="size-11 rounded-full object-cover" />
                 <span className="flex-1">
                   <span className="block font-semibold">{c.name}</span>
                   <span className="block text-xs text-muted-foreground">{c.role} · {c.neighbourhood}, {c.city}</span>

@@ -1,3 +1,4 @@
+import { altOf } from "@/lib/data";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { MoreHorizontal } from "@/components/PixelIcons";
@@ -59,7 +60,7 @@ function ProjectPage() {
         aria-label="Project images"
       >
         {project.images.map((src, i) => (
-          <img key={src} src={src} alt={`${project.title}, image ${i + 1} of ${project.images.length}`} className="size-full shrink-0 snap-center object-cover" />
+          <img key={src} src={src} alt={altOf(src) ?? `${project.title}, image ${i + 1} of ${project.images.length}`} className="size-full shrink-0 snap-center object-cover" />
         ))}
       </div>
       <div className="flex justify-center gap-1">
@@ -74,7 +75,7 @@ function ProjectPage() {
         <p className="text-sm text-muted-foreground">{project.year} · {project.style} · {project.placement}</p>
         <p className="mt-4 text-sm leading-relaxed">{project.description}</p>
         <Link to="/profile/$id" params={{ id: creative.id }} className="mt-4 flex min-h-14 items-center gap-3 rounded-md border border-dashed border-line px-3 py-2 text-sm hover:bg-muted">
-          <img src={creative.avatar} alt="" className="size-9 rounded-full object-cover" />
+          <img src={creative.avatar} alt={altOf(creative.avatar) ?? ""} className="size-9 rounded-full object-cover" />
           <span className="flex-1">
             <span className="block font-semibold">{creative.name}</span>
             <span className="block text-xs text-muted-foreground">{creative.role} · {creative.neighbourhood}</span>
