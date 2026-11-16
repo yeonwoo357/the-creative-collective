@@ -478,7 +478,7 @@
 }
 /* Transparent liquid-glass card: you see the globe through it; a lit rim, top sheen and shadow lift it off */
 .globe-card {
-  width: 184px;
+  width: 224px;
   padding: 12px;
   border-radius: 24px;
   color: #fff;
@@ -511,17 +511,42 @@
   text-align: left;
   cursor: pointer;
 }
-.globe-card img {
-  display: block;
-  width: 40px;
-  height: 40px;
+.globe-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.globe-head > span {
+  min-width: 0;
+}
+.globe-card .globe-av {
+  flex: none;
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
   object-fit: cover;
   border: 1.5px solid rgb(255 255 255 / 0.85);
   box-shadow:
     0 0 0 3px rgb(248 188 255 / 0.18),
     0 4px 10px rgb(0 0 0 / 0.35);
-  margin-bottom: 8px;
+}
+.globe-work {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.globe-work:empty {
+  display: none;
+}
+.globe-work img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
 }
 .globe-card b {
   display: block;
