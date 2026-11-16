@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { SpaceBackground } from "@/components/SpaceBackground";
-import { PLACES, creatives, getCreative } from "@/lib/data";
+import { PLACES, creatives, getCreative, altOf } from "@/lib/data";
 import namedLogo from "@/assets/named-logo-white.png";
 import {
   ONBOARDING_KEY,
@@ -158,7 +158,7 @@ function Home() {
                   <img
                     key={src}
                     src={src}
-                    alt={`${pc.name} work ${i + 1}`}
+                    alt={altOf(src) ?? `${pc.name} work ${i + 1}`}
                     className="aspect-square w-full object-cover"
                   />
                 ))}

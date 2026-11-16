@@ -4,7 +4,7 @@ import { Copy, Instagram } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { MyPortfolioCard } from "@/components/MyPortfolioCard";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import { ONBOARDING_KEY, sendMessage, useChats, useLocal, useMyProfile, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/compose/$id")({
@@ -50,7 +50,7 @@ function ComposePage() {
         <h1 className="text-xl font-semibold">Say hi to {first}</h1>
       </div>
       <div className="mt-4 flex items-center gap-3">
-        <img src={c.avatar} alt={c.name} className="size-10 rounded-full object-cover" />
+        <img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-10 rounded-full object-cover" />
         <div>
           <p className="font-semibold">{c.name}</p>
           <p className="text-xs text-muted-foreground">{c.role} · {c.neighbourhood}</p>

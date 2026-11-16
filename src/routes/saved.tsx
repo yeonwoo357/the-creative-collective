@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bookmark } from "@/components/PixelIcons";
 import { BackButton } from "@/components/TopBar";
-import { creatives } from "@/lib/data";
+import { creatives, altOf } from "@/lib/data";
 import { useSaved } from "@/lib/store";
 
 export const Route = createFileRoute("/saved")({
@@ -35,7 +35,7 @@ function SavedPage() {
           {list.map((c) => (
             <li key={c.id} className="flex items-center border-b border-muted pr-2">
               <Link to="/profile/$id" params={{ id: c.id }} className="flex min-h-16 flex-1 items-center gap-3 px-4 py-3 hover:bg-muted">
-                <img src={c.avatar} alt="" className="size-11 rounded-full object-cover" />
+                <img src={c.avatar} alt={altOf(c.avatar) ?? ""} className="size-11 rounded-full object-cover" />
                 <span>
                   <span className="block font-semibold">{c.name}</span>
                   <span className="block text-xs text-muted-foreground">{c.role} · {c.neighbourhood}, {c.city}</span>

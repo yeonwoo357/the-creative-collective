@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/TopBar";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import { timeAgo, useChats } from "@/lib/store";
 
 export const Route = createFileRoute("/chat/")({
@@ -42,7 +42,7 @@ function ChatList() {
             return (
               <li key={ch.id} className="border-b border-muted">
                 <Link to="/chat/$id" params={{ id: ch.id }} className="flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-muted">
-                  <img src={c.avatar} alt="" className="size-11 rounded-full object-cover" />
+                  <img src={c.avatar} alt={altOf(c.avatar) ?? ""} className="size-11 rounded-full object-cover" />
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">{c.name}</span>
                     <span className="block truncate text-sm text-muted-foreground">

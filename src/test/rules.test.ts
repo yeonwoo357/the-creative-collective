@@ -60,3 +60,17 @@ describe("search work", () => {
     expect(searchWork("mullets", "All").map((x) => x.creative.id)).toContain("onyx-reed");
   });
 });
+
+describe("creative photos", () => {
+  it("are local, described, and never shared between profiles", async () => {
+    const { creatives, altOf } = await import("@/lib/data");
+    const owner = new Map<string, string>();
+    for (const c of creatives)
+      for (const src of [c.avatar, c.cover, ...c.work, ...c.projects.flatMap((p) => p.images)]) {
+        expect(src.startsWith("/images/")).toBe(true);
+        expect(altOf(src)).toBeTruthy();
+        expect(owner.get(src) ?? c.id).toBe(c.id);
+        owner.set(src, c.id);
+      }
+  });
+});

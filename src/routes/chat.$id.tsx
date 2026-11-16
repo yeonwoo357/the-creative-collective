@@ -17,7 +17,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import {
   ONBOARDING_KEY,
   sendMessage,
@@ -116,7 +116,7 @@ function Thread() {
           className="flex min-h-11 min-w-0 flex-1 items-center gap-3"
           aria-label={`View ${c.name}'s profile`}
         >
-          <img src={c.avatar} alt="" className="size-10 shrink-0 rounded-full object-cover" />
+          <img src={c.avatar} alt={altOf(c.avatar) ?? ""} className="size-10 shrink-0 rounded-full object-cover" />
           <span className="min-w-0">
             <span className="block truncate font-semibold">{c.name}</span>
             <span className="block truncate text-xs text-muted-foreground">{c.role} · {c.neighbourhood}</span>
@@ -172,7 +172,7 @@ function Thread() {
               const mine = message.from === "me";
               return (
                 <div key={message.id} className={`flex items-end gap-2 ${mine ? "justify-end" : "justify-start"}`}>
-                  {!mine && <img src={c.avatar} alt="" className="mb-6 size-8 shrink-0 rounded-full object-cover" />}
+                  {!mine && <img src={c.avatar} alt={altOf(c.avatar) ?? ""} className="mb-6 size-8 shrink-0 rounded-full object-cover" />}
                   <div className={`flex max-w-[80%] flex-col ${mine ? "items-end" : "items-start"}`}>
                     <div
                       onPointerUp={() => onMessagePointerUp(message.id)}
