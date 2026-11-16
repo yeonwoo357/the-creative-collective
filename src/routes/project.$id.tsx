@@ -1,10 +1,9 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { MoreHorizontal } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
-import { getProject } from "@/lib/data";
+import { getProject, altOf } from "@/lib/data";
 
 export const Route = createFileRoute("/project/$id")({
   loader: ({ params }) => {

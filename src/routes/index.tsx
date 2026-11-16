@@ -1,10 +1,9 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { SpaceBackground } from "@/components/SpaceBackground";
-import { PLACES, creatives, getCreative } from "@/lib/data";
+import { PLACES, creatives, getCreative, altOf } from "@/lib/data";
 import namedLogo from "@/assets/named-logo-white.png";
 import {
   ONBOARDING_KEY,

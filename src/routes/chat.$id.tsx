@@ -1,4 +1,3 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Heart, MessageCircle, MoreHorizontal, Send, User } from "@/components/PixelIcons";
@@ -18,7 +17,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import {
   ONBOARDING_KEY,
   sendMessage,

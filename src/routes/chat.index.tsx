@@ -1,8 +1,7 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/TopBar";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import { timeAgo, useChats } from "@/lib/store";
 
 export const Route = createFileRoute("/chat/")({

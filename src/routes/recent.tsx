@@ -1,7 +1,6 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BackButton } from "@/components/TopBar";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import { useRecent } from "@/lib/store";
 
 export const Route = createFileRoute("/recent")({

@@ -1,10 +1,9 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Bookmark, MapPin, MoreHorizontal, Send } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import { useSaved, pushRecent } from "@/lib/store";
 
 export const Route = createFileRoute("/profile/$id")({

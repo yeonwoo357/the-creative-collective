@@ -1,11 +1,10 @@
-import { altOf } from "@/lib/data";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Copy, Instagram } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { MyPortfolioCard } from "@/components/MyPortfolioCard";
-import { getCreative } from "@/lib/data";
+import { getCreative, altOf } from "@/lib/data";
 import { ONBOARDING_KEY, sendMessage, useChats, useLocal, useMyProfile, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/compose/$id")({
