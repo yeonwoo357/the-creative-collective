@@ -46,7 +46,11 @@ const pins: Pin[] = creatives.map((c) => ({
   subtitle: c.role,
   place: `${c.neighbourhood}, ${c.city}`,
   avatar: c.avatar,
+  avatarAlt: altOf(c.avatar),
+  work: c.work.slice(0, 3).map((src, i) => ({ src, alt: altOf(src) ?? `${c.name} work ${i + 1}` })),
 }));
+
+const DISC = DISCIPLINES.filter((d) => creatives.some((c) => c.category === d));
 
 function Home() {
   const { ids } = Route.useSearch();
@@ -62,7 +66,13 @@ function Home() {
 
   const [preview, setPreview] = useState<string | null>(null);
   const hideT = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const pc = preview ? getCreative(preview) : undefined;
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+  const term = q.trim().toLowerCase();
+  const sugPeople = useMemo(() => (term ? searchCreatives(q, "All") : creatives).slice(0, 4), [q, term]);
+  const sugDisc = DISC.filter((d) => !term || d.toLowerCase().includes(term)).slice(0, 4);
+  const sugHoods = NEIGHBOURHOODS.filter((n) => !term || n.toLowerCase().includes(term)).slice(0, 4);
+  const goSearch = (value = q) => navigate({ to: "/search", search: value.trim() ? { q: value.trim() } : {} });
   const openProfile = (id: string) => navigate({ to: "/profile/$id", params: { id } });
 
   const highlight = useMemo(() => (ids ? ids.split(",") : []), [ids]);
@@ -122,12 +132,90 @@ function Home() {
 
       {/* Search sits a little above the middle of the screen, with the globe below it. */}
       <div className="pointer-events-none absolute inset-x-0 top-[30%] z-10 -translate-y-1/2 px-4">
-        <Link to="/search" className="glass-bar pointer-events-auto text-sm">
-          <span className="orb">
-            <Search className="size-5" strokeWidth={2} />
-          </span>
-          Search creatives, places…
-        </Link>
+        <form
+          role="search"
+          className="pointer-events-auto relative"
+          onSubmit={(e) => {
+            e.preventDefault();
+            goSearch();
+          }}
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+          }}
+        >
+          <label className="glass-bar text-sm">
+            <span className="orb">
+              <Search className="size-5" strokeWidth={2} />
+            </span>
+            <span className="sr-only">Search creatives, places</span>
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
+              placeholder="Search creatives, places…"
+              aria-expanded={open}
+              aria-controls="home-suggest"
+              className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-white/70"
+            />
+          </label>
+          {open && (
+            <div
+              id="home-suggest"
+              className="glass absolute inset-x-0 top-full z-30 mt-2 max-h-[52vh] overflow-y-auto rounded-[22px] p-2"
+            >
+              {sugPeople.length > 0 && (
+                <>
+                  <p className="label px-2 pb-1 pt-1 text-white/60">Creatives</p>
+                  {sugPeople.map((c) => (
+                    <Link
+                      key={c.id}
+                      to="/profile/$id"
+                      params={{ id: c.id }}
+                      className="flex min-h-11 items-center gap-3 rounded-2xl px-2 hover:bg-white/10"
+                    >
+                      <img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-8 rounded-full object-cover" />
+                      <span className="min-w-0 flex-1 truncate">
+                        {c.name} <span className="text-xs text-white/60">· {c.role}</span>
+                      </span>
+                    </Link>
+                  ))}
+                </>
+              )}
+              {sugDisc.length > 0 && (
+                <>
+                  <p className="label px-2 pb-1 pt-2 text-white/60">Disciplines</p>
+                  <div className="flex flex-wrap gap-2 px-1 pb-1">
+                    {sugDisc.map((d) => (
+                      <button key={d} type="button" className="chip" onClick={() => goSearch(d)}>
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+              {sugHoods.length > 0 && (
+                <>
+                  <p className="label px-2 pb-1 pt-2 text-white/60">Neighbourhoods</p>
+                  <div className="flex flex-wrap gap-2 px-1 pb-1">
+                    {sugHoods.map((n) => (
+                      <button key={n} type="button" className="chip" onClick={() => goSearch(n)}>
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+              <button type="submit" className="btn btn-primary mt-2 w-full">
+                See all
+              </button>
+            </div>
+          )}
+        </form>
         <p className="mt-2 text-center text-xs text-white/70">
           Drag to spin · tap a pin · double-tap to recentre
         </p>
@@ -140,52 +228,6 @@ function Home() {
         )}
       </div>
 
-      {pc && (
-        <div
-          className="absolute bottom-4 left-3 right-16 z-20"
-          onMouseEnter={() => clearTimeout(hideT.current)}
-          onMouseLeave={() => (hideT.current = setTimeout(() => setPreview(null), 400))}
-        >
-          <div className="glass relative rounded-[22px] p-2" aria-live="polite">
-            <button
-              type="button"
-              onClick={() => openProfile(pc.id)}
-              className="block w-full text-left"
-              aria-label={`Open ${pc.name}'s profile`}
-            >
-              <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-2xl">
-                {pc.work.slice(0, 3).map((src, i) => (
-                  <img
-                    key={src}
-                    src={src}
-                    alt={altOf(src) ?? `${pc.name} work ${i + 1}`}
-                    className="aspect-square w-full object-cover"
-                  />
-                ))}
-              </div>
-              <div className="flex items-end justify-between gap-2 px-1 pb-1 pt-2">
-                <span>
-                  <span className="block font-semibold">{pc.name}</span>
-                  <span className="block text-xs text-muted-foreground">
-                    {pc.role} · {pc.neighbourhood}
-                  </span>
-                </span>
-                <span className="btn btn-primary min-h-9 px-4 text-xs">View</span>
-              </div>
-            </button>
-            <button
-              type="button"
-              aria-label="Close preview"
-              onClick={() => setPreview(null)}
-              className="absolute -right-2 -top-5 flex size-11 items-center justify-center"
-            >
-              <span className="glass flex size-7 items-center justify-center rounded-full">
-                <X className="size-3.5" />
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

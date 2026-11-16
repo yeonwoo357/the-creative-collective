@@ -36,7 +36,7 @@ function splitAntimeridian(poly: Ring[]): Ring[][] {
   const unwrapped = poly.map((r) => r.map(([x = 0, y = 0]) => [x < 0 ? x + 360 : x, y]));
   const west = unwrapped.map((r) => clipRing(r, false)).filter((r) => r.length > 3);
   const east = unwrapped
-    .map((r) => clipRing(r, true).map(([x = 0, y = 0]) => [Math.min(x - 360, -179.9999), y]))
+    .map((r) => clipRing(r, true).map(([x = 0, y = 0]) => [Math.max(x - 360, -179.9999), y]))
     .filter((r) => r.length > 3);
   // West side: keep x <= 180 (nudge the seam just inside so h3 never sees ±180 wrap).
   const westFixed = west.map((r) => r.map(([x = 0, y = 0]) => [Math.min(x, 179.9999), y]));
