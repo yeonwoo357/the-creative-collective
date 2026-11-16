@@ -68,7 +68,7 @@ export type Pin = {
   subtitle: string;
   avatar: string;
   /** Descriptive alt text for the avatar. */
-  avatarAlt?: string;
+  avatarAlt?: string | undefined;
   /** Up to 3 work thumbnails shown in the pop-up card. */
   work?: { src: string; alt: string }[];
   /** Neighbourhood tag shown on the pin (never an address). */

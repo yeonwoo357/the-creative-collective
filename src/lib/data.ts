@@ -507,7 +507,7 @@ export function interestOf(c: Creative, savedIds: string[], recentIds: string[])
 /** Neighbourhood centroid for a place name (falls back to the city centre). Never exact. */
 export function hoodCoords(hood: string | undefined, city = "London"): [number, number] {
   const p = PLACES.find((x) => x.name.toLowerCase() === (hood ?? "").trim().toLowerCase());
-  return p ? [p.lat, p.lng] : (CITY_COORDS[city.toLowerCase()] ?? CITY_COORDS.london!);
+  return p ? [p.lat, p.lng] : (CITY_COORDS[city.toLowerCase()] ?? CITY_COORDS["london"]!);
 }
 
 /** Neighbourhood labels drawn on the globe (centroids only, never addresses). */
