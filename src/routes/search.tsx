@@ -6,6 +6,8 @@ import { CITY_COORDS, FILTERS, distanceKm, formatKm, searchCreatives, searchWork
 import { ONBOARDING_KEY, useLocal, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/search")({
+  validateSearch: (s: Record<string, unknown>): { q?: string } =>
+    typeof s["q"] === "string" && s["q"] ? { q: s["q"] } : {},
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },
@@ -21,7 +23,8 @@ export const Route = createFileRoute("/search")({
 
 function SearchPage() {
   const navigate = useNavigate();
-  const [q, setQ] = useState("");
+  const initial = Route.useSearch().q ?? "";
+  const [q, setQ] = useState(initial);
   const [filter, setFilter] = useState<Filter>("All");
   const input = useRef<HTMLInputElement>(null);
   const [ob] = useLocal<Onboarding | null>(ONBOARDING_KEY, null);

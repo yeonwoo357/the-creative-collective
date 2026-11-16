@@ -1,0 +1,13 @@
+# Roadmap (current pass)
+- [x] 0 Local discipline images (16 done) — add 2 Art & Illustration profiles' images
+- [x] 1 Globe: Africa/Europe land dots
+- [x] 2 Sharper/larger pin images
+- [x] 3 One preview box
+- [x] 4 Home search dropdown
+- [ ] 5 Search carousels per discipline
+- [x] 6 Art & Illustration chip + 2 profiles
+- [x] 7 Smarter search + synonyms
+- [ ] 8 For you / Nearest sort
+- [ ] 9 Saved: View on globe
+- [ ] 10-12 Profile tabs higher, single About, distance
+- [ ] 13 Verified badge + Get verified screen

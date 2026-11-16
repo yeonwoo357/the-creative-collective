@@ -2,24 +2,58 @@ import { useEffect, useRef } from "react";
 import { geoDistance } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
+import countries110 from "world-atlas/countries-110m.json";
 import { LocateFixed, Minus, Plus } from "@/components/PixelIcons";
 import type { GlobeInstance } from "globe.gl";
 
 const topo = land110 as any;
 export const land = feature(topo, topo.objects.land) as any;
 
+type Ring = number[][];
+/** Clip a ring (longitudes unwrapped to 0..360) to one side of lng = 180 (Sutherland–Hodgman). */
+function clipRing(ring: Ring, keepEast: boolean): Ring {
+  const inside = (p: number[]) => (keepEast ? p[0]! >= 180 : p[0]! <= 180);
+  const out: Ring = [];
+  for (let i = 0; i < ring.length; i++) {
+    const cur = ring[i]!;
+    const prev = ring[(i + ring.length - 1) % ring.length]!;
+    const ci = inside(cur);
+    const pi = inside(prev);
+    if (ci !== pi) {
+      const t = (180 - prev[0]!) / (cur[0]! - prev[0]!);
+      out.push([180, prev[1]! + t * (cur[1]! - prev[1]!)]);
+    }
+    if (ci) out.push(cur);
+  }
+  if (out.length && out[0] !== out[out.length - 1]) out.push(out[0]!);
+  return out;
+}
+
+/** Split a polygon that crosses the antimeridian into a west and an east part. */
+function splitAntimeridian(poly: Ring[]): Ring[][] {
+  const lngs = (poly[0] ?? []).map((c) => c[0] ?? 0);
+  if (Math.max(...lngs) - Math.min(...lngs) < 180) return [poly];
+  const unwrapped = poly.map((r) => r.map(([x = 0, y = 0]) => [x < 0 ? x + 360 : x, y]));
+  const west = unwrapped.map((r) => clipRing(r, false)).filter((r) => r.length > 3);
+  const east = unwrapped
+    .map((r) => clipRing(r, true).map(([x = 0, y = 0]) => [Math.max(x - 360, -179.9999), y]))
+    .filter((r) => r.length > 3);
+  // West side: keep x <= 180 (nudge the seam just inside so h3 never sees ±180 wrap).
+  const westFixed = west.map((r) => r.map(([x = 0, y = 0]) => [Math.min(x, 179.9999), y]));
+  return [westFixed, east].filter((p) => p.length && p[0]!.length > 3);
+}
+
 /**
- * The land outline split into one feature per polygon, for the dotted (hex) globe.
- * Antarctica and polygons that wrap the antimeridian are dropped: h3 cannot fill them.
+ * Land as one polygon per country (so Africa, Europe and Asia are separate, fillable shapes).
+ * Polygons crossing the antimeridian (Russia, Fiji…) are split at 180°; Antarctica is dropped.
  */
-const landDots = (land.features as { geometry: { coordinates: number[][][][] } }[])
-  .flatMap((f) => f.geometry.coordinates)
-  .filter((poly) => {
-    const ring = poly[0] ?? [];
-    const lngs = ring.map((c) => c[0] ?? 0);
-    const lats = ring.map((c) => c[1] ?? 0);
-    return Math.min(...lats) > -60 && Math.max(...lngs) - Math.min(...lngs) < 180;
-  })
+const countries = feature(countries110 as any, (countries110 as any).objects.countries) as any;
+const landDots = (countries.features as { geometry: { type: string; coordinates: any } }[])
+  .flatMap((f) =>
+    f.geometry.type === "Polygon" ? [f.geometry.coordinates as Ring[]] : (f.geometry.coordinates as Ring[][]),
+  )
+  .filter((poly) => Math.min(...(poly[0] ?? []).map((c) => c[1] ?? 0)) > -60)
+  .flatMap(splitAntimeridian)
   .map((coordinates) => ({
     type: "Feature" as const,
     properties: {},
@@ -33,6 +67,10 @@ export type Pin = {
   title: string;
   subtitle: string;
   avatar: string;
+  /** Descriptive alt text for the avatar. */
+  avatarAlt?: string | undefined;
+  /** Up to 3 work thumbnails shown in the pop-up card. */
+  work?: { src: string; alt: string }[];
   /** Neighbourhood tag shown on the pin (never an address). */
   place?: string;
 };
@@ -54,8 +92,8 @@ const DOTS_HIDE_BELOW = 0.12; // hex dots get blobby up close: show only the coa
 const MAX_ALT = 4.5;
 const MAX_CARDS = 2;
 // Pop-up card footprint (px) used to keep cards from overlapping.
-const CARD_W = 196;
-const CARD_H = 200;
+const CARD_W = 236;
+const CARD_H = 270;
 /** Cards never rise above this share of the screen (the search bar lives above it). */
 const SAFE_TOP = 0.5;
 const CYCLE_MS = 1800;
@@ -383,9 +421,8 @@ export function Globe({
         <div class="globe-pop">
           <div class="globe-card">
             <button type="button" class="globe-card-body">
-              <img src="${pin.avatar}" alt="" />
-              <b></b>
-              <small></small>
+              <span class="globe-head"><img class="globe-av" alt="" /><span><b></b><small></small></span></span>
+              <span class="globe-work"></span>
               <i class="globe-hood"></i>
             </button>
             <button type="button" class="globe-cta">View profile <span aria-hidden="true">→</span></button>
@@ -393,6 +430,18 @@ export function Globe({
           <span class="globe-stem"></span>
         </div>
         <button type="button" class="globe-dot"></button>`;
+      const av = el.querySelector<HTMLImageElement>(".globe-av")!;
+      av.src = pin.avatar;
+      av.alt = pin.avatarAlt ?? pin.title;
+      const workEl = el.querySelector<HTMLElement>(".globe-work")!;
+      for (const w of pin.work ?? []) {
+        const im = document.createElement("img");
+        im.src = w.src;
+        im.alt = w.alt;
+        im.loading = "lazy";
+        im.decoding = "async";
+        workEl.appendChild(im);
+      }
       el.querySelector("b")!.textContent = pin.title;
       el.querySelector("small")!.textContent = pin.subtitle;
       const hood = el.querySelector<HTMLElement>(".globe-hood")!;
