@@ -32,7 +32,7 @@ export function NeighbourhoodMap({ neighbourhood, city }: { neighbourhood: strin
       controls.enablePan = false;
       const resize = new ResizeObserver(() => world.width(el.clientWidth).height(el.clientHeight));
       resize.observe(el);
-      el.dataset.ready = "true";
+      el.dataset["ready"] = "true";
       cleanup = () => { resize.disconnect(); world._destructor(); };
     });
     return () => { disposed = true; cleanup?.(); };

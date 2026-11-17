@@ -90,7 +90,8 @@ function Home() {
       <SpaceBackground reducedMotion={reduced} />
       <div className="absolute inset-0">
         <Globe
-          pins={pins}
+          key={ids ?? "all"}
+          pins={ids ? pins.filter((pin) => highlight.includes(pin.id)) : pins}
           highlight={highlight}
           initial={HOME_VIEW}
           target={target}

@@ -73,7 +73,7 @@ function SearchPage() {
       </div>
       <div className="flex gap-2 overflow-x-auto px-4 py-4" role="group" aria-label="Category">
         {FILTERS.map((f) => (
-          <Button variant="ghost" key={f} className="chip shrink-0" aria-pressed={filter === f} onClick={() => setFilter(f)}>
+          <Button variant="ghost" key={f} className="chip min-h-11 shrink-0" aria-pressed={filter === f} onClick={() => setFilter(f)}>
             {f}
           </Button>
         ))}
