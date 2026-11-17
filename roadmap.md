@@ -1,13 +1,6 @@
-# Roadmap (current pass)
-- [x] 0 Local discipline images (16 done) — add 2 Art & Illustration profiles' images
-- [x] 1 Globe: Africa/Europe land dots
-- [x] 2 Sharper/larger pin images
-- [x] 3 One preview box
-- [x] 4 Home search dropdown
-- [ ] 5 Search carousels per discipline
-- [x] 6 Art & Illustration chip + 2 profiles
-- [x] 7 Smarter search + synonyms
-- [ ] 8 For you / Nearest sort
-- [ ] 9 Saved: View on globe
-- [ ] 10-12 Profile tabs higher, single About, distance
-- [ ] 13 Verified badge + Get verified screen
+# Remaining 16 November batch
+- [ ] Discover: horizontal discipline carousels, renamed tab/heading, For you and Nearest
+- [ ] Saved-only globe link
+- [ ] Sketch profile: neighbourhood globe, card/actions, work/review carousels, sample services/collabs, single About, distance, verified badge
+- [ ] Mock Get verified screen (no collection)
+- [ ] Tests and mobile/desktop interaction checks; remove roadmap when complete

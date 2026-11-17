@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bookmark } from "@/components/PixelIcons";
+import { Bookmark, Globe2 } from "@/components/PixelIcons";
 import { BackButton } from "@/components/TopBar";
 import { creatives, altOf } from "@/lib/data";
 import { useSaved } from "@/lib/store";
+
+import { savedGlobeIds } from "@/lib/discovery";
 
 export const Route = createFileRoute("/saved")({
   head: () => ({
@@ -24,6 +26,7 @@ function SavedPage() {
   return (
     <div className="flex-1">
       <div className="flex items-center gap-2 px-4 pt-4"><BackButton className="border-0" /><h1 className="text-2xl font-semibold uppercase tracking-wide">Saved</h1></div>
+      {list.length > 0 && <div className="px-4 py-4"><Link to="/" search={{ ids: savedGlobeIds(saved, creatives) }} className="btn btn-secondary w-full"><Globe2 className="size-4" /> View on globe</Link></div>}
       {ready && list.length === 0 ? (
         <div className="px-4 py-16 text-center">
           <p className="font-semibold">Nothing saved yet.</p>

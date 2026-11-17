@@ -3,7 +3,7 @@ import { Globe2, MessageCircle, Search, User } from "@/components/PixelIcons";
 
 const tabs = [
   { to: "/", label: "Home", Icon: Globe2 },
-  { to: "/search", label: "Search", Icon: Search },
+  { to: "/search", label: "Discover", Icon: Search },
   { to: "/chat", label: "Chat", Icon: MessageCircle },
   { to: "/me", label: "Profile", Icon: User },
 ] as const;

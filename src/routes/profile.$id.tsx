@@ -1,10 +1,15 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Bookmark, MapPin, MoreHorizontal, Send } from "@/components/PixelIcons";
+import { Bookmark, MapPin, Check, Send } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
-import { getCreative, altOf } from "@/lib/data";
-import { useSaved, pushRecent } from "@/lib/store";
+import { getCreative, creatives, altOf, hoodCoords, distanceKm, isVerified } from "@/lib/data";
+import { useSaved, pushRecent, useMyProfile, useLocal, ONBOARDING_KEY, type Onboarding } from "@/lib/store";
+
+import { Button } from "@/components/ui/button";
+import { SwipeRow } from "@/components/SwipeRow";
+import { NeighbourhoodMap } from "@/components/NeighbourhoodMap";
+import { SAMPLE_SERVICES, SAMPLE_COLLABS } from "@/lib/discovery";
 
 export const Route = createFileRoute("/profile/$id")({
   loader: ({ params }) => {
@@ -21,8 +26,6 @@ export const Route = createFileRoute("/profile/$id")({
           { name: "description", content: loaderData.bio },
           { property: "og:title", content: `${loaderData.name} · NAMED Collective` },
           { property: "og:description", content: loaderData.bio },
-          { property: "og:image", content: loaderData.cover },
-          { name: "twitter:image", content: loaderData.cover },
         ]
       : [{ title: "Unavailable — NAMED" }, { name: "robots", content: "noindex" }],
   }),
@@ -37,223 +40,71 @@ export const Route = createFileRoute("/profile/$id")({
   component: ProfilePage,
 });
 
-type Tab = "Work" | "About" | "Reviews";
-
-/* Liquid-glass bento tile, tinted with the app's pink → plum accent */
-const SILVER =
-  "glass rounded-[28px] bg-[radial-gradient(140%_80%_at_15%_0%,rgb(248_188_255/0.18),transparent_60%),linear-gradient(160deg,rgb(255_255_255/0.12),rgb(173_93_132/0.12))]";
+type Tab = "Works" | "Reviews";
 
 function ProfilePage() {
   const c = Route.useLoaderData();
   const { isSaved, toggle } = useSaved();
   const saved = isSaved(c.id);
-  const [tab, setTab] = useState<Tab>("Work");
-  const navigate = useNavigate();
-  const firstProject = c.projects[0];
-  const contact = () => navigate({ to: "/compose/$id", params: { id: c.id } });
-  useEffect(() => pushRecent(c.id), [c.id]); // feeds Profile → Recently viewed
+  const [tab, setTab] = useState<Tab>("Works");
+  const [details, setDetails] = useState<"Collabs" | "Services" | null>(null);
+  const [mine] = useMyProfile();
+  const [ob] = useLocal<Onboarding | null>(ONBOARDING_KEY, null);
+  const km = Math.round(distanceKm(hoodCoords(mine.neighbourhood, ob?.location || "London"), hoodCoords(c.neighbourhood, c.city)));
+  useEffect(() => { pushRecent(c.id); }, [c.id]);
 
-  return (
-    <div className="space-y-2 bg-[radial-gradient(120%_60%_at_50%_0%,#2a1426_0%,#0c070c_55%,#000_100%)] px-2 pb-8 pt-2">
-      {/* Header card */}
-      <section className="relative overflow-hidden rounded-[36px] border border-white/12 bg-[linear-gradient(180deg,#2a1a28_0%,#140c14_70%,#0a060a_100%)] px-5 pb-5 pt-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.12)]">
-        <div className="flex items-center justify-between">
-          <BackButton />
-          <button
-            aria-label="More"
-            onClick={() => toast("Report & share coming soon")}
-            className="icon-btn"
-          >
-            <MoreHorizontal className="size-[18px]" />
-          </button>
+  return <div className="min-w-0 flex-1 pb-8">
+    <header className="profile-map-header">
+      <NeighbourhoodMap neighbourhood={c.neighbourhood} city={c.city} />
+      <div className="relative z-10 flex items-start justify-between p-3">
+        <BackButton />
+        <div className="flex gap-2">
+          <Button variant="ghost" className="glass size-11 rounded-full p-0" aria-label={saved ? `Unsave ${c.name}` : `Save ${c.name}`} aria-pressed={saved} onClick={() => { toggle(c.id); toast(saved ? "Removed from saved" : "Saved to your collective"); }}><Bookmark active={saved} /></Button>
+          <Button asChild variant="ghost" className="glass size-11 rounded-full p-0"><Link to="/compose/$id" params={{ id: c.id }} aria-label={`Message ${c.name}`}><Send /></Link></Button>
         </div>
-        <div className="-mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-          <p className="text-center">
-            <span className="block text-2xl">{c.work.length}</span>
-            <span className="text-xs text-white/60">works</span>
-          </p>
-          <div className="rounded-full p-[3px] shadow-[0_0_0_1px_rgb(255_255_255/0.5),0_0_30px_rgb(255_255_255/0.08)]">
-            <img
-              src={c.avatar}
-              alt={altOf(c.avatar) ?? c.name}
-              className="size-28 rounded-full border-2 border-white/80 bg-muted object-cover"
-            />
-          </div>
-          <p className="text-center">
-            <span className="block text-2xl">{c.reviews.length}</span>
-            <span className="text-xs text-white/60">reviews</span>
-          </p>
-        </div>
-        <h1 className="mt-4 text-center text-2xl font-normal">{c.name}</h1>
-        <p className="mt-1 text-center text-sm text-white/70">
-          {c.role} · {c.neighbourhood}, {c.city}
-        </p>
-        <ul
-          className="mt-2 flex flex-wrap justify-center gap-x-2 text-xs text-white/60"
-          aria-label="Styles"
-        >
-          {c.tags.map((t, i) => (
-            <li key={t} className="flex items-center gap-2">
-              {i > 0 && <span aria-hidden="true">|</span>}
-              {t}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-5 grid grid-cols-2 gap-2">
-          <button className="btn btn-secondary" onClick={contact}>
-            <Send className="size-4" /> Contact
-          </button>
-          <button
-            className="btn btn-secondary"
-            aria-pressed={saved}
-            onClick={() => {
-              toggle(c.id);
-              toast(saved ? "Removed from saved" : "Saved to your collective");
-            }}
-          >
-            <Bookmark className="size-4" fill={saved ? "currentColor" : "none"} />{" "}
-            {saved ? "Saved" : "Save"}
-          </button>
-        </div>
-      </section>
-
-      {/* Bento: about + booking (nothing repeated from the header) | cover + area */}
-      <div className="grid grid-cols-2 gap-2">
-        <section className={`${SILVER} flex flex-col p-4`}>
-          <h2 className="label text-white/60">About</h2>
-          <p className="mt-2 text-sm">{c.bio}</p>
-          <div className="mt-auto pt-3">
-            <p className="label text-white/60">Booking</p>
-            <p className="mt-1 text-xs text-white/80">
-              Message here or on Instagram
-              <span className="block truncate text-white">@{c.instagram}</span>
-            </p>
-          </div>
-        </section>
-        <section className="relative min-h-[220px] overflow-hidden rounded-[28px] border border-white/40">
-          <img
-            src={c.cover}
-            alt={altOf(c.cover) ?? `${c.name} cover`}
-            className="absolute inset-0 size-full object-cover"
-          />
-          <span className="glass absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-black/40 px-3 py-1 text-xs">
-            <MapPin className="size-3.5" /> {c.neighbourhood}
-          </span>
-        </section>
       </div>
-
-      {/* Wide card: latest project */}
-      {firstProject && (
-        <Link
-          to="/project/$id"
-          params={{ id: firstProject.id }}
-          className={`${SILVER} flex items-stretch gap-3 overflow-hidden p-3`}
-        >
-          <div className="flex flex-1 flex-col justify-center pl-2">
-            <span className="text-xs text-white/65">✦ Latest project</span>
-            <span className="mt-1 text-lg">{firstProject.title}</span>
-            <span className="mt-1 text-xs text-white/65">
-              {firstProject.year} · {firstProject.style}
-            </span>
+      <section className="profile-identity relative z-10 mx-4 mb-5 mt-4 w-[82%] rounded-lg border p-4">
+        <div className="flex items-start gap-3">
+          <img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-12 shrink-0 rounded-full object-cover" />
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold uppercase break-words">{c.name}</h1>
+            <p className="break-all text-sm">@{c.instagram}</p>
+            <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="size-4 shrink-0" /><span>{c.neighbourhood} · ~{km} km away</span></p>
+            <p className="text-xs text-muted-foreground">{c.city}</p>
           </div>
-          {c.work[0] && (
-            <img src={c.work[0]} alt={altOf(c.work[0] ?? "") ?? ""} className="size-28 rounded-[20px] object-cover" />
-          )}
-        </Link>
-      )}
-
-      {/* Tabs */}
-      <div role="tablist" className="glass mt-3 grid grid-cols-3 gap-1 rounded-full p-1">
-        {(["Work", "About", "Reviews"] as Tab[]).map((t) => (
-          <button
-            key={t}
-            role="tab"
-            aria-selected={tab === t}
-            onClick={() => setTab(t)}
-            className={`min-h-10 rounded-full text-sm ${tab === t ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {tab === "Work" && (
-        <div className="pt-1">
-          {/* Instagram-style feed */}
-          <div className="grid grid-cols-3 gap-0.5 overflow-hidden rounded-[22px]">
-            {c.work.map((src, i) => (
-              <Link
-                key={src}
-                to="/project/$id"
-                params={{ id: c.projects[i % c.projects.length]?.id ?? "" }}
-                className="aspect-square bg-muted"
-              >
-                <img
-                  src={src}
-                  alt={altOf(src) ?? `${c.name} work ${i + 1}`}
-                  loading="lazy"
-                  className="size-full object-cover transition-opacity hover:opacity-85"
-                />
-              </Link>
-            ))}
-          </div>
-          <h2 className="label mt-6 px-2 text-white/70">Projects</h2>
-          <ul className="mt-2 space-y-2">
-            {c.projects.map((p) => (
-              <li key={p.id}>
-                <Link
-                  to="/project/$id"
-                  params={{ id: p.id }}
-                  className="glass flex min-h-14 items-center justify-between rounded-[20px] px-4 py-2 hover:bg-white/12"
-                >
-                  <span>{p.title}</span>
-                  <span className="text-xs text-white/60">
-                    {p.year} · {p.style}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
-      )}
-      {tab === "About" && (
-        <div className="glass space-y-2 rounded-[24px] p-4 text-sm">
-          <p>{c.bio}</p>
-          <p className="text-white/65">
-            Based in {c.neighbourhood}, {c.city}. Books via Instagram.
-          </p>
-          {firstProject && <p className="text-white/65">Signature: {firstProject.style}.</p>}
-        </div>
-      )}
-      {tab === "Reviews" && (
-        <ul className="space-y-2">
-          {c.reviews.map((r) => (
-            <li key={r.text} className="glass rounded-[24px] p-4 text-sm">
-              <p>“{r.text}”</p>
-              <p className="mt-1 text-xs text-white/60">— {r.by}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <section className="glass mt-4 rounded-[28px] p-4">
-        <h2 className="label text-white/70">Location</h2>
-        <div className="relative mt-3 flex aspect-[2/1] items-center justify-center overflow-hidden rounded-[20px] border border-white/15 bg-black/40">
-          <svg className="absolute inset-0 size-full" aria-hidden>
-            <defs>
-              <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-                <path d="M24 0H0V24" fill="none" stroke="rgb(255 255 255 / 0.12)" strokeWidth="1" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-          <span className="absolute size-24 rounded-full border border-dashed border-[var(--pink)] shadow-[0_0_30px_rgb(248_188_255/0.25)]" />
-          <span className="glass relative flex items-center gap-1 rounded-full px-3 py-1 text-xs">
-            <MapPin className="size-3.5" /> {c.neighbourhood}, {c.city}
-          </span>
-        </div>
-        <p className="mt-2 text-xs text-white/60">Neighbourhood only — never an exact address.</p>
+        <p className="mt-4 break-words text-2xl font-bold uppercase">{c.role}</p>
+        {isVerified(c.id) && <span className="mt-2 inline-flex items-center gap-1 text-xs" aria-label="Verified — mock badge"><Check className="size-4" /> Verified</span>}
       </section>
+    </header>
+    <div role="tablist" aria-label="Creative portfolio" className="grid grid-cols-2 border-y border-border">
+      {(["Works", "Reviews"] as const).map((t) => <Button key={t} variant="ghost" id={`tab-${t}`} role="tab" aria-selected={tab === t} aria-controls="profile-panel" onClick={() => setTab(t)} className={`min-h-16 rounded-none text-2xl font-bold uppercase ${tab === t ? "profile-active-tab" : "text-muted-foreground"}`}>{t}</Button>)}
     </div>
-  );
+    <div id="profile-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} className="pt-4">
+      {tab === "Works" ? <SwipeRow label="Works" centred>
+        {c.work.map((src, i) => {
+          const project = c.projects[i % c.projects.length];
+          if (!project) return null;
+          return <Link key={src} to="/project/$id" params={{ id: project.id }} className="swipe-card glass overflow-hidden rounded-lg">
+            <div className="flex min-h-16 items-center gap-2 p-3"><img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-8 shrink-0 rounded-full object-cover" /><span className="text-sm font-bold">{project.title}</span></div>
+            <img src={src} alt={altOf(src) ?? project.title} className="aspect-square w-full object-cover" />
+          </Link>;
+        })}
+      </SwipeRow> : <SwipeRow label="Reviews" centred>
+        {c.reviews.map((review, i) => {
+          // Existing local creative photos stand in for fictional reviewers in this demo.
+          const reviewer = creatives[(creatives.findIndex((person) => person.id === c.id) + i + 1) % creatives.length];
+          return <article key={review.text} className="swipe-card glass min-h-72 rounded-lg p-4">
+            <div className="flex items-center gap-3">{reviewer && <img src={reviewer.avatar} alt={altOf(reviewer.avatar) ?? "Reviewer avatar"} className="size-10 rounded-full object-cover" />}<h2 className="text-sm font-bold">{review.by}</h2></div>
+            <p className="mt-6 text-lg">“{review.text}”</p>
+          </article>;
+        })}
+      </SwipeRow>}
+    </div>
+    <div className="flex gap-2 px-4 pb-3" role="group" aria-label="Creative offers">
+      {(["Collabs", "Services"] as const).map((value) => <Button key={value} variant="ghost" className="chip min-h-11" aria-pressed={details === value} aria-expanded={details === value} onClick={() => setDetails(details === value ? null : value)}>{value}</Button>)}
+    </div>
+    {details && <section aria-label={details} className="px-4 pb-4"><h2 className="label mb-2">{details}</h2><ul className="divide-y divide-border">{(details === "Services" ? SAMPLE_SERVICES[c.category] : SAMPLE_COLLABS[c.category]).map((item) => <li key={item} className="py-3 text-sm">{item}</li>)}</ul></section>}
+    <p className="px-4 text-sm text-muted-foreground">{c.bio}</p>
+  </div>;
 }

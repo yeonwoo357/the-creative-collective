@@ -706,3 +706,13 @@ h2.label {
   font-weight: 700;
   letter-spacing: 0.12em;
 }
+
+/* Discovery/profile rows use stable card widths, touch swipes and keyboard alternatives. */
+.swipe-row { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; padding: 2px 16px 12px; scrollbar-width: none; }
+.swipe-row::-webkit-scrollbar { display: none; }
+.swipe-card { flex: 0 0 76%; min-width: 0; scroll-snap-align: start; }
+.swipe-row-centred { padding-inline: 12%; scroll-padding-inline: 12%; }
+.swipe-row-centred .swipe-card { flex-basis: 100%; scroll-snap-align: center; }
+.profile-map-header { position: relative; min-height: 290px; overflow: hidden; background: var(--plum); }
+.profile-identity { background: var(--background); border-color: var(--glass-edge); box-shadow: var(--liquid-shadow); }
+.profile-active-tab { color: var(--pink); border-bottom: 3px solid var(--pink); background: var(--glass); }

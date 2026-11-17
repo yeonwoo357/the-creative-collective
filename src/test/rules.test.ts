@@ -8,6 +8,8 @@ import {
   toggleMessageLike,
 } from "@/lib/store";
 import { searchWork } from "@/lib/data";
+import { creatives, hoodCoords, isVerified } from "@/lib/data";
+import { rankCreatives, savedGlobeIds, SAMPLE_SERVICES, VERIFICATION_NOTICE } from "@/lib/discovery";
 
 describe("chat (demo)", () => {
   it("sending to someone new creates a conversation at the top with the portfolio attached", () => {
@@ -72,5 +74,37 @@ describe("creative photos", () => {
         expect(owner.get(src) ?? c.id).toBe(c.id);
         owner.set(src, c.id);
       }
+  });
+});
+
+describe("remaining discovery batch", () => {
+  it("For you ranks saved discipline and tags with the saved person's name", () => {
+    const list = creatives.filter((c) => ["dove-cassidy", "kit-ember"].includes(c.id));
+    const ranked = rankCreatives(list, "For you", ["mira-vale"], [], hoodCoords("Hackney"));
+    expect(ranked[0]?.c.id).toBe("dove-cassidy");
+    expect(ranked[0]?.interest.label).toBe("Because you saved Mira Vale");
+  });
+  it("For you uses recently viewed disciplines too", () => {
+    const ranked = rankCreatives(creatives.filter((c) => ["ivo-sterne", "onyx-reed"].includes(c.id)), "For you", [], ["kit-ember"], hoodCoords("Hackney"));
+    expect(ranked[0]?.c.id).toBe("ivo-sterne");
+  });
+  it("Nearest ignores interests and measures neighbourhood centroids", () => {
+    const ranked = rankCreatives(creatives, "Nearest", ["ivo-sterne"], [], hoodCoords("Hackney"));
+    expect(ranked[0]?.km).toBe(0);
+    expect(ranked.every((r, i) => i === 0 || r.km >= (ranked[i - 1]?.km ?? 0))).toBe(true);
+  });
+  it("saved globe includes only saved valid creatives", () => {
+    expect(savedGlobeIds(["mira-vale", "kit-ember", "missing"], creatives)).toBe("mira-vale,kit-ember");
+  });
+  it("keeps the existing mock verified selection", () => {
+    expect(isVerified("mira-vale")).toBe(true);
+    expect(isVerified("onyx-reed")).toBe(false);
+  });
+  it("offers 3–4 sample services per discipline with the requested tattoo example", () => {
+    expect(SAMPLE_SERVICES.Tattoo).toContain("Fine-line piece · from £80");
+    expect(Object.values(SAMPLE_SERVICES).every((items) => items.length >= 3 && items.length <= 4)).toBe(true);
+  });
+  it("mock verification stops with the exact prototype notice", () => {
+    expect(VERIFICATION_NOTICE).toBe("Prototype: verification not active");
   });
 });
