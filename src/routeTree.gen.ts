@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditProfileRouteImport } from './routes/edit-profile'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as GetVerifiedRouteImport } from './routes/get-verified'
 import { Route as IntroRouteImport } from './routes/intro'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -38,6 +39,11 @@ const EditProfileRoute = EditProfileRouteImport.update({
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetVerifiedRoute = GetVerifiedRouteImport.update({
+  id: '/get-verified',
+  path: '/get-verified',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntroRoute = IntroRouteImport.update({
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/edit-profile': typeof EditProfileRoute
   '/events': typeof EventsRoute
+  '/get-verified': typeof GetVerifiedRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/edit-profile': typeof EditProfileRoute
   '/events': typeof EventsRoute
+  '/get-verified': typeof GetVerifiedRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/edit-profile': typeof EditProfileRoute
   '/events': typeof EventsRoute
+  '/get-verified': typeof GetVerifiedRoute
   '/intro': typeof IntroRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/'
     | '/edit-profile'
     | '/events'
+    | '/get-verified'
     | '/intro'
     | '/me'
     | '/onboarding'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/'
     | '/edit-profile'
     | '/events'
+    | '/get-verified'
     | '/intro'
     | '/me'
     | '/onboarding'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/'
     | '/edit-profile'
     | '/events'
+    | '/get-verified'
     | '/intro'
     | '/me'
     | '/onboarding'
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditProfileRoute: typeof EditProfileRoute
   EventsRoute: typeof EventsRoute
+  GetVerifiedRoute: typeof GetVerifiedRoute
   IntroRoute: typeof IntroRoute
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -246,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get-verified': {
+      id: '/get-verified'
+      path: '/get-verified'
+      fullPath: '/get-verified'
+      preLoaderRoute: typeof GetVerifiedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/intro': {
@@ -339,6 +359,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditProfileRoute: EditProfileRoute,
   EventsRoute: EventsRoute,
+  GetVerifiedRoute: GetVerifiedRoute,
   IntroRoute: IntroRoute,
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
