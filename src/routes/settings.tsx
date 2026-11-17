@@ -34,6 +34,7 @@ function SettingsPage() {
         <li>
           <Link to="/edit-profile" className="flex min-h-14 w-full items-center border-b border-muted px-4 hover:bg-muted">Edit profile</Link>
         </li>
+        <li><Link to="/get-verified" className="flex min-h-14 w-full items-center border-b border-muted px-4 hover:bg-muted">Get verified</Link></li>
         {rows.map((r) => (
           <li key={r}>
             <button onClick={() => toast("Demo only")} className="flex min-h-14 w-full items-center border-b border-muted px-4 text-left hover:bg-muted">
