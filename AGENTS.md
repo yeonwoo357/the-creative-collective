@@ -42,6 +42,7 @@ use the editor.
 - Own profile (`named.profile`) and demo chats (`named.chats`, seeded on first read) live in localStorage via `src/lib/store.ts`; uploads are stored as shrunk data URLs, so `writeLocal` returns false when storage is full and callers must tell the user.
 
 - Discovery ranking and sample profile offers live in `src/lib/discovery.ts`; reuse the existing interest scores and neighbourhood centroids so sorting and distance never use precise locations.
-- Profile neighbourhood headers use a fixed, dynamically imported WebGL map in `NeighbourhoodMap`; reuse existing geometry without changing Home globe behaviour.
+- Profile neighbourhood headers use a local stylised SVG street grid in `NeighbourhoodMap`; never imply an exact address or request external map tiles.
+- Visitor profiles and chat portfolio panels share the sketch-based `CreativePortfolio`; only visitor navigation actions differ so layout and profile details cannot drift.
 - Discover and visitor profiles share `SwipeRow` with stable snap widths and 44px previous/next controls so touch and keyboard users can browse the same content.
 - Verification is a mock-only public screen with no input, upload, or network submission.

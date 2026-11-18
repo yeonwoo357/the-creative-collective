@@ -1,41 +1,22 @@
-import { useEffect, useRef } from "react";
-import { land } from "@/components/Globe";
-import { hoodCoords } from "@/lib/data";
+import { useId } from "react";
+import { MapPin } from "@/components/PixelIcons";
 
-/** A fixed neighbourhood-centroid view; no addresses, GPS, or new map imagery. */
+/** Stylised neighbourhood-only backdrop, not a navigable map or an exact location. */
 export function NeighbourhoodMap({ neighbourhood, city }: { neighbourhood: string; city: string }) {
-  const host = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = host.current;
-    if (!el) return;
-    let disposed = false;
-    let cleanup: (() => void) | undefined;
-    const [lat, lng] = hoodCoords(neighbourhood, city);
-    void import("globe.gl").then(({ default: GlobeGL }) => {
-      if (disposed) return;
-      const css = getComputedStyle(el);
-      const pink = css.getPropertyValue("--pink").trim();
-      const plum = css.getPropertyValue("--plum").trim();
-      const world = new GlobeGL(el, { animateIn: false })
-        .width(el.clientWidth).height(el.clientHeight).backgroundColor("rgba(0,0,0,0)")
-        .showAtmosphere(false).polygonsData([land])
-        .polygonCapColor(() => plum).polygonSideColor(() => plum).polygonStrokeColor(() => pink).polygonAltitude(.0001)
-        .pointsData([{ lat, lng }]).pointColor(() => pink).pointRadius(.018).pointAltitude(.0005)
-        .labelsData([{ lat, lng: lng + .035, name: neighbourhood }]).labelText("name")
-        .labelSize(.035).labelColor(() => pink).labelDotRadius(0).labelAltitude(.001);
-      world.globeMaterial().color.set(plum);
-      world.pointOfView({ lat, lng, altitude: .025 }, 0);
-      const controls = world.controls();
-      controls.autoRotate = false;
-      controls.enableZoom = false;
-      controls.enableRotate = false;
-      controls.enablePan = false;
-      const resize = new ResizeObserver(() => world.width(el.clientWidth).height(el.clientHeight));
-      resize.observe(el);
-      el.dataset["ready"] = "true";
-      cleanup = () => { resize.disconnect(); world._destructor(); };
-    });
-    return () => { disposed = true; cleanup?.(); };
-  }, [neighbourhood, city]);
-  return <div ref={host} className="absolute inset-0" role="img" aria-label={`Globe zoomed to ${neighbourhood}, ${city}; neighbourhood only`} />;
+  const gridId = useId();
+  return <div className="absolute inset-0 overflow-hidden" role="img" aria-label={`Stylised neighbourhood map of ${neighbourhood}, ${city}; not an exact location`}>
+    <svg className="absolute inset-0 size-full text-muted-foreground" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <pattern id={gridId} width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)">
+          <path d="M42 0H0V42" fill="none" stroke="currentColor" strokeOpacity=".35" strokeWidth="2" />
+          <path d="M10 10H32V32H10Z" fill="currentColor" fillOpacity=".04" />
+        </pattern>
+      </defs>
+      <rect width="400" height="320" fill={`url(#${gridId})`} />
+      <path d="M-40 240L120 175L215 180L440 55M60 -30L135 100L220 140L320 350" fill="none" stroke="currentColor" strokeOpacity=".45" strokeWidth="9" />
+      <path d="M-40 240L120 175L215 180L440 55M60 -30L135 100L220 140L320 350" fill="none" className="stroke-background" strokeWidth="5" />
+      <path d="M300 -20Q255 75 345 160T370 350" fill="none" className="stroke-[var(--pink)]" strokeOpacity=".25" strokeWidth="14" />
+    </svg>
+    <span className="absolute bottom-2 right-3 flex max-w-[90%] items-center gap-1 rounded-full border border-border bg-background px-2 py-1 text-xs text-[var(--pink)]"><MapPin className="size-4 shrink-0" /><span className="truncate">{neighbourhood}</span></span>
+  </div>;
 }

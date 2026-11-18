@@ -1,134 +1,94 @@
-import { altOf } from "@/lib/data";
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Instagram, MapPin, Music2 } from "@/components/PixelIcons";
-import { Portfolio } from "@/components/Portfolio";
-import type { Creative } from "@/lib/data";
-import { useSaved } from "@/lib/store";
+import { Bookmark, MapPin, Check, Send, Instagram, Music2 } from "@/components/PixelIcons";
 import { toast } from "sonner";
+import { BackButton } from "@/components/TopBar";
+import { creatives, altOf, hoodCoords, distanceKm, isVerified, type Creative } from "@/lib/data";
+import { useSaved, useMyProfile, useLocal, ONBOARDING_KEY, type Onboarding } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { SwipeRow } from "@/components/SwipeRow";
+import { NeighbourhoodMap } from "@/components/NeighbourhoodMap";
+import { SAMPLE_SERVICES, SAMPLE_COLLABS } from "@/lib/discovery";
 
-/** A creative's full collective, embedded in chat without a Contact action. */
-export function CreativePortfolio({ creative: c }: { creative: Creative }) {
+type Tab = "Works" | "Reviews";
+
+/** Single sketch-based profile used by the visitor page and the chat portfolio panel. */
+export function CreativePortfolio({ creative: c, embedded = true }: { creative: Creative; embedded?: boolean }) {
   const { isSaved, toggle } = useSaved();
   const saved = isSaved(c.id);
-  const media = c.work.map((src) => ({ src, type: "image" as const }));
-  const firstProject = c.projects[0];
+  const [tab, setTab] = useState<Tab>("Works");
+  const [details, setDetails] = useState<"Collabs" | "Services" | null>(null);
+  const [mine] = useMyProfile();
+  const [ob] = useLocal<Onboarding | null>(ONBOARDING_KEY, null);
+  const km = Math.round(distanceKm(hoodCoords(mine.neighbourhood, ob?.location || "London"), hoodCoords(c.neighbourhood, c.city)));
 
-  return (
-    <div className="pb-8">
-      <div className="aspect-[2/1] w-full bg-muted">
-        <img src={c.cover} alt={altOf(c.cover) ?? `${c.name} cover`} className="size-full object-cover" />
+  return <div className="min-w-0 flex-1 pb-8">
+    <header className="profile-map-header pb-4">
+      <NeighbourhoodMap neighbourhood={c.neighbourhood} city={c.city} />
+      <div className="relative z-10 flex items-start justify-between p-3">
+        {embedded ? <span /> : <BackButton />}
+        <div className="flex gap-2">
+          <Button variant="ghost" className="glass size-11 rounded-full p-0" aria-label={saved ? `Unsave ${c.name}` : `Save ${c.name}`} aria-pressed={saved} onClick={() => { toggle(c.id); toast(saved ? "Removed from saved" : "Saved to your collective"); }}><Bookmark active={saved} /></Button>
+          {!embedded && <Button asChild variant="ghost" className="glass size-11 rounded-full p-0"><Link to="/compose/$id" params={{ id: c.id }} aria-label={`Message ${c.name}`}><Send /></Link></Button>}
+        </div>
       </div>
-
-      <div className="px-4">
-        <img
-          src={c.avatar}
-          alt={altOf(c.avatar) ?? c.name}
-          className="relative -mt-11 size-[88px] rounded-full border-2 border-background bg-muted object-cover"
-        />
-        <h2 className="mt-3 text-2xl font-semibold">{c.name}</h2>
-        <p className="text-sm text-muted-foreground">{c.role} · {c.neighbourhood}, {c.city}</p>
-        <ul className="mt-3 flex flex-wrap gap-2" aria-label="Styles">
-          {c.tags.map((tag) => <li key={tag} className="tag">{tag}</li>)}
-        </ul>
-        <p className="mt-4 text-sm leading-relaxed">{c.bio}</p>
-        <button
-          className="btn btn-secondary mt-5 w-full"
-          aria-pressed={saved}
-          onClick={() => {
-            toggle(c.id);
-            toast(saved ? "Removed from saved" : "Saved to your collective");
-          }}
-        >
-          <Bookmark className="size-4" active={saved} /> {saved ? "Saved" : "Save"}
-        </button>
-      </div>
-
-      <section className="mt-7 px-4" aria-labelledby="chat-portfolio-work">
-        <div className="flex items-center justify-between gap-3">
-          <h3 id="chat-portfolio-work" className="label">Portfolio</h3>
-          <span className="text-xs uppercase tracking-widest text-muted-foreground">{c.layout} view</span>
+      <section className="profile-identity relative z-10 mx-4 mb-5 mt-4 w-[82%] rounded-lg border p-4">
+        <div className="flex items-start gap-3">
+          <img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-12 shrink-0 rounded-full object-cover" />
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold uppercase break-words">{c.name}</h1>
+            <p className="break-all text-sm">@{c.instagram}</p>
+            <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="size-4 shrink-0" /><span>{c.neighbourhood} · ~{km} km away</span></p>
+            <p className="text-xs text-muted-foreground">{c.city}</p>
+          </div>
         </div>
-        <div className="mt-3">
-          <Portfolio media={media} layout={c.layout} name={c.name} largeTargets />
-        </div>
-        <h3 className="label mt-6">Projects</h3>
-        <ul className="mt-2">
-          {c.projects.map((project) => (
-            <li key={project.id}>
-              <Link
-                to="/project/$id"
-                params={{ id: project.id }}
-                className="flex min-h-14 items-center justify-between gap-3 border-b border-muted py-2 hover:bg-muted"
-              >
-                <span className="font-semibold">{project.title}</span>
-                <span className="shrink-0 text-xs text-muted-foreground">{project.year} · {project.style}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <p className="mt-4 break-words text-2xl font-bold uppercase">{c.role}</p>
+        {isVerified(c.id) && <span className="mt-2 inline-flex items-center gap-1 text-xs" aria-label="Verified — mock badge"><Check className="size-4" /> Verified</span>}
       </section>
-
-      <section className="mt-7 px-4" aria-labelledby="chat-portfolio-about">
-        <h3 id="chat-portfolio-about" className="label">About</h3>
-        <p className="mt-3 text-sm leading-relaxed">{c.bio}</p>
-        <p className="mt-2 text-sm text-muted-foreground">Based in {c.neighbourhood}, {c.city}. Books via Instagram.</p>
-        {firstProject && <p className="mt-1 text-sm text-muted-foreground">Signature: {firstProject.style}.</p>}
-      </section>
-
-      <section className="mt-7 px-4" aria-labelledby="chat-portfolio-socials">
-        <h3 id="chat-portfolio-socials" className="label">Socials</h3>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <a
-            className="tag min-h-11 gap-2"
-            href={`https://instagram.com/${c.instagram}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open ${c.name} on Instagram`}
-          >
-            <Instagram className="size-4" /> @{c.instagram}
-          </a>
-          <a
-            className="tag min-h-11 gap-2"
-            href={`https://tiktok.com/@${c.tiktok}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open ${c.name} on TikTok`}
-          >
-            <Music2 className="size-4" /> @{c.tiktok}
-          </a>
-        </div>
-      </section>
-
-      <section className="mt-7 px-4" aria-labelledby="chat-portfolio-reviews">
-        <h3 id="chat-portfolio-reviews" className="label">Reviews</h3>
-        <ul className="mt-3 space-y-3">
-          {c.reviews.map((review) => (
-            <li key={review.text} className="rounded-md border border-line p-3 text-sm">
-              <p>“{review.text}”</p>
-              <p className="mt-1 text-xs text-muted-foreground">— {review.by}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-7 px-4" aria-labelledby="chat-portfolio-location">
-        <h3 id="chat-portfolio-location" className="label">Location</h3>
-        <div className="relative mt-3 flex aspect-[2/1] items-center justify-center overflow-hidden rounded-md border border-line bg-muted">
-          <svg className="absolute inset-0 size-full" aria-hidden="true">
-            <defs>
-              <pattern id={`chat-location-grid-${c.id}`} width="24" height="24" patternUnits="userSpaceOnUse">
-                <path d="M24 0H0V24" fill="none" className="stroke-line" strokeWidth="1" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill={`url(#chat-location-grid-${c.id})`} />
-          </svg>
-          <span className="absolute size-24 rounded-full border border-dashed border-foreground" />
-          <span className="relative flex items-center gap-1 rounded-full border border-foreground bg-background px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-            <MapPin className="size-3.5" /> {c.neighbourhood}, {c.city}
-          </span>
-        </div>
-        <p className="mt-2 text-xs text-muted-foreground">Neighbourhood only — never an exact address.</p>
-      </section>
+    </header>
+    <div role="tablist" aria-label="Creative portfolio" className="grid grid-cols-2 border-y border-border">
+      {(["Works", "Reviews"] as const).map((t) => <Button key={t} variant="ghost" id={`tab-${t}`} role="tab" aria-selected={tab === t} aria-controls="profile-panel" onClick={() => setTab(t)} className={`min-h-16 rounded-none text-2xl font-bold uppercase ${tab === t ? "profile-active-tab" : "text-muted-foreground"}`}>{t}</Button>)}
     </div>
-  );
+    <div id="profile-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} className="pt-4">
+      {tab === "Works" ? <SwipeRow label="Works" centred>
+        {c.work.map((src, i) => {
+          const project = c.projects[i % c.projects.length];
+          if (!project) return null;
+          return <Link key={src} to="/project/$id" params={{ id: project.id }} className="swipe-card glass overflow-hidden rounded-lg">
+            <div className="flex min-h-16 items-center gap-2 p-3"><img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-8 shrink-0 rounded-full object-cover" /><span className="text-sm font-bold">{project.title}</span></div>
+            <img src={src} alt={altOf(src) ?? project.title} className="aspect-square w-full object-cover" />
+          </Link>;
+        })}
+      </SwipeRow> : <SwipeRow label="Reviews" centred>
+        {c.reviews.map((review, i) => {
+          // Existing local creative photos stand in for fictional reviewers in this demo.
+          const reviewer = creatives[(creatives.findIndex((person) => person.id === c.id) + i + 1) % creatives.length];
+          return <article key={review.text} className="swipe-card glass min-h-72 rounded-lg p-4">
+            <div className="flex items-center gap-3">{reviewer && <img src={reviewer.avatar} alt={altOf(reviewer.avatar) ?? "Reviewer avatar"} className="size-10 rounded-full object-cover" />}<h2 className="text-sm font-bold">{review.by}</h2></div>
+            <p className="mt-6 text-lg">“{review.text}”</p>
+          </article>;
+        })}
+      </SwipeRow>}
+    </div>
+    <div className="flex gap-2 px-4 pb-3" role="group" aria-label="Creative offers">
+      {(["Collabs", "Services"] as const).map((value) => <Button key={value} variant="ghost" className="chip min-h-11" aria-pressed={details === value} aria-expanded={details === value} onClick={() => setDetails(details === value ? null : value)}>{value}</Button>)}
+    </div>
+    {details && <section aria-label={details} className="px-4 pb-4"><h2 className="label mb-2">{details}</h2><ul className="divide-y divide-border">{(details === "Services" ? SAMPLE_SERVICES[c.category] : SAMPLE_COLLABS[c.category]).map((item) => <li key={item} className="py-3 text-sm">{item}</li>)}</ul></section>}
+    <div className="px-4">
+      <ul className="mb-4 flex flex-wrap gap-2" aria-label="Styles">{c.tags.map((tag) => <li key={tag} className="tag">{tag}</li>)}</ul>
+      <p className="text-sm text-muted-foreground">{c.bio}</p>
+      <section className="mt-6" aria-label="Projects">
+        <h2 className="label">Projects</h2>
+        <ul className="mt-2">{c.projects.map((project) => <li key={project.id}><Link to="/project/$id" params={{ id: project.id }} className="flex min-h-14 items-center justify-between gap-3 border-b border-muted py-2 hover:bg-muted"><span className="font-semibold">{project.title}</span><span className="shrink-0 text-xs text-muted-foreground">{project.year} · {project.style}</span></Link></li>)}</ul>
+      </section>
+      <section className="mt-6" aria-label="Socials">
+        <h2 className="label">Socials</h2>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a className="tag min-h-11 gap-2" href={`https://instagram.com/${c.instagram}`} target="_blank" rel="noopener noreferrer" aria-label={`Open ${c.name} on Instagram`}><Instagram className="size-4" /> @{c.instagram}</a>
+          <a className="tag min-h-11 gap-2" href={`https://tiktok.com/@${c.tiktok}`} target="_blank" rel="noopener noreferrer" aria-label={`Open ${c.name} on TikTok`}><Music2 className="size-4" /> @{c.tiktok}</a>
+        </div>
+      </section>
+      <p className="mt-6 text-xs text-muted-foreground">Neighbourhood only — never an exact address.</p>
+    </div>
+  </div>;
 }
