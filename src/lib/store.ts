@@ -83,7 +83,13 @@ export function useRsvp() {
   return { going, toggle, ready };
 }
 
+export const TEXT_SIZE_KEY = "named.text-size";
+export const REDUCE_MOTION_KEY = "named.reduce-motion";
+export type TextSize = "default" | "large" | "extra-large";
+export const motionIsReduced = (system: boolean, preference: boolean) => system || preference;
+
 export function useReducedMotion() {
+  const [preference] = useLocal<boolean>(REDUCE_MOTION_KEY, false);
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
     const m = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -92,7 +98,17 @@ export function useReducedMotion() {
     m.addEventListener("change", on);
     return () => m.removeEventListener("change", on);
   }, []);
-  return reduced;
+  return motionIsReduced(reduced, preference);
+}
+
+/** Apply the same persisted preferences to every screen after hydration. */
+export function useAccessibility() {
+  const [textSize] = useLocal<TextSize>(TEXT_SIZE_KEY, "default");
+  const reduced = useReducedMotion();
+  useEffect(() => {
+    document.documentElement.dataset["textSize"] = textSize;
+    document.documentElement.classList.toggle("reduce-motion", reduced);
+  }, [textSize, reduced]);
 }
 
 // ---------- current user's portfolio ----------

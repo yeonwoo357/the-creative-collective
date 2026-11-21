@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { MoreHorizontal } from "@/components/PixelIcons";
 import { toast } from "sonner";
@@ -20,8 +20,6 @@ export const Route = createFileRoute("/project/$id")({
           { name: "description", content: loaderData.project.description },
           { property: "og:title", content: `${loaderData.project.title} · ${loaderData.creative.name}` },
           { property: "og:description", content: loaderData.project.description },
-          { property: "og:image", content: loaderData.project.images[0] },
-          { name: "twitter:image", content: loaderData.project.images[0] },
         ]
       : [{ title: "Unavailable — NAMED" }, { name: "robots", content: "noindex" }],
   }),
@@ -37,7 +35,6 @@ export const Route = createFileRoute("/project/$id")({
 function ProjectPage() {
   const { creative, project } = Route.useLoaderData();
   const [idx, setIdx] = useState(0);
-  const navigate = useNavigate();
   const track = useRef<HTMLDivElement>(null);
 
   const goTo = (i: number) => {
@@ -48,7 +45,7 @@ function ProjectPage() {
     <div className="flex flex-1 flex-col pb-8">
       <div className="flex items-center justify-between px-4 py-3">
         <BackButton />
-        <button aria-label="More" onClick={() => toast("Share coming soon")} className="flex size-11 items-center justify-center rounded-full border border-foreground">
+        <button aria-label="More" onClick={() => toast("Sharing isn’t ready just yet")} className="flex size-11 items-center justify-center rounded-full border border-foreground">
           <MoreHorizontal className="size-5" />
         </button>
       </div>
@@ -73,15 +70,13 @@ function ProjectPage() {
         <h1 className="text-xl font-semibold">{project.title}</h1>
         <p className="text-sm text-muted-foreground">{project.year} · {project.style} · {project.placement}</p>
         <p className="mt-4 text-sm leading-relaxed">{project.description}</p>
-        <Link to="/profile/$id" params={{ id: creative.id }} className="mt-4 flex min-h-14 items-center gap-3 rounded-md border border-dashed border-line px-3 py-2 text-sm hover:bg-muted">
+        <Link to="/profile/$id" params={{ id: creative.id }} className="mt-4 flex min-h-14 items-center gap-3 px-0 py-2 text-sm hover:bg-muted">
           <img src={creative.avatar} alt={altOf(creative.avatar) ?? ""} className="size-9 rounded-full object-cover" />
           <span className="flex-1">
             <span className="block font-semibold">{creative.name}</span>
             <span className="block text-xs text-muted-foreground">{creative.role} · {creative.neighbourhood}</span>
           </span>
-          <span className="text-xs uppercase tracking-widest underline underline-offset-4">View profile</span>
         </Link>
-        <button className="btn btn-primary mt-8 w-full" onClick={() => navigate({ to: "/compose/$id", params: { id: creative.id } })}>Contact</button>
       </div>
     </div>
   );

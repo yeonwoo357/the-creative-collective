@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "sonner";
+import { useAccessibility } from "@/lib/store";
 import { TabBar } from "@/components/TabBar";
 
 function NotFoundComponent() {
@@ -132,6 +133,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
+  useAccessibility();
   const { queryClient } = Route.useRouteContext();
 
   return (

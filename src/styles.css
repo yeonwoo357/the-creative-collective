@@ -9,24 +9,24 @@
    (= 26 / 30 / 36 / 48 / 64 at @2x design scale; 13 px is the smallest text anywhere). */
 
 @theme {
-  --text-xs: 13px;
+  --text-xs: var(--fs-1);
   --text-xs--line-height: 1.4;
-  --text-sm: 15px;
+  --text-sm: var(--fs-2);
   --text-sm--line-height: 1.5;
-  --text-base: 15px;
+  --text-base: var(--fs-2);
   --text-base--line-height: 1.5;
-  --text-lg: 18px;
+  --text-lg: var(--fs-3);
   --text-lg--line-height: 1.4;
-  --text-xl: 18px;
+  --text-xl: var(--fs-3);
   --text-xl--line-height: 1.4;
-  --text-2xl: 24px;
+  --text-2xl: var(--fs-4);
   --text-2xl--line-height: 1.25;
-  --text-3xl: 32px;
+  --text-3xl: var(--fs-5);
   --text-3xl--line-height: 1.15;
-  --text-4xl: 32px;
-  --text-5xl: 32px;
-  --text-6xl: 32px;
-  --text-7xl: 32px;
+  --text-4xl: var(--fs-5);
+  --text-5xl: var(--fs-5);
+  --text-6xl: var(--fs-5);
+  --text-7xl: var(--fs-5);
 }
 
 @theme inline {
@@ -716,3 +716,17 @@ h2.label {
 .profile-map-header { position: relative; min-height: 290px; overflow: hidden; background: var(--plum); }
 .profile-identity { background: var(--background); border-color: var(--glass-edge); box-shadow: var(--liquid-shadow); }
 .profile-active-tab { color: var(--pink); border-bottom: 3px solid var(--pink); background: var(--glass); }
+
+/* Accessibility scales the existing five tokens, never a second typeface/scale. */
+html[data-text-size="large"] { --fs-1: 15.6px; --fs-2: 18px; --fs-3: 21.6px; --fs-4: 28.8px; --fs-5: 38.4px; }
+html[data-text-size="extra-large"] { --fs-1: 18.2px; --fs-2: 21px; --fs-3: 25.2px; --fs-4: 33.6px; --fs-5: 44.8px; }
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html.reduce-motion::view-transition-old(root), html.reduce-motion::view-transition-new(root) { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+/* Preview placement stays inside the viewport, even for highlighted clusters. */
+.globe-pin[data-placed="true"] .globe-pop { left: var(--card-left, 0px); top: var(--card-top, 0px); bottom: auto; flex-direction: column; transform: translate(-50%, 0); }
+.globe-pin-label { display: none; }
+.globe-pin[data-highlight="true"][data-show="false"] .globe-pin-label { display: flex; position: absolute; left: 18px; top: -18px; align-items: center; gap: 5px; min-height: 36px; padding: 3px 7px; border-radius: 8px; background: var(--background); color: var(--pink); border: 1px solid var(--pink); white-space: nowrap; font-size: var(--fs-1); pointer-events: none; }
+.globe-pin-label img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }

@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Globe2, MessageCircle, Search, User } from "@/components/PixelIcons";
+import { Globe2, MessageCircle, Search, Ticket } from "@/components/PixelIcons";
 
 const tabs = [
   { to: "/", label: "Home", Icon: Globe2 },
   { to: "/search", label: "Discover", Icon: Search },
   { to: "/chat", label: "Chat", Icon: MessageCircle },
-  { to: "/me", label: "Profile", Icon: User },
+  { to: "/events", label: "Events", Icon: Ticket },
 ] as const;
 
 export const HIDE_TABS = ["/onboarding", "/intro", "/compose", "/chat/"];

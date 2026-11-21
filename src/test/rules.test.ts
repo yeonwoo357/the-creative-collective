@@ -6,6 +6,7 @@ import {
   avatarOf,
   setConversationMuted,
   toggleMessageLike,
+  motionIsReduced,
 } from "@/lib/store";
 import { searchWork } from "@/lib/data";
 import { creatives, hoodCoords, isVerified } from "@/lib/data";
@@ -64,10 +65,10 @@ describe("search work", () => {
 });
 
 describe("creative photos", () => {
-  it("are local, described, and never shared between profiles", async () => {
+  it("are local and described; existing profiles keep their own images", async () => {
     const { creatives, altOf } = await import("@/lib/data");
     const owner = new Map<string, string>();
-    for (const c of creatives)
+    for (const c of creatives.filter((person) => !["Fashion", "Modelling"].includes(person.category)))
       for (const src of [c.avatar, c.cover, ...c.work, ...c.projects.flatMap((p) => p.images)]) {
         expect(src.startsWith("/images/")).toBe(true);
         expect(altOf(src)).toBeTruthy();
@@ -106,5 +107,32 @@ describe("remaining discovery batch", () => {
   });
   it("mock verification stops with the exact prototype notice", () => {
     expect(VERIFICATION_NOTICE).toBe("Prototype: verification not active");
+  });
+});
+
+describe("launch disciplines and accessibility", () => {
+  it("includes every launch discipline and keeps category keys stable", async () => {
+    const { FILTERS, DISCIPLINES, searchCreatives } = await import("@/lib/data");
+    for (const category of ["Tattoo", "Hair", "Piercing", "Nails", "Art & Illustration", "Photographer", "DJ", "Stylist", "Fashion", "Modelling"] as const) {
+      expect(FILTERS).toContain(category);
+      expect(DISCIPLINES).toContain(category);
+      expect(searchCreatives("", category).length).toBeGreaterThan(0);
+    }
+  });
+  it("new Fashion and Modelling samples only reuse existing stylist/photographer paths", () => {
+    for (const category of ["Fashion", "Modelling"]) {
+      const samples = creatives.filter((c) => c.category === category);
+      expect(samples.length).toBeGreaterThanOrEqual(1);
+      expect(samples.length).toBeLessThanOrEqual(2);
+      for (const c of samples) {
+        expect([c.avatar, c.cover, ...c.work].every((src) => src.startsWith(category === "Fashion" ? "/images/nyx-calder-" : "/images/vesper-lux-"))).toBe(true);
+        expect(hoodCoords(c.neighbourhood)).toEqual([c.lat, c.lng]);
+      }
+    }
+  });
+  it("the system reduced-motion preference cannot be switched off", () => {
+    expect(motionIsReduced(true, false)).toBe(true);
+    expect(motionIsReduced(false, true)).toBe(true);
+    expect(motionIsReduced(false, false)).toBe(false);
   });
 });

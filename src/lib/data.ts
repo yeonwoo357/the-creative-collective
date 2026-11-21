@@ -1,4 +1,4 @@
-export type Category = "Tattoo" | "Hair" | "Piercing" | "Nails" | "Photographer" | "Stylist" | "DJ" | "Art & Illustration";
+export type Category = "Tattoo" | "Hair" | "Piercing" | "Nails" | "Photographer" | "Stylist" | "DJ" | "Art & Illustration" | "Fashion" | "Modelling";
 
 export type Project = {
   id: string;
@@ -191,6 +191,8 @@ const seeds: Seed[] = [
   ["saint-moss", "Saint Moss", "Photographer", "Photographer", "Manchester", "Ancoats", 53.4838, -2.2241, ["Film", "Gigs", "Street"], "Gig photography and street portraits. Find me at the barrier.", "saintmoss.photo", "Gig series|Live"],
   ["rue-sorrel", "Rue Sorrel", "Art & Illustration", "Illustrator", "London", "Bethnal Green", 51.5268, -0.0561, ["Ink", "Gothic", "Sketchbook"], "Gothic pen-and-ink drawings, prints and the odd book cover. Sketchbook always open.", "rue.sorrel.draws", "Ink illustration|Print"],
   ["cass-quill", "Cass Quill", "Art & Illustration", "Illustrator & printmaker", "London", "Clapton", 51.5615, -0.0552, ["Posters", "Screen print", "Zines"], "Gig posters, zines and screen prints in two colours max. Dark, loud and hand-pulled.", "cassquill.print", "Gig poster|Screen print"],
+  ["fern-voss", "Fern Voss", "Fashion", "Fashion designer", "London", "Soho", 51.5134, -0.1362, ["Upcycled", "Denim", "Archive"], "Reworked denim and offbeat layers, stitched in Soho. Small runs, big silhouettes.", "fern.voss.studio", "Reworked denim|Lookbook"],
+  ["eden-rune", "Eden Rune", "Modelling", "Model", "London", "Hackney", 51.5452, -0.0553, ["Editorial", "Portraits", "Flash"], "Editorial faces and movement for independent shoots. Hackney-based, always up for something a little odd.", "eden.rune", "Flash portraits|Editorial"],
 ];
 
 // Latest projects, written for each creative's own trade: [title, style, detail, description]
@@ -372,6 +374,8 @@ const projectSeeds: Record<string, ProjectSeed[]> = {
     ["Snake & skull gig poster", "Gig poster", "Screen print", "A two-colour poster for a Clapton show, hand-pulled in a run of 50."],
     ["Burn zine", "Zines", "Risograph", "A 20-page collage zine of hands, eyes and flames, printed on a riso in pink and black."],
   ],
+  "fern-voss": [["Reworked denim layers", "Upcycled", "Lookbook", "Sample fashion portfolio using archive styling imagery."]],
+  "eden-rune": [["Flash portrait study", "Editorial", "Portraits", "Sample modelling portfolio using existing flash portrait imagery."]],
   "saint-moss": [
     [
       "From the barrier",
@@ -385,7 +389,9 @@ const projectSeeds: Record<string, ProjectSeed[]> = {
 export const creatives: Creative[] = seeds.map((s, i) => {
   const [id, name, category, role, city, neighbourhood, lat, lng, tags, bio, instagram, sp] = s;
   const [style = "", placement = ""] = sp.split("|");
-  const shots = [photo(id, "w0"), photo(id, "w1"), photo(id, "w2"), photo(id, "cover")];
+  // Launch samples reuse existing local imagery; no new assets.
+  const photoId = id === "fern-voss" ? "nyx-calder" : id === "eden-rune" ? "vesper-lux" : id;
+  const shots = [photo(photoId, "w0"), photo(photoId, "w1"), photo(photoId, "w2"), photo(photoId, "cover")];
   const work = shots.slice(0, 3);
   const projects: Project[] = (projectSeeds[id] ?? [[`${style} work`, style, placement, ""]]).map(
     ([title, pStyle, pDetail, description], k) => ({
@@ -411,8 +417,8 @@ export const creatives: Creative[] = seeds.map((s, i) => {
     bio,
     instagram,
     tiktok: instagram,
-    avatar: photo(id, "avatar"),
-    cover: photo(id, "cover"),
+    avatar: photo(photoId, "avatar"),
+    cover: photo(photoId, "cover"),
     work,
     layout: i % 3 === 0 ? "carousel" : "grid",
     projects,
@@ -455,7 +461,9 @@ export function distanceKm(a: [number, number], b: [number, number]) {
 
 export const formatKm = (km: number) => (km < 10 ? `${km.toFixed(1)} km` : `${Math.round(km)} km`);
 
-export const FILTERS = ["All", "Tattoo", "Hair", "Piercing", "Nails", "Art & Illustration"] as const;
+export const FILTERS = ["All", "Tattoo", "Hair", "Piercing", "Nails", "Art & Illustration", "Photographer", "DJ", "Stylist", "Fashion", "Modelling"] as const;
+export const CATEGORY_LABELS: Partial<Record<Category, string>> = { Photographer: "Photography", DJ: "Music/DJ" };
+export const categoryLabel = (category: Category | "All") => category === "All" ? "All" : CATEGORY_LABELS[category] ?? category;
 export type Filter = (typeof FILTERS)[number];
 
 /** Tiny synonym list so loose words still find the right people (no AI, prototype only). */
@@ -469,6 +477,8 @@ export const SYNONYMS: Record<string, string[]> = {
   tattoo: ["tattoo", "ink"],
   haircut: ["hair", "cut", "mullet", "shag"],
   music: ["dj", "techno", "breaks", "gig"],
+  photography: ["photographer", "photography"],
+  "music/dj": ["dj", "music"],
   photo: ["photo", "photographer", "35mm", "film", "flash"],
 };
 
@@ -524,7 +534,7 @@ export const PLACES: { name: string; lat: number; lng: number }[] = [
 ];
 
 export const NEIGHBOURHOODS = Array.from(new Set(PLACES.filter((p) => p.lat > 51.3 && p.lat < 51.7).map((p) => p.name))).sort();
-export const DISCIPLINES = ["Tattoo", "Hair", "Piercing", "Nails", "Photographer", "Stylist", "DJ", "Art & Illustration", "Designer", "Model", "Other"];
+export const DISCIPLINES = ["Tattoo", "Hair", "Piercing", "Nails", "Photographer", "Stylist", "DJ", "Art & Illustration", "Fashion", "Modelling", "Designer", "Model", "Other"];
 
 /** Search work: every project from creatives that match, plus projects whose own title/style matches. */
 export function searchWork(query: string, filter: Filter) {

@@ -68,7 +68,7 @@ function OnboardingPage() {
           <button className="btn btn-primary mt-3 w-full" disabled={!name.trim()}>Next</button>
           <p className="mt-auto pt-10 text-center text-sm">
             Already have an account?{" "}
-            <button type="button" className="link-u min-h-11 font-semibold" onClick={() => toast("Demo only — no accounts here yet, bestie.")}>
+            <button type="button" className="link-u min-h-11 font-semibold" onClick={() => toast("No real accounts just yet, bestie.")}>
               Log in
             </button>
           </p>
@@ -95,7 +95,7 @@ function OnboardingPage() {
             <div className="mt-2 rounded-md border border-line p-3 text-xs leading-relaxed">
               <p>· You must be <strong>18+</strong> to join the collective.</p>
               <p>· Your location is shown at <strong>neighbourhood level only</strong> — never your exact address.</p>
-              <p>· Contact happens off-app on Instagram. Be kind.</p>
+              <p>· Say hi in chat, or head to Instagram. Be kind.</p>
             </div>
           )}
           <button className="btn btn-primary mt-3 w-full" disabled={!terms}>Next</button>

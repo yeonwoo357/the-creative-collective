@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { SpaceBackground } from "@/components/SpaceBackground";
-import { DISCIPLINES, NEIGHBOURHOODS, PLACES, altOf, creatives, searchCreatives } from "@/lib/data";
+import { FILTERS, categoryLabel, NEIGHBOURHOODS, PLACES, altOf, creatives, searchCreatives } from "@/lib/data";
 import namedLogo from "@/assets/named-logo-white.png";
 import {
   ONBOARDING_KEY,
@@ -50,7 +50,7 @@ const pins: Pin[] = creatives.map((c) => ({
   work: c.work.slice(0, 3).map((src, i) => ({ src, alt: altOf(src) ?? `${c.name} work ${i + 1}` })),
 }));
 
-const DISC = DISCIPLINES.filter((d) => creatives.some((c) => c.category === d));
+const DISC = FILTERS.filter((d) => d !== "All");
 
 function Home() {
   const { ids } = Route.useSearch();
@@ -70,7 +70,7 @@ function Home() {
   const [open, setOpen] = useState(false);
   const term = q.trim().toLowerCase();
   const sugPeople = useMemo(() => (term ? searchCreatives(q, "All") : creatives).slice(0, 4), [q, term]);
-  const sugDisc = DISC.filter((d) => !term || d.toLowerCase().includes(term)).slice(0, 4);
+  const sugDisc = DISC.filter((d) => !term || categoryLabel(d).toLowerCase().includes(term) || d.toLowerCase().includes(term)).slice(0, 4);
   const sugHoods = NEIGHBOURHOODS.filter((n) => !term || n.toLowerCase().includes(term)).slice(0, 4);
   const goSearch = (value = q) => navigate({ to: "/search", search: value.trim() ? { q: value.trim() } : {} });
   const openProfile = (id: string) => navigate({ to: "/profile/$id", params: { id } });
@@ -90,8 +90,7 @@ function Home() {
       <SpaceBackground reducedMotion={reduced} />
       <div className="absolute inset-0">
         <Globe
-          key={ids ?? "all"}
-          pins={ids ? pins.filter((pin) => highlight.includes(pin.id)) : pins}
+          pins={pins}
           highlight={highlight}
           initial={HOME_VIEW}
           target={target}
@@ -158,7 +157,7 @@ function Home() {
               }}
               onFocus={() => setOpen(true)}
               onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
-              placeholder="Search creatives, places…"
+              placeholder="Find your people, places…"
               aria-expanded={open}
               aria-controls="home-suggest"
               className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-white/70"
@@ -192,8 +191,8 @@ function Home() {
                   <p className="label px-2 pb-1 pt-2 text-white/60">Disciplines</p>
                   <div className="flex flex-wrap gap-2 px-1 pb-1">
                     {sugDisc.map((d) => (
-                      <button key={d} type="button" className="chip" onClick={() => goSearch(d)}>
-                        {d}
+                      <button key={d} type="button" className="chip" onClick={() => goSearch(categoryLabel(d))}>
+                        {categoryLabel(d)}
                       </button>
                     ))}
                   </div>
@@ -218,7 +217,7 @@ function Home() {
           )}
         </form>
         <p className="mt-2 text-center text-xs text-white/70">
-          Drag to spin · tap a pin · double-tap to recentre
+          Give it a spin · tap a pin · double-tap to recentre
         </p>
         {highlight.length > 0 && (
           <div className="pointer-events-auto mt-3 flex justify-center">

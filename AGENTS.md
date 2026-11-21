@@ -46,3 +46,6 @@ use the editor.
 - Visitor profiles and chat portfolio panels share the sketch-based `CreativePortfolio`; only visitor navigation actions differ so layout and profile details cannot drift.
 - Discover and visitor profiles share `SwipeRow` with stable snap widths and 44px previous/next controls so touch and keyboard users can browse the same content.
 - Verification is a mock-only public screen with no input, upload, or network submission.
+
+- Accessibility preferences use the existing local store; one root hook scales CSS type tokens and combines system/user reduced motion so every screen shares the same settings.
+- Launch sample image aliases reuse existing local stylist/photographer assets without mutating the original creatives or media.

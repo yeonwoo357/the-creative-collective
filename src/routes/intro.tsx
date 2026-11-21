@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Globe } from "@/components/Globe";
+import { useReducedMotion } from "@/lib/store";
 import { SpaceBackground } from "@/components/SpaceBackground";
 
 export const Route = createFileRoute("/intro")({
@@ -20,20 +21,21 @@ export const Route = createFileRoute("/intro")({
 });
 
 function Intro() {
+  const reduced = useReducedMotion();
   const navigate = useNavigate();
   const goHome = () => navigate({ to: "/", replace: true });
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) goHome();
+    if (reduced) goHome();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [reduced]);
 
   return (
     <div className="night relative flex flex-1 overflow-hidden">
-      <SpaceBackground />
+      <SpaceBackground reducedMotion={reduced} />
       {/* ⑤-1 spinning globe → ⑤-2 zoom in; lands exactly where the home globe starts */}
       <div className="absolute inset-0">
-        <Globe mode="intro" onIntroDone={goHome} />
+        <Globe reducedMotion={reduced} mode="intro" onIntroDone={goHome} />
       </div>
       <p className="pointer-events-none absolute inset-x-0 bottom-24 text-center text-xs uppercase tracking-[0.3em] text-muted-foreground">
         Finding your people…

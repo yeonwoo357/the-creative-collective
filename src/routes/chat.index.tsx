@@ -30,7 +30,7 @@ function ChatList() {
       {ready && chats.length === 0 ? (
         <div className="px-4 py-16 text-center">
           <p className="font-semibold">No chats yet.</p>
-          <p className="mt-1 text-sm text-muted-foreground">Find someone you vibe with and hit Contact.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Find someone you vibe with and tap DM me.</p>
           <Link to="/search" className="btn btn-primary mt-6">Find someone</Link>
         </div>
       ) : (

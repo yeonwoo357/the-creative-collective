@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Globe2, Search as SearchIcon } from "@/components/PixelIcons";
 import { BackButton } from "@/components/TopBar";
-import { FILTERS, hoodCoords, formatKm, searchCreatives, searchWork, type Filter, altOf } from "@/lib/data";
+import { FILTERS, categoryLabel, hoodCoords, formatKm, searchCreatives, searchWork, type Filter, altOf } from "@/lib/data";
 import { ONBOARDING_KEY, useLocal, useMyProfile, useSaved, useRecent, type Onboarding } from "@/lib/store";
 
 import { SwipeRow } from "@/components/SwipeRow";
@@ -66,7 +66,7 @@ function SearchPage() {
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search creatives, places…"
+            placeholder="Find your people, places…"
             className="field rounded-full border-foreground pl-10"
           />
         </div>
@@ -74,10 +74,11 @@ function SearchPage() {
       <div className="flex gap-2 overflow-x-auto px-4 py-4" role="group" aria-label="Category">
         {FILTERS.map((f) => (
           <Button variant="ghost" key={f} className="chip min-h-11 shrink-0" aria-pressed={filter === f} onClick={() => setFilter(f)}>
-            {f}
+            {categoryLabel(f)}
           </Button>
         ))}
       </div>
+      <p className="px-4 pb-3 text-xs text-muted-foreground">This is what we’re starting with — more later.</p>
       <div role="group" aria-label="Sort creatives" className="flex gap-2 px-4 pb-4">
         {(["For you", "Nearest"] as const).map((value) => <Button key={value} variant="ghost" className="chip min-h-11" aria-pressed={sort === value} onClick={() => setSort(value)}>{value}</Button>)}
       </div>
@@ -87,19 +88,19 @@ function SearchPage() {
 
       {results.length === 0 ? (
         <div className="px-4 py-16 text-center">
-          <p className="font-semibold">Nobody here yet.</p>
+          <p className="font-semibold">No matches this time.</p>
           <p className="mt-1 text-sm text-muted-foreground">Try another word or tap “All” — the collective is growing.</p>
         </div>
       ) : (
         <>
         {disciplines.map((discipline) => (
           <section key={discipline} aria-label={`${discipline} work`}>
-            <h2 className="label px-4 pb-2 pt-3">{discipline}</h2>
+            <h2 className="label px-4 pb-2 pt-3">{categoryLabel(discipline)}</h2>
             <SwipeRow label={`${discipline} work`}>
               {work.filter((w) => w.creative.category === discipline).map(({ creative, project }) => {
                 const reason = results.find((r) => r.c.id === creative.id)?.interest.label;
                 return <Link key={project.id} to="/project/$id" params={{ id: project.id }} className="swipe-card glass overflow-hidden rounded-lg">
-                  <img src={project.images[0]} alt={altOf(project.images[0] ?? "") ?? project.title} loading="lazy" className="aspect-square w-full object-cover" />
+                  <img src={project.images[0]} alt={altOf(project.images[0] ?? "") ?? project.title} loading="lazy" className="aspect-[5/3] w-full object-cover" />
                   <div className="p-3"><p className="font-bold">{project.title}</p><p className="text-xs text-muted-foreground">{creative.name}</p>{sort === "For you" && reason && <p className="mt-2 text-xs text-muted-foreground">{reason}</p>}</div>
                 </Link>;
               })}

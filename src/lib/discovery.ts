@@ -25,6 +25,8 @@ export const SAMPLE_SERVICES: Record<Category, string[]> = {
   Photographer: ["Flash portrait session · £80–£180", "Editorial shoot · £200–£500", "Live event coverage · £150–£350", "Film portraits · £100–£220"],
   DJ: ["Club set · £100–£300", "Private event set · £200–£500", "Guest mix · £50–£150", "Vinyl session · £100–£250"],
   Stylist: ["Personal styling · £80–£180", "Editorial wardrobe · £200–£450", "Music video looks · £250–£600", "Archive sourcing · £50–£150"],
+  Fashion: ["Custom garment · £120–£350", "Denim rework · £60–£180", "Small-run design · £200–£600"],
+  Modelling: ["Editorial session · £100–£250", "Lookbook shoot · £150–£350", "Runway booking · £120–£300"],
   "Art & Illustration": ["Custom ink illustration · £60–£180", "Gig poster · £100–£250", "Print commission · £80–£220", "Zine artwork · £100–£300"],
 };
 
@@ -37,5 +39,7 @@ export const SAMPLE_COLLABS: Record<Category, string[]> = {
   Photographer: ["Fashion editorials", "Artist portraits", "Live music projects"],
   DJ: ["Collective club nights", "Guest mixes", "Live artist sets"],
   Stylist: ["Fashion editorials", "Music video wardrobe", "Independent designers"],
+  Fashion: ["Independent lookbooks", "Upcycled collections", "Music video costumes"],
+  Modelling: ["Fashion editorials", "Independent lookbooks", "Artist portrait shoots"],
   "Art & Illustration": ["Gig posters", "Zines & small presses", "Tattoo flash collaborations"],
 };

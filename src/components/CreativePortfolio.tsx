@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Bookmark, MapPin, Check, Send, Instagram, Music2 } from "@/components/PixelIcons";
+import { Bookmark, MapPin, Check, Globe2, Instagram, Music2 } from "@/components/PixelIcons";
 import { toast } from "sonner";
 import { BackButton } from "@/components/TopBar";
 import { creatives, altOf, hoodCoords, distanceKm, isVerified, type Creative } from "@/lib/data";
@@ -28,25 +28,28 @@ export function CreativePortfolio({ creative: c, embedded = true }: { creative: 
       <div className="relative z-10 flex items-start justify-between p-3">
         {embedded ? <span /> : <BackButton />}
         <div className="flex gap-2">
-          <Button variant="ghost" className="glass size-11 rounded-full p-0" aria-label={saved ? `Unsave ${c.name}` : `Save ${c.name}`} aria-pressed={saved} onClick={() => { toggle(c.id); toast(saved ? "Removed from saved" : "Saved to your collective"); }}><Bookmark active={saved} /></Button>
-          {!embedded && <Button asChild variant="ghost" className="glass size-11 rounded-full p-0"><Link to="/compose/$id" params={{ id: c.id }} aria-label={`Message ${c.name}`}><Send /></Link></Button>}
+          <Button variant="ghost" className="glass size-11 rounded-full p-0" aria-label={saved ? `Unsave ${c.name}` : `Save ${c.name}`} aria-pressed={saved} onClick={() => { toggle(c.id); toast(saved ? "Unsaved — all good" : "Saved to your collective"); }}><Bookmark active={saved} /></Button>
         </div>
       </div>
       <section className="profile-identity relative z-10 mx-4 mb-5 mt-4 w-[82%] rounded-lg border p-4">
         <div className="flex items-start gap-3">
           <img src={c.avatar} alt={altOf(c.avatar) ?? c.name} className="size-12 shrink-0 rounded-full object-cover" />
-          <div className="min-w-0">
-            <h1 className="text-lg font-bold uppercase break-words">{c.name}</h1>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center justify-between gap-x-2">
+              <h1 className="min-w-0 text-lg font-bold uppercase break-words">{c.name}</h1>
+              {!embedded && <Button asChild variant="ghost" className="chip min-h-11 shrink-0 px-3"><Link to="/compose/$id" params={{ id: c.id }} aria-label={`Message ${c.name}`}>DM me</Link></Button>}
+            </div>
             <p className="break-all text-sm">@{c.instagram}</p>
             <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="size-4 shrink-0" /><span>{c.neighbourhood} · ~{km} km away</span></p>
             <p className="text-xs text-muted-foreground">{c.city}</p>
+            {!embedded && <Button asChild variant="ghost" className="mt-2 min-h-11 gap-2 px-0 text-xs"><Link to="/" search={{ ids: c.id }}><Globe2 className="size-4" />View on globe</Link></Button>}
           </div>
         </div>
         <p className="mt-4 break-words text-2xl font-bold uppercase">{c.role}</p>
         {isVerified(c.id) && <span className="mt-2 inline-flex items-center gap-1 text-xs" aria-label="Verified — mock badge"><Check className="size-4" /> Verified</span>}
       </section>
     </header>
-    <div role="tablist" aria-label="Creative portfolio" className="grid grid-cols-2 border-y border-border">
+    <div role="tablist" aria-label="Creative portfolio" className="grid grid-cols-2 rounded-t-lg overflow-hidden border-y border-border">
       {(["Works", "Reviews"] as const).map((t) => <Button key={t} variant="ghost" id={`tab-${t}`} role="tab" aria-selected={tab === t} aria-controls="profile-panel" onClick={() => setTab(t)} className={`min-h-16 rounded-none text-2xl font-bold uppercase ${tab === t ? "profile-active-tab" : "text-muted-foreground"}`}>{t}</Button>)}
     </div>
     <div id="profile-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} className="pt-4">

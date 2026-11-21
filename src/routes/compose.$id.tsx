@@ -72,7 +72,7 @@ function ComposePage() {
         </div>
         <button className="btn btn-primary mt-5 w-full" disabled={!text.trim()}>Send</button>
       </form>
-      <p className="mt-3 text-center text-xs text-muted-foreground">Demo only — nothing leaves your phone.</p>
+      <p className="mt-3 text-center text-xs text-muted-foreground">Just a prototype — your messages stay on this device.</p>
 
       <div className="mt-8 border-t border-dashed border-line pt-5">
         <p className="label">Or reach them on Instagram</p>
