@@ -230,7 +230,10 @@ export function Globe({
       const { default: GlobeGL } = await import("globe.gl");
       if (disposed || !host.current) return;
       const { w: cw, h: ch } = size();
-      const world = new GlobeGL(host.current, { animateIn: false })
+      const world = new GlobeGL(host.current, {
+        animateIn: false,
+        rendererConfig: { antialias: true },
+      })
         .width(cw)
         .height(ch)
         .backgroundColor("rgba(0,0,0,0)")
@@ -240,13 +243,14 @@ export function Globe({
         .atmosphereColor("#f8bcff")
         .atmosphereAltitude(0.16)
         .hexPolygonsData(landDots)
-        .hexPolygonResolution(4)
+        .hexPolygonResolution(3)
         .hexPolygonMargin(0.25)
+        .hexPolygonAltitude(0.004) // dots clearly above the caps, no z-fighting shimmer
         .hexPolygonUseDots(true)
         .hexPolygonColor(() => "rgba(248,188,255,0.8)")
         // Very faint land fill + coastline: barely there from afar, the map once zoomed in.
         .polygonsData(landDots)
-        .polygonCapColor(() => "rgba(248,188,255,0.28)")
+        .polygonCapColor(() => "rgba(248,188,255,0.14)")
         .polygonSideColor(() => "rgba(0,0,0,0)")
         .polygonStrokeColor(() => "rgba(248,188,255,0.22)")
         .polygonAltitude(0.0008)
