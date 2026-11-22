@@ -84,6 +84,8 @@ export type Pin = {
   work?: { src: string; alt: string }[];
   /** Neighbourhood tag shown on the pin (never an address). */
   place?: string;
+  /** Card button label (defaults to "View profile"). */
+  cta?: string;
 };
 
 /**
@@ -484,6 +486,8 @@ export function Globe({
         im.decoding = "async";
         workEl?.appendChild(im);
       }
+      const ctaEl = el.querySelector(".globe-cta");
+      if (ctaEl && pin.cta) ctaEl.innerHTML = `${pin.cta} <span aria-hidden="true">→</span>`;
       const name = el.querySelector("b");
       const subtitle = el.querySelector("small");
       if (name) name.textContent = pin.title;

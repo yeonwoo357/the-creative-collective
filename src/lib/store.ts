@@ -83,6 +83,14 @@ export function useRsvp() {
   return { going, toggle, ready };
 }
 
+export const SAVED_EVENTS_KEY = "named.saved-events";
+export function useSavedEvents() {
+  const [saved, setSaved, ready] = useLocal<string[]>(SAVED_EVENTS_KEY, []);
+  const toggle = (id: string) =>
+    setSaved(saved.includes(id) ? saved.filter((s) => s !== id) : [...saved, id]);
+  return { saved, toggle, ready, isSaved: (id: string) => saved.includes(id) };
+}
+
 export const TEXT_SIZE_KEY = "named.text-size";
 export const REDUCE_MOTION_KEY = "named.reduce-motion";
 export type TextSize = "default" | "large" | "extra-large";
