@@ -4,6 +4,7 @@ import { Bookmark, Search, Settings, User, X } from "@/components/PixelIcons";
 import { Globe, HOME_VIEW, fitView, type Pin } from "@/components/Globe";
 import { SpaceBackground } from "@/components/SpaceBackground";
 import { FILTERS, categoryLabel, NEIGHBOURHOODS, PLACES, altOf, creatives, searchCreatives } from "@/lib/data";
+import { EVENTS, whenLabel } from "@/lib/events";
 import namedLogo from "@/assets/named-logo-white.png";
 import {
   ONBOARDING_KEY,
@@ -50,6 +51,20 @@ const pins: Pin[] = creatives.map((c) => ({
   work: c.work.slice(0, 3).map((src, i) => ({ src, alt: altOf(src) ?? `${c.name} work ${i + 1}` })),
 }));
 
+const eventPins: Pin[] = EVENTS.map((e) => ({
+  id: `event:${e.id}`,
+  lat: e.lat,
+  lng: e.lng,
+  title: e.title,
+  subtitle: whenLabel(e),
+  place: `${e.neighbourhood}, ${e.city}`,
+  avatar: e.thumb,
+  avatarAlt: altOf(e.thumb) ?? e.title,
+  cta: "View event",
+}));
+
+const allPins: Pin[] = [...pins, ...eventPins];
+
 const DISC = FILTERS.filter((d) => d !== "All");
 
 function Home() {
@@ -73,15 +88,22 @@ function Home() {
   const sugDisc = DISC.filter((d) => !term || categoryLabel(d).toLowerCase().includes(term) || d.toLowerCase().includes(term)).slice(0, 4);
   const sugHoods = NEIGHBOURHOODS.filter((n) => !term || n.toLowerCase().includes(term)).slice(0, 4);
   const goSearch = (value = q) => navigate({ to: "/search", search: value.trim() ? { q: value.trim() } : {} });
-  const openProfile = (id: string) => navigate({ to: "/profile/$id", params: { id } });
+  const openPin = (id: string) =>
+    id.startsWith("event:")
+      ? navigate({ to: "/event/$id", params: { id: id.slice(6) } })
+      : navigate({ to: "/profile/$id", params: { id } });
 
   const highlight = useMemo(() => (ids ? ids.split(",") : []), [ids]);
+  const visiblePins = useMemo(
+    () => (highlight.some((id) => id.startsWith("event:")) ? allPins : pins),
+    [highlight],
+  );
   const target = useMemo(() => {
     if (!highlight.length) return null;
     return fitView(
-      creatives
-        .filter((c) => highlight.includes(c.id))
-        .map((c) => [c.lat, c.lng] as [number, number]),
+      allPins
+        .filter((p) => highlight.includes(p.id))
+        .map((p) => [p.lat, p.lng] as [number, number]),
     );
   }, [highlight]);
 
@@ -90,12 +112,12 @@ function Home() {
       <SpaceBackground reducedMotion={reduced} />
       <div className="absolute inset-0">
         <Globe
-          pins={pins}
+          pins={visiblePins}
           highlight={highlight}
           initial={HOME_VIEW}
           target={target}
           reducedMotion={reduced}
-          onPin={openProfile}
+          onPin={openPin}
           places={PLACES}
           previewId={preview}
           onPreview={(id) => {

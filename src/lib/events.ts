@@ -129,3 +129,12 @@ export function icsFor(e: NamedEvent) {
     "END:VEVENT", "END:VCALENDAR",
   ].join("\r\n");
 }
+
+export function downloadIcs(e: NamedEvent) {
+  const url = URL.createObjectURL(new Blob([icsFor(e)], { type: "text/calendar;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${e.id}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
