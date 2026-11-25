@@ -23,6 +23,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ChatIndexRouteImport } from './routes/chat.index'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
 import { Route as ComposeIdRouteImport } from './routes/compose.$id'
+import { Route as EventIdRouteImport } from './routes/event.$id'
 import { Route as ProfileIdRouteImport } from './routes/profile.$id'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
 
@@ -96,6 +97,11 @@ const ComposeIdRoute = ComposeIdRouteImport.update({
   path: '/compose/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventIdRoute = EventIdRouteImport.update({
+  id: '/event/$id',
+  path: '/event/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileIdRoute = ProfileIdRouteImport.update({
   id: '/profile/$id',
   path: '/profile/$id',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/chat/$id': typeof ChatIdRoute
   '/compose/$id': typeof ComposeIdRoute
+  '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat/': typeof ChatIndexRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/chat/$id': typeof ChatIdRoute
   '/compose/$id': typeof ComposeIdRoute
+  '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat': typeof ChatIndexRoute
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/chat/$id': typeof ChatIdRoute
   '/compose/$id': typeof ComposeIdRoute
+  '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat/': typeof ChatIndexRoute
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/chat/$id'
     | '/compose/$id'
+    | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat/'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/chat/$id'
     | '/compose/$id'
+    | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/chat/$id'
     | '/compose/$id'
+    | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat/'
@@ -233,6 +245,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ChatIdRoute: typeof ChatIdRoute
   ComposeIdRoute: typeof ComposeIdRoute
+  EventIdRoute: typeof EventIdRoute
   ProfileIdRoute: typeof ProfileIdRoute
   ProjectIdRoute: typeof ProjectIdRoute
   ChatIndexRoute: typeof ChatIndexRoute
@@ -338,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComposeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/event/$id': {
+      id: '/event/$id'
+      path: '/event/$id'
+      fullPath: '/event/$id'
+      preLoaderRoute: typeof EventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile/$id': {
       id: '/profile/$id'
       path: '/profile/$id'
@@ -369,6 +389,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ChatIdRoute: ChatIdRoute,
   ComposeIdRoute: ComposeIdRoute,
+  EventIdRoute: EventIdRoute,
   ProfileIdRoute: ProfileIdRoute,
   ProjectIdRoute: ProjectIdRoute,
   ChatIndexRoute: ChatIndexRoute,
