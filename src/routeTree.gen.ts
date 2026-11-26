@@ -22,10 +22,15 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ChatIndexRouteImport } from './routes/chat.index'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
+import { Route as CompetitionCreateRouteImport } from './routes/competition.create'
+import { Route as CompetitionJoinRouteImport } from './routes/competition.join'
+import { Route as CompetitionSubmitRouteImport } from './routes/competition.submit'
+import { Route as CompetitionTeamsRouteImport } from './routes/competition.teams'
 import { Route as ComposeIdRouteImport } from './routes/compose.$id'
 import { Route as EventIdRouteImport } from './routes/event.$id'
 import { Route as ProfileIdRouteImport } from './routes/profile.$id'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
+import { Route as CompetitionTeamIdRouteImport } from './routes/competition.team.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -92,6 +97,26 @@ const ChatIdRoute = ChatIdRouteImport.update({
   path: '/chat/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompetitionCreateRoute = CompetitionCreateRouteImport.update({
+  id: '/competition/create',
+  path: '/competition/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitionJoinRoute = CompetitionJoinRouteImport.update({
+  id: '/competition/join',
+  path: '/competition/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitionSubmitRoute = CompetitionSubmitRouteImport.update({
+  id: '/competition/submit',
+  path: '/competition/submit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitionTeamsRoute = CompetitionTeamsRouteImport.update({
+  id: '/competition/teams',
+  path: '/competition/teams',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComposeIdRoute = ComposeIdRouteImport.update({
   id: '/compose/$id',
   path: '/compose/$id',
@@ -112,6 +137,11 @@ const ProjectIdRoute = ProjectIdRouteImport.update({
   path: '/project/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompetitionTeamIdRoute = CompetitionTeamIdRouteImport.update({
+  id: '/competition/team/$id',
+  path: '/competition/team/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -126,11 +156,16 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/chat/$id': typeof ChatIdRoute
+  '/competition/create': typeof CompetitionCreateRoute
+  '/competition/join': typeof CompetitionJoinRoute
+  '/competition/submit': typeof CompetitionSubmitRoute
+  '/competition/teams': typeof CompetitionTeamsRoute
   '/compose/$id': typeof ComposeIdRoute
   '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat/': typeof ChatIndexRoute
+  '/competition/team/$id': typeof CompetitionTeamIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,11 +180,16 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/chat/$id': typeof ChatIdRoute
+  '/competition/create': typeof CompetitionCreateRoute
+  '/competition/join': typeof CompetitionJoinRoute
+  '/competition/submit': typeof CompetitionSubmitRoute
+  '/competition/teams': typeof CompetitionTeamsRoute
   '/compose/$id': typeof ComposeIdRoute
   '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat': typeof ChatIndexRoute
+  '/competition/team/$id': typeof CompetitionTeamIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -165,11 +205,16 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/chat/$id': typeof ChatIdRoute
+  '/competition/create': typeof CompetitionCreateRoute
+  '/competition/join': typeof CompetitionJoinRoute
+  '/competition/submit': typeof CompetitionSubmitRoute
+  '/competition/teams': typeof CompetitionTeamsRoute
   '/compose/$id': typeof ComposeIdRoute
   '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat/': typeof ChatIndexRoute
+  '/competition/team/$id': typeof CompetitionTeamIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -186,11 +231,16 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/chat/$id'
+    | '/competition/create'
+    | '/competition/join'
+    | '/competition/submit'
+    | '/competition/teams'
     | '/compose/$id'
     | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat/'
+    | '/competition/team/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -205,11 +255,16 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/chat/$id'
+    | '/competition/create'
+    | '/competition/join'
+    | '/competition/submit'
+    | '/competition/teams'
     | '/compose/$id'
     | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat'
+    | '/competition/team/$id'
   id:
     | '__root__'
     | '/'
@@ -224,11 +279,16 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/chat/$id'
+    | '/competition/create'
+    | '/competition/join'
+    | '/competition/submit'
+    | '/competition/teams'
     | '/compose/$id'
     | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat/'
+    | '/competition/team/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -244,11 +304,16 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   ChatIdRoute: typeof ChatIdRoute
+  CompetitionCreateRoute: typeof CompetitionCreateRoute
+  CompetitionJoinRoute: typeof CompetitionJoinRoute
+  CompetitionSubmitRoute: typeof CompetitionSubmitRoute
+  CompetitionTeamsRoute: typeof CompetitionTeamsRoute
   ComposeIdRoute: typeof ComposeIdRoute
   EventIdRoute: typeof EventIdRoute
   ProfileIdRoute: typeof ProfileIdRoute
   ProjectIdRoute: typeof ProjectIdRoute
   ChatIndexRoute: typeof ChatIndexRoute
+  CompetitionTeamIdRoute: typeof CompetitionTeamIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -344,6 +409,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/competition/create': {
+      id: '/competition/create'
+      path: '/competition/create'
+      fullPath: '/competition/create'
+      preLoaderRoute: typeof CompetitionCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competition/join': {
+      id: '/competition/join'
+      path: '/competition/join'
+      fullPath: '/competition/join'
+      preLoaderRoute: typeof CompetitionJoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competition/submit': {
+      id: '/competition/submit'
+      path: '/competition/submit'
+      fullPath: '/competition/submit'
+      preLoaderRoute: typeof CompetitionSubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competition/teams': {
+      id: '/competition/teams'
+      path: '/competition/teams'
+      fullPath: '/competition/teams'
+      preLoaderRoute: typeof CompetitionTeamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/compose/$id': {
       id: '/compose/$id'
       path: '/compose/$id'
@@ -372,6 +465,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/competition/team/$id': {
+      id: '/competition/team/$id'
+      path: '/competition/team/$id'
+      fullPath: '/competition/team/$id'
+      preLoaderRoute: typeof CompetitionTeamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -388,11 +488,16 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   ChatIdRoute: ChatIdRoute,
+  CompetitionCreateRoute: CompetitionCreateRoute,
+  CompetitionJoinRoute: CompetitionJoinRoute,
+  CompetitionSubmitRoute: CompetitionSubmitRoute,
+  CompetitionTeamsRoute: CompetitionTeamsRoute,
   ComposeIdRoute: ComposeIdRoute,
   EventIdRoute: EventIdRoute,
   ProfileIdRoute: ProfileIdRoute,
   ProjectIdRoute: ProjectIdRoute,
   ChatIndexRoute: ChatIndexRoute,
+  CompetitionTeamIdRoute: CompetitionTeamIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

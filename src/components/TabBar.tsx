@@ -8,7 +8,7 @@ const tabs = [
   { to: "/events", label: "Events", Icon: Ticket },
 ] as const;
 
-export const HIDE_TABS = ["/onboarding", "/intro", "/compose", "/chat/"];
+export const HIDE_TABS = ["/onboarding", "/intro", "/compose", "/chat/", "/competition"];
 
 export function TabBar() {
   const path = useRouterState({ select: (s) => s.location.pathname });

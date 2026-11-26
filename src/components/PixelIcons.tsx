@@ -187,6 +187,33 @@ export const Bookmark = icon(
   ]),
   true,
 );
+export const Star = Bookmark;
+export const Dice = icon(
+  "dice",
+  join(
+    lines([
+      [1, 1],
+      [14, 1],
+      [14, 14],
+      [1, 14],
+      [1, 1],
+    ]),
+    cells(
+      [4, 4],
+      [5, 4],
+      [4, 5],
+      [5, 5],
+      [7, 7],
+      [8, 7],
+      [7, 8],
+      [8, 8],
+      [10, 10],
+      [11, 10],
+      [10, 11],
+      [11, 11],
+    ),
+  ),
+);
 export const Globe2 = icon(
   "globe",
   join(
