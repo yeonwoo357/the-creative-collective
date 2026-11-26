@@ -1,8 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Bookmark, MapPin, Star, X } from "@/components/PixelIcons";
 import {
   COMP_BRIEF,
@@ -28,12 +26,9 @@ import {
 } from "@/lib/events";
 import { useRsvp, useSavedEvents } from "@/lib/store";
 
-const eventsSearchSchema = z.object({
-  tab: fallback(z.string(), "all").default("all"),
-});
-
 export const Route = createFileRoute("/events")({
-  validateSearch: zodValidator(eventsSearchSchema),
+  validateSearch: (s: Record<string, unknown>): { tab?: "all" | "named" } =>
+    s["tab"] === "named" ? { tab: "named" } : {},
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },
@@ -134,7 +129,7 @@ function EventsPage() {
               type="button"
               role="tab"
               aria-selected={active}
-              onClick={() => navigate({ search: { tab: k }, replace: true })}
+              onClick={() => navigate({ search: k === "named" ? { tab: "named" } : {}, replace: true })}
               className={`min-h-11 rounded-full text-sm font-bold transition ${
                 active
                   ? "bg-white/20 text-foreground shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]"

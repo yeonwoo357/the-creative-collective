@@ -26,10 +26,12 @@ import { Route as CompetitionCreateRouteImport } from './routes/competition.crea
 import { Route as CompetitionJoinRouteImport } from './routes/competition.join'
 import { Route as CompetitionSubmitRouteImport } from './routes/competition.submit'
 import { Route as CompetitionTeamsRouteImport } from './routes/competition.teams'
+import { Route as CompetitionVoteRouteImport } from './routes/competition.vote'
 import { Route as ComposeIdRouteImport } from './routes/compose.$id'
 import { Route as EventIdRouteImport } from './routes/event.$id'
 import { Route as ProfileIdRouteImport } from './routes/profile.$id'
 import { Route as ProjectIdRouteImport } from './routes/project.$id'
+import { Route as CompetitionEntryIdRouteImport } from './routes/competition.entry.$id'
 import { Route as CompetitionTeamIdRouteImport } from './routes/competition.team.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -117,6 +119,11 @@ const CompetitionTeamsRoute = CompetitionTeamsRouteImport.update({
   path: '/competition/teams',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompetitionVoteRoute = CompetitionVoteRouteImport.update({
+  id: '/competition/vote',
+  path: '/competition/vote',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComposeIdRoute = ComposeIdRouteImport.update({
   id: '/compose/$id',
   path: '/compose/$id',
@@ -135,6 +142,11 @@ const ProfileIdRoute = ProfileIdRouteImport.update({
 const ProjectIdRoute = ProjectIdRouteImport.update({
   id: '/project/$id',
   path: '/project/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitionEntryIdRoute = CompetitionEntryIdRouteImport.update({
+  id: '/competition/entry/$id',
+  path: '/competition/entry/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompetitionTeamIdRoute = CompetitionTeamIdRouteImport.update({
@@ -160,11 +172,13 @@ export interface FileRoutesByFullPath {
   '/competition/join': typeof CompetitionJoinRoute
   '/competition/submit': typeof CompetitionSubmitRoute
   '/competition/teams': typeof CompetitionTeamsRoute
+  '/competition/vote': typeof CompetitionVoteRoute
   '/compose/$id': typeof ComposeIdRoute
   '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat/': typeof ChatIndexRoute
+  '/competition/entry/$id': typeof CompetitionEntryIdRoute
   '/competition/team/$id': typeof CompetitionTeamIdRoute
 }
 export interface FileRoutesByTo {
@@ -184,11 +198,13 @@ export interface FileRoutesByTo {
   '/competition/join': typeof CompetitionJoinRoute
   '/competition/submit': typeof CompetitionSubmitRoute
   '/competition/teams': typeof CompetitionTeamsRoute
+  '/competition/vote': typeof CompetitionVoteRoute
   '/compose/$id': typeof ComposeIdRoute
   '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat': typeof ChatIndexRoute
+  '/competition/entry/$id': typeof CompetitionEntryIdRoute
   '/competition/team/$id': typeof CompetitionTeamIdRoute
 }
 export interface FileRoutesById {
@@ -209,11 +225,13 @@ export interface FileRoutesById {
   '/competition/join': typeof CompetitionJoinRoute
   '/competition/submit': typeof CompetitionSubmitRoute
   '/competition/teams': typeof CompetitionTeamsRoute
+  '/competition/vote': typeof CompetitionVoteRoute
   '/compose/$id': typeof ComposeIdRoute
   '/event/$id': typeof EventIdRoute
   '/profile/$id': typeof ProfileIdRoute
   '/project/$id': typeof ProjectIdRoute
   '/chat/': typeof ChatIndexRoute
+  '/competition/entry/$id': typeof CompetitionEntryIdRoute
   '/competition/team/$id': typeof CompetitionTeamIdRoute
 }
 export interface FileRouteTypes {
@@ -235,11 +253,13 @@ export interface FileRouteTypes {
     | '/competition/join'
     | '/competition/submit'
     | '/competition/teams'
+    | '/competition/vote'
     | '/compose/$id'
     | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat/'
+    | '/competition/entry/$id'
     | '/competition/team/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -259,11 +279,13 @@ export interface FileRouteTypes {
     | '/competition/join'
     | '/competition/submit'
     | '/competition/teams'
+    | '/competition/vote'
     | '/compose/$id'
     | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat'
+    | '/competition/entry/$id'
     | '/competition/team/$id'
   id:
     | '__root__'
@@ -283,11 +305,13 @@ export interface FileRouteTypes {
     | '/competition/join'
     | '/competition/submit'
     | '/competition/teams'
+    | '/competition/vote'
     | '/compose/$id'
     | '/event/$id'
     | '/profile/$id'
     | '/project/$id'
     | '/chat/'
+    | '/competition/entry/$id'
     | '/competition/team/$id'
   fileRoutesById: FileRoutesById
 }
@@ -308,11 +332,13 @@ export interface RootRouteChildren {
   CompetitionJoinRoute: typeof CompetitionJoinRoute
   CompetitionSubmitRoute: typeof CompetitionSubmitRoute
   CompetitionTeamsRoute: typeof CompetitionTeamsRoute
+  CompetitionVoteRoute: typeof CompetitionVoteRoute
   ComposeIdRoute: typeof ComposeIdRoute
   EventIdRoute: typeof EventIdRoute
   ProfileIdRoute: typeof ProfileIdRoute
   ProjectIdRoute: typeof ProjectIdRoute
   ChatIndexRoute: typeof ChatIndexRoute
+  CompetitionEntryIdRoute: typeof CompetitionEntryIdRoute
   CompetitionTeamIdRoute: typeof CompetitionTeamIdRoute
 }
 
@@ -437,6 +463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompetitionTeamsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/competition/vote': {
+      id: '/competition/vote'
+      path: '/competition/vote'
+      fullPath: '/competition/vote'
+      preLoaderRoute: typeof CompetitionVoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/compose/$id': {
       id: '/compose/$id'
       path: '/compose/$id'
@@ -463,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/project/$id'
       fullPath: '/project/$id'
       preLoaderRoute: typeof ProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competition/entry/$id': {
+      id: '/competition/entry/$id'
+      path: '/competition/entry/$id'
+      fullPath: '/competition/entry/$id'
+      preLoaderRoute: typeof CompetitionEntryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/competition/team/$id': {
@@ -492,11 +532,13 @@ const rootRouteChildren: RootRouteChildren = {
   CompetitionJoinRoute: CompetitionJoinRoute,
   CompetitionSubmitRoute: CompetitionSubmitRoute,
   CompetitionTeamsRoute: CompetitionTeamsRoute,
+  CompetitionVoteRoute: CompetitionVoteRoute,
   ComposeIdRoute: ComposeIdRoute,
   EventIdRoute: EventIdRoute,
   ProfileIdRoute: ProfileIdRoute,
   ProjectIdRoute: ProjectIdRoute,
   ChatIndexRoute: ChatIndexRoute,
+  CompetitionEntryIdRoute: CompetitionEntryIdRoute,
   CompetitionTeamIdRoute: CompetitionTeamIdRoute,
 }
 export const routeTree = rootRouteImport

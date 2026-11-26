@@ -8,7 +8,7 @@ import {
   useMyTeam,
   useSoloEntry,
 } from "@/lib/competition";
-import { CREATIVES } from "@/lib/data";
+import { creatives } from "@/lib/data";
 import { filesToMedia } from "@/lib/media";
 import { ONBOARDING_KEY, avatarOf, useLocal, useMyProfile, type Onboarding } from "@/lib/store";
 
@@ -72,7 +72,7 @@ function SubmitIdeaPage() {
       toast("Describe your idea in a few lines");
       return;
     }
-    const fallback = CREATIVES[0]!;
+    const fallback = creatives[0]!;
     const finalImages = images.length
       ? images
       : [fallback.cover, fallback.work[0] ?? fallback.cover, fallback.work[1] ?? fallback.cover];

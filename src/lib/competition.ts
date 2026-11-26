@@ -1,4 +1,4 @@
-import { CREATIVES, getCreative } from "./data";
+import { creatives, getCreative } from "./data";
 import { useLocal } from "./store";
 
 export const CRAFTS = [
@@ -47,12 +47,12 @@ export type CompTeam = {
 };
 
 function member(id: string, lead = false): TeamMember {
-  const c = getCreative(id) ?? CREATIVES[0]!;
+  const c = getCreative(id) ?? creatives[0]!;
   return { id: c.id, name: c.name, role: c.role, avatar: c.avatar, lead };
 }
 
 function imgs(id: string): [string, string, string, string] {
-  const c = getCreative(id) ?? CREATIVES[0]!;
+  const c = getCreative(id) ?? creatives[0]!;
   return [c.cover, c.work[0] ?? c.cover, c.work[1] ?? c.cover, c.work[2] ?? c.cover];
 }
 

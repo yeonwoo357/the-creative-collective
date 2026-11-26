@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ChevronLeft } from "@/components/PixelIcons";
 import { CRAFTS, type Craft, type CompTeam, useMyTeam } from "@/lib/competition";
-import { CREATIVES } from "@/lib/data";
+import { creatives } from "@/lib/data";
 import { ONBOARDING_KEY, avatarOf, useLocal, useMyProfile, type Onboarding } from "@/lib/store";
 
 export const Route = createFileRoute("/competition/create")({
@@ -78,7 +78,7 @@ function CreateTeamPage() {
       toast("Add a short team pitch");
       return;
     }
-    const fallbackImgs = CREATIVES[0]!;
+    const fallbackImgs = creatives[0]!;
     const team: CompTeam = {
       id: myTeam?.id ?? "my-team",
       name: trimmedName,
