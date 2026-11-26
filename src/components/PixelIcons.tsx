@@ -600,3 +600,34 @@ export const ImageIcon = icon(
     cells([10, 5], [11, 5]),
   ),
 );
+export const Star = icon(
+  "star",
+  lines([
+    [7, 0],
+    [9, 5],
+    [14, 5],
+    [10, 8],
+    [12, 13],
+    [7, 10],
+    [2, 13],
+    [4, 8],
+    [0, 5],
+    [5, 5],
+    [7, 0],
+  ]),
+  true,
+);
+/** Randomise: a die showing three. */
+export const Dice = icon(
+  "dice",
+  join(
+    lines([
+      [1, 1],
+      [13, 1],
+      [13, 13],
+      [1, 13],
+      [1, 1],
+    ]),
+    cells([4, 4], [7, 7], [10, 10]),
+  ),
+);
