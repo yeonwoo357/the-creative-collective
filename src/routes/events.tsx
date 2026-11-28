@@ -94,12 +94,7 @@ function EventsPage() {
   return (
     <div className="flex-1 px-4 pb-8 pt-5">
       <div className="flex items-center justify-between gap-2">
-        <h1
-          className="text-3xl font-bold uppercase tracking-wider text-transparent"
-          style={{ WebkitTextStroke: "1.5px var(--foreground)" }}
-        >
-          EVENTS
-        </h1>
+        <h1 className="text-2xl font-semibold uppercase tracking-wide">Events</h1>
         <Link
           to="/saved"
           search={{ tab: "events" }}
@@ -155,7 +150,7 @@ function EventsPage() {
               <Star className="size-4" active />
               <span>New competition</span>
             </div>
-            <h2 className="mt-2 text-3xl font-bold uppercase tracking-wider">GET NAMED</h2>
+            <h2 className="mt-2 text-2xl font-bold uppercase tracking-wider">GET NAMED</h2>
             <p className="mt-1 text-lg">The professional idea competition</p>
             <p className="mt-3 text-sm text-white/80">
               Pitch an idea for NAMED Collective with your crew, or go solo. App users pick the winners.
@@ -407,7 +402,7 @@ function EventsPage() {
               <Star className="size-4" active />
               <span>New competition</span>
             </div>
-            <h2 id="get-named-dialog-title" className="mt-3 text-3xl font-bold uppercase tracking-wider">
+            <h2 id="get-named-dialog-title" className="mt-3 text-2xl font-bold uppercase tracking-wider">
               GET NAMED
             </h2>
             <p className="mt-1 text-lg">The professional idea competition</p>
